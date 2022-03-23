@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "de.keksuccino.cinematica.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "client.MixinSoundHandler"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "cinematica.mixin-refmap.json",
+  "plugin": "de.keksuccino.cinematica.mixin.CinematicaMixinPlugin",
+  "minVersion": "0.8"
+}
