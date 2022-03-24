@@ -1,7 +1,6 @@
 package de.keksuccino.cinematica.trigger.triggers.enterarea;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.gui.ScrollableScreen;
 import de.keksuccino.cinematica.ui.UIBase;
 import de.keksuccino.cinematica.utils.WorldUtils;
@@ -13,6 +12,7 @@ import de.keksuccino.konkrete.input.CharacterFilter;
 import de.keksuccino.konkrete.input.MouseInput;
 import de.keksuccino.konkrete.localization.Locals;
 import de.keksuccino.konkrete.math.MathUtils;
+import de.keksuccino.konkrete.properties.PropertiesSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 
 public class EnterAreaCoordinatesScreen extends ScrollableScreen {
 
-    protected Consumer<String> callback;
+    protected Consumer<PropertiesSection> callback;
 
     protected AdvancedTextField fromXTextField;
     protected AdvancedTextField fromYTextField;
@@ -38,9 +38,9 @@ public class EnterAreaCoordinatesScreen extends ScrollableScreen {
     protected AdvancedButton cancelButton;
     protected AdvancedButton doneButton;
 
-    public EnterAreaCoordinatesScreen(Screen parent, @Nullable String triggerValue, Consumer<String> callback) {
+    public EnterAreaCoordinatesScreen(Screen parent, @Nullable PropertiesSection conditionMeta, Consumer<PropertiesSection> callback) {
 
-        super(parent, Locals.localize("cinematica.trigger.enterarea.definearea"));
+        super(parent, Locals.localize("cinematica.trigger.enterarea.conditionmeta"));
         this.callback = callback;
 
         FontRenderer font = Minecraft.getInstance().fontRenderer;
@@ -58,34 +58,29 @@ public class EnterAreaCoordinatesScreen extends ScrollableScreen {
         toZTextField = new AdvancedTextField(font, 0, 0, 50, 20, true, CharacterFilter.getIntegerCharacterFiler());
         toZTextField.setMaxStringLength(100000);
 
-        dimensionTextField = new AdvancedTextField(font, 0, 0, 200, 20, true, CharacterFilter.getIntegerCharacterFiler());
+        dimensionTextField = new AdvancedTextField(font, 0, 0, 200, 20, true, null);
         dimensionTextField.setMaxStringLength(100000);
 
-        if (triggerValue != null) {
-            if (triggerValue.contains(";")) {
-                String[] values = triggerValue.split("[;]");
-                if (values.length >= 3) {
-                    String fromString = values[0];
-                    String toString = values[1];
-                    String dimensionString = values[2];
-                    if (fromString.contains(",") && toString.contains(",")) {
-                        String[] from = fromString.split("[,]");
-                        String[] to = toString.split("[,]");
-                        if ((from.length == 3) && (to.length == 3)) {
-                            if (MathUtils.isInteger(from[0]) && MathUtils.isInteger(from[1]) && MathUtils.isInteger(from[2]) && MathUtils.isInteger(to[0]) && MathUtils.isInteger(to[1]) && MathUtils.isInteger(to[2])) {
-                                fromXTextField.setText(from[0]);
-                                fromYTextField.setText(from[1]);
-                                fromZTextField.setText(from[2]);
-                                toXTextField.setText(to[0]);
-                                toYTextField.setText(to[1]);
-                                toZTextField.setText(to[2]);
-                            }
-                        }
-                    }
-                    if (!dimensionString.replace(" ", "").equals("")) {
-                        dimensionTextField.setText(dimensionString);
+        if (conditionMeta != null) {
+            String fromString = conditionMeta.getEntryValue("from_coordinates");
+            String toString = conditionMeta.getEntryValue("to_coordinates");
+            String dimensionString = conditionMeta.getEntryValue("dimension");
+            if ((fromString != null) && (toString != null) && fromString.contains(",") && toString.contains(",")) {
+                String[] from = fromString.split("[,]");
+                String[] to = toString.split("[,]");
+                if ((from.length == 3) && (to.length == 3)) {
+                    if (MathUtils.isInteger(from[0]) && MathUtils.isInteger(from[1]) && MathUtils.isInteger(from[2]) && MathUtils.isInteger(to[0]) && MathUtils.isInteger(to[1]) && MathUtils.isInteger(to[2])) {
+                        fromXTextField.setText(from[0]);
+                        fromYTextField.setText(from[1]);
+                        fromZTextField.setText(from[2]);
+                        toXTextField.setText(to[0]);
+                        toYTextField.setText(to[1]);
+                        toZTextField.setText(to[2]);
                     }
                 }
+            }
+            if ((dimensionString != null) && !dimensionString.replace(" ", "").equals("") && !dimensionString.equals("cinematica.blankdimension")) {
+                dimensionTextField.setText(dimensionString);
             }
         }
         if ((fromXTextField.getText() == null) || fromXTextField.getText().equals("")) {
@@ -95,12 +90,6 @@ public class EnterAreaCoordinatesScreen extends ScrollableScreen {
             toXTextField.setText("0");
             toYTextField.setText("0");
             toZTextField.setText("0");
-        }
-        if ((dimensionTextField.getText() == null) || dimensionTextField.getText().equals("")) {
-            String curDim = WorldUtils.getCurrentDimensionKey();
-            if (curDim != null) {
-                dimensionTextField.setText(curDim);
-            }
         }
 
     }
@@ -124,7 +113,7 @@ public class EnterAreaCoordinatesScreen extends ScrollableScreen {
 
             int xCenter = render.entry.x + (render.entry.getWidth() / 2);
 
-            drawCenteredString(render.matrix, font, Locals.localize("cinematica.trigger.enterarea.definearea.from"), xCenter, render.entry.y + 4, -1);
+            drawCenteredString(render.matrix, font, Locals.localize("cinematica.trigger.enterarea.conditionmeta.from"), xCenter, render.entry.y + 4, -1);
 
             this.fromYTextField.setX(xCenter - (this.fromYTextField.getWidth() / 2) + 5);
             this.fromYTextField.setY(render.entry.y + render.entry.getHeight() - this.fromYTextField.getHeight() - 2);
@@ -151,7 +140,7 @@ public class EnterAreaCoordinatesScreen extends ScrollableScreen {
 
             int xCenter = render.entry.x + (render.entry.getWidth() / 2);
 
-            drawCenteredString(render.matrix, font, Locals.localize("cinematica.trigger.enterarea.definearea.to"), xCenter, render.entry.y + 4, -1);
+            drawCenteredString(render.matrix, font, Locals.localize("cinematica.trigger.enterarea.conditionmeta.to"), xCenter, render.entry.y + 4, -1);
 
             this.toYTextField.setX(xCenter - (this.toYTextField.getWidth() / 2) + 5);
             this.toYTextField.setY(render.entry.y + render.entry.getHeight() - this.toYTextField.getHeight() - 2);
@@ -178,16 +167,16 @@ public class EnterAreaCoordinatesScreen extends ScrollableScreen {
 
             int xCenter = render.entry.x + (render.entry.getWidth() / 2);
 
-            drawCenteredString(render.matrix, font, Locals.localize("cinematica.trigger.enterarea.definearea.dimension"), xCenter, render.entry.y + 4, -1);
+            drawCenteredString(render.matrix, font, Locals.localize("cinematica.trigger.enterarea.conditionmeta.dimension"), xCenter, render.entry.y + 4, -1);
 
             this.dimensionTextField.setX(xCenter - (this.dimensionTextField.getWidth() / 2));
-            this.dimensionTextField.setY(render.entry.y + render.entry.getHeight() - this.dimensionTextField.getHeight() - 13);
+            this.dimensionTextField.setY(render.entry.y + render.entry.getHeight() - this.dimensionTextField.getHeight() - 11);
             this.dimensionTextField.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getRenderPartialTicks());
 
-            drawCenteredString(render.matrix, font, Locals.localize("cinematica.trigger.enterarea.definearea.dimension.current", "" + WorldUtils.getCurrentDimensionKey()), xCenter, render.entry.y + render.entry.getHeight() - 2, -1);
+            drawCenteredString(render.matrix, font, Locals.localize("cinematica.trigger.enterarea.conditionmeta.dimension.current", "" + WorldUtils.getCurrentDimensionKey()), xCenter, render.entry.y + render.entry.getHeight() - 2, -1);
 
         });
-        dimensionEntry.setHeight(49);
+        dimensionEntry.setHeight(47);
         this.scrollArea.addEntry(dimensionEntry);
         //-------------------------------------
 
@@ -241,15 +230,19 @@ public class EnterAreaCoordinatesScreen extends ScrollableScreen {
             String toYString = this.toYTextField.getText().replace(" ", "");
             String toZString = this.toZTextField.getText().replace(" ", "");
             String dimString = this.dimensionTextField.getText().replace(" ", "");
+            if (dimString.equals("")) {
+                dimString = "cinematica.blankdimension";
+            }
             if (!MathUtils.isInteger(fromXString) || !MathUtils.isInteger(fromYString) || !MathUtils.isInteger(fromZString) || !MathUtils.isInteger(toXString) || !MathUtils.isInteger(toYString) || !MathUtils.isInteger(toZString)) {
                 this.callback.accept(null);
-                //TODO remove debug
-                Cinematica.LOGGER.info("############### CALLBACK: NULL");
             } else {
                 String fromString = fromXString + "," + fromYString + "," + fromZString;
                 String toString = toXString + "," + toYString + "," + toZString;
-                String valueString = fromString + ";" + toString + ";" + dimString;
-                this.callback.accept(valueString);
+                PropertiesSection sec = new PropertiesSection("condition-meta");
+                sec.addEntry("from_coordinates", fromString);
+                sec.addEntry("to_coordinates", toString);
+                sec.addEntry("dimension", dimString);
+                this.callback.accept(sec);
             }
         }
     }

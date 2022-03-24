@@ -44,7 +44,7 @@ public class CinematicHandler {
                 currentCutscene = cutsceneCinematicQueue.get(0);
                 cutsceneCinematicQueue.remove(currentCutscene);
 
-                VideoRenderer r = VideoHandler.getRenderer(currentCutscene.cinematicSource);
+                VideoRenderer r = VideoHandler.getRenderer(currentCutscene.sourcePath);
                 if (r != null) {
                     AudioCinematicHandler.stopAll();
                     CutScene scene = new CutScene(r, currentCutscene.fadeInCutscene, currentCutscene.fadeOutCutscene);

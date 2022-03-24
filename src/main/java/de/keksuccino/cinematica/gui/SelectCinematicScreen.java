@@ -187,7 +187,7 @@ public class SelectCinematicScreen extends Screen {
                 fill(matrix, this.x, this.y, this.x + this.getWidth(), this.y + this.getHeight(), ENTRY_BACKGROUND_COLOR.brighter().brighter().getRGB());
             }
 
-            String sourceString = this.cinematic.cinematicSource;
+            String sourceString = this.cinematic.sourcePath;
             if (font.getStringWidth(sourceString) > this.getWidth() - 30) {
                 sourceString = new StringBuilder(sourceString).reverse().toString();
                 sourceString = font.trimStringToWidth(sourceString, this.getWidth() - 30);

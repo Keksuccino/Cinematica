@@ -1,18 +1,23 @@
 package de.keksuccino.cinematica.gui;
 
 import java.awt.Color;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import de.keksuccino.cinematica.ui.UIBase;
 import de.keksuccino.konkrete.gui.content.AdvancedButton;
+import de.keksuccino.konkrete.gui.content.AdvancedTextField;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollArea;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollAreaEntry;
 import de.keksuccino.konkrete.gui.screens.popup.PopupHandler;
+import de.keksuccino.konkrete.input.MouseInput;
 import de.keksuccino.konkrete.rendering.RenderUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.StringTextComponent;
@@ -119,13 +124,10 @@ public class ScrollableScreen extends Screen {
         IngameGui.fill(matrix, x, y, x + width, y + height, new Color(26, 26, 26, 250).getRGB());
     }
 
-    protected static void colorizeButton(AdvancedButton b) {
-        b.setBackgroundColor(new Color(100, 100, 100), new Color(130, 130, 130), new Color(180, 180, 180), new Color(199, 199, 199), 1);
-    }
-
     public static class ScrollAreaEntryBase extends ScrollAreaEntry {
 
         protected int entryHeight = 25;
+        protected List<String> description = null;
         protected Consumer<EntryRenderCallback> renderBody;
 
         public ScrollAreaEntryBase(ScrollArea parent, Consumer<EntryRenderCallback> renderBody) {
@@ -142,6 +144,10 @@ public class ScrollableScreen extends Screen {
 
             this.renderBody.accept(c);
 
+            if (this.isHovered() && (this.description != null)) {
+                renderDescription(matrix, this.description, MouseInput.getMouseX(), MouseInput.getMouseY());
+            }
+
         }
 
         @Override
@@ -153,11 +159,91 @@ public class ScrollableScreen extends Screen {
             this.entryHeight = height;
         }
 
+        public List<String> getDescription() {
+            return this.description;
+        }
+
+        public void setDescription(List<String> desc) {
+            this.description = desc;
+        }
+
+        public void setDescription(String[] desc) {
+            this.description = Arrays.asList(desc);
+        }
+
         public static class EntryRenderCallback {
 
             public ScrollAreaEntryBase entry;
             public MatrixStack matrix;
 
+        }
+
+    }
+
+    public static class ButtonEntry extends ScrollAreaEntryBase {
+
+        public AdvancedButton button;
+
+        public ButtonEntry(ScrollArea parent, AdvancedButton button) {
+            super(parent, null);
+            this.button = button;
+            this.renderBody = (render) -> {
+                int xCenter = render.entry.x + (render.entry.getWidth() / 2);
+                UIBase.colorizeButton(this.button);
+                this.button.setWidth(200);
+                this.button.setHeight(20);
+                this.button.setX(xCenter - (this.button.getWidth() / 2));
+                this.button.setY(render.entry.y + 2);
+                this.button.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getRenderPartialTicks());
+            };
+            this.setHeight(24);
+        }
+
+    }
+
+    public static class TextFieldEntry extends ScrollAreaEntryBase {
+
+        public AdvancedTextField textField;
+
+        public TextFieldEntry(ScrollArea parent, AdvancedTextField textField) {
+            super(parent, null);
+            this.textField = textField;
+            this.textField.setMaxStringLength(10000);
+            this.renderBody = (render) -> {
+                int xCenter = render.entry.x + (render.entry.getWidth() / 2);
+                this.textField.setWidth(200);
+                this.textField.setHeight(20);
+                this.textField.setX(xCenter - (this.textField.getWidth() / 2));
+                this.textField.setY(render.entry.y + 2);
+                this.textField.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getRenderPartialTicks());
+            };
+            this.setHeight(24);
+        }
+
+    }
+
+    public static class TextEntry extends ScrollAreaEntryBase {
+
+        public String text;
+        public boolean bold;
+
+        public TextEntry(ScrollArea parent, String text, boolean bold) {
+            super(parent, null);
+            this.text = text;
+            this.bold = bold;
+            this.renderBody = (render) -> {
+                if (this.text != null) {
+                    FontRenderer font = Minecraft.getInstance().fontRenderer;
+                    int xCenter = render.entry.x + (render.entry.getWidth() / 2);
+                    int yCenter = render.entry.y + (render.entry.getHeight() / 2);
+                    String s = this.text;
+                    if (this.bold) {
+                        s = "§l" + this.text;
+                    }
+                    drawCenteredString(render.matrix, font, s, xCenter, yCenter - (font.FONT_HEIGHT / 2), -1);
+                }
+            };
+            this.setHeight(18);
         }
 
     }

@@ -26,7 +26,20 @@ import net.minecraftforge.fml.network.FMLNetworkConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-//TODO enter area: dimension support (festlegen, in welcher dimension getriggert werden soll)
+//TODO dimension condition zu cinematic base hinzufügen (anstatt nur für area trigger)
+
+//TODO server IP condition zu cinematic base adden (checken, ob auf server X; blank lassen für nicht checken)
+
+//TODO only SP/MP condition zu cinematic base adden
+
+//TODO "Multi-Trigger" Trigger adden
+// - Triggert nur, wenn alle children, die part der haupt-cinematic sind, triggern
+// - Eigene Art von "Cinematic" (als child bezeichnen) (neben Cutscene und Audio): MULTI-TRIGGER
+//   - Multi-trigger children haben keine source, da sie nur child von eigentlicher Cinematic sind
+//   - Children werden zwar zu normaler cinematic liste geaddet, beim condition check in ticker aber geskippt (und dafür in main-cinematic gecheckt)
+// - Als condition meta werden in diesem fall nur die IDs der child cinematics festgelegt, auf die geprüft werden soll
+
+//TODO "name" value zu cinematic base adden (damit man einen anzeigenamen für seine cinematics setzen kann)
 
 //TODO alle trigger adden
 

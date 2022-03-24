@@ -7,22 +7,24 @@ import de.keksuccino.cinematica.trigger.Trigger;
 import de.keksuccino.konkrete.math.MathUtils;
 import de.keksuccino.konkrete.properties.PropertiesSection;
 
+import javax.annotation.Nullable;
+
 public class EnterAreaCinematic extends Cinematic {
 
     protected boolean gotTriggered = false;
 
-    public EnterAreaCinematic(Trigger parent, CinematicType type, String cinematicSource, PropertiesSection conditionMeta) {
-        super(parent, type, cinematicSource, conditionMeta);
+    public EnterAreaCinematic(@Nullable String identifier, Trigger parent, CinematicType type, String cinematicSource, PropertiesSection conditionMeta) {
+        super(identifier, parent, type, cinematicSource, conditionMeta);
     }
 
     @Override
-    public boolean conditionsMet(PropertiesSection parentConditionMeta) {
+    public boolean conditionsMet(PropertiesSection triggerContext) {
 
-        Integer[] playerCoords = getCoordinates(parentConditionMeta.getEntryValue("player_coordinates"));
+        Integer[] playerCoords = getCoordinates(triggerContext.getEntryValue("player_coordinates"));
 
         Integer[] fromCoords = getCoordinates(this.conditionMeta.getEntryValue("from_coordinates"));
         Integer[] toCoords = getCoordinates(this.conditionMeta.getEntryValue("to_coordinates"));
-        String curDim = parentConditionMeta.getEntryValue("dimension");
+        String curDim = triggerContext.getEntryValue("dimension");
         String conDim = this.conditionMeta.getEntryValue("dimension");
 
         if ((playerCoords != null) && (fromCoords != null) && (toCoords != null)) {
@@ -44,7 +46,7 @@ public class EnterAreaCinematic extends Cinematic {
             boolean isZ = (zPlayer >= zFrom) && (zPlayer <= zTo);
 
             boolean isDimension = false;
-            if ((conDim == null) || conDim.replace(" ", "").equals("")) {
+            if ((conDim == null) || conDim.replace(" ", "").equals("") || conDim.equals("cinematica.blankdimension")) {
                 isDimension = true;
             } else if ((curDim != null) && curDim.equals(conDim)) {
                 isDimension = true;

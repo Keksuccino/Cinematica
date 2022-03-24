@@ -1,18 +1,20 @@
 package de.keksuccino.cinematica.trigger;
 
+import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.utils.MiscUtils;
 import de.keksuccino.konkrete.math.MathUtils;
 import de.keksuccino.konkrete.properties.PropertiesSection;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 
 public abstract class Cinematic {
 
-    protected String identifier = MiscUtils.generateRandomUniqueId();
+    protected final String identifier;
 
     public final Trigger parent;
     public final CinematicType type;
-    public String cinematicSource;
+    public String sourcePath;
     public PropertiesSection conditionMeta;
 
     /** If this cinematic should only trigger one time **/
@@ -28,26 +30,39 @@ public abstract class Cinematic {
     /** If world music should stop while audio cinematics are playing **/
     public boolean stopWorldMusicOnAudio = false;
 
-    public Cinematic(Trigger parent, CinematicType type, String cinematicSource, PropertiesSection conditionMeta) {
+    public Cinematic(@Nullable String identifier, Trigger parent, CinematicType type, String cinematicSource, PropertiesSection conditionMeta) {
+        if (identifier != null) {
+            this.identifier = identifier;
+        } else {
+            this.identifier = MiscUtils.generateRandomUniqueId();
+        }
         this.parent = parent;
         this.type = type;
-        this.cinematicSource = cinematicSource;
+        this.sourcePath = cinematicSource;
         this.conditionMeta = conditionMeta;
     }
 
     /**
-     * Used to check if the condition meta of this cinematic meets all conditions of the parent condition meta.<br><br>
+     * Used to check if the condition meta of this cinematic meets all conditions of the trigger context.<br><br>
      *
      * Is only called when the parent {@link Trigger} is getting triggered.
      */
-    public abstract boolean conditionsMet(PropertiesSection parentConditionMeta);
+    public abstract boolean conditionsMet(PropertiesSection triggerContext);
+
+    public boolean conditionsMetInternal(PropertiesSection triggerContext) {
+
+        //TODO do default conditions here
+
+        return false;
+
+    }
 
     public PropertiesSection serializeToPropertiesSection() {
 
         PropertiesSection sec = new PropertiesSection("cinematic-object");
 
         sec.addEntry("cinematic_identifier", this.identifier);
-        sec.addEntry("cinematic_source", this.cinematicSource);
+        sec.addEntry("cinematic_source", this.sourcePath);
         sec.addEntry("allow_skip", "" + this.allowCutsceneSkip);
         sec.addEntry("type", this.type.getName());
         sec.addEntry("one_time_cinematic", "" + this.oneTimeCinematic);
@@ -64,30 +79,29 @@ public abstract class Cinematic {
 
     }
 
-    public String getIdentifier() {
-        return this.identifier;
+    public SerializedCinematic serialize() {
+        return buildSerializedCinematic(serializeToPropertiesSection());
     }
 
     public static SerializedCinematic buildSerializedCinematic(PropertiesSection serializedObject) {
 
-        SerializedCinematic sc = new SerializedCinematic();
-
         String id = serializedObject.getEntryValue("cinematic_identifier");
-        if (id != null) {
-            sc.identifier = id;
-        } else {
-            sc.identifier = MiscUtils.generateRandomUniqueId();
+        if (id == null) {
+            id = MiscUtils.generateRandomUniqueId();
         }
-
-        sc.cinematicSource = serializedObject.getEntryValue("cinematic_source");
 
         String typeString = serializedObject.getEntryValue("type");
+        CinematicType cinType = CinematicType.CUTSCENE;
         if (typeString != null) {
-            sc.type = CinematicType.getByName(typeString);
-            if (sc.type == null) {
-                sc.type = CinematicType.CUTSCENE;
+            cinType = CinematicType.getByName(typeString);
+            if (cinType == null) {
+                cinType = CinematicType.CUTSCENE;
             }
         }
+
+        SerializedCinematic sc = new SerializedCinematic(id, cinType);
+
+        sc.sourcePath = serializedObject.getEntryValue("cinematic_source");
 
         String allowSkipString = serializedObject.getEntryValue("allow_skip");
         if ((allowSkipString != null) && allowSkipString.equals("false")) {
@@ -132,11 +146,15 @@ public abstract class Cinematic {
 
     }
 
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
     public static class SerializedCinematic {
 
-        public String identifier;
-        public CinematicType type;
-        public String cinematicSource;
+        public final String identifier;
+        public final CinematicType type;
+        public String sourcePath;
         public PropertiesSection conditionMeta;
         public boolean allowCutsceneSkip = true;
         public boolean oneTimeCinematic = false;
@@ -144,6 +162,15 @@ public abstract class Cinematic {
         public boolean fadeInCutscene = true;
         public boolean fadeOutCutscene = true;
         public boolean stopWorldMusicOnAudio = false;
+
+        public SerializedCinematic(@Nullable String identifier, CinematicType type) {
+            if (identifier != null) {
+                this.identifier = identifier;
+            } else {
+                this.identifier = MiscUtils.generateRandomUniqueId();
+            }
+            this.type = type;
+        }
 
     }
 

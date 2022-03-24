@@ -1,8 +1,10 @@
 package de.keksuccino.cinematica.trigger.triggers.killentity;
 
+import de.keksuccino.cinematica.gui.EditCinematicScreen;
 import de.keksuccino.cinematica.trigger.Cinematic;
 import de.keksuccino.cinematica.trigger.CinematicType;
 import de.keksuccino.cinematica.trigger.Trigger;
+import de.keksuccino.konkrete.gui.content.AdvancedButton;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -31,6 +33,11 @@ public class KillEntityTrigger extends Trigger {
     }
 
     @Override
+    public void onConditionMetaButtonClick(AdvancedButton parentBtn, EditCinematicScreen parentScreen) {
+
+    }
+
+    @Override
     public String getDisplayName() {
         return null;
     }
@@ -41,17 +48,13 @@ public class KillEntityTrigger extends Trigger {
     }
 
     @Override
-    public String getConditionValueButtonDisplayName() {
+    public String getConditionMetaButtonDisplayName() {
         return null;
     }
 
     @Override
-    public List<String> getConditionValueDescription() {
+    public List<String> getConditionMetaButtonDescription() {
         return null;
     }
 
-    @Override
-    public String getConditionValueExample() {
-        return null;
-    }
 }

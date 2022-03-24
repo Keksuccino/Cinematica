@@ -1,6 +1,7 @@
 package de.keksuccino.cinematica.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import de.keksuccino.cinematica.trigger.Cinematic;
 import de.keksuccino.cinematica.trigger.CinematicType;
 import de.keksuccino.cinematica.trigger.Trigger;
 import de.keksuccino.cinematica.ui.UIBase;
@@ -10,13 +11,13 @@ import de.keksuccino.konkrete.gui.content.AdvancedButton;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollAreaEntry;
 import de.keksuccino.konkrete.gui.screens.popup.PopupHandler;
 import de.keksuccino.konkrete.input.CharacterFilter;
-import de.keksuccino.konkrete.input.MouseInput;
 import de.keksuccino.konkrete.input.StringUtils;
 import de.keksuccino.konkrete.localization.Locals;
 import de.keksuccino.konkrete.math.MathUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,18 +25,10 @@ import java.util.function.Consumer;
 
 public class EditCinematicScreen extends ScrollableScreen {
 
-    protected CinematicType type;
-    protected Trigger trigger;
-    protected Consumer<CinematicProperties> callback;
-
-    protected String sourcePath = null;
-    protected String conditionValue = null;
-    protected boolean allowSkip = true;
-    protected boolean oneTimeCinematic = false;
-    protected double triggerDelay = 0D;
-    protected boolean fadeInCutscene = true;
-    protected boolean fadeOutCutscene = true;
-    protected boolean stopWorldMusicOnAudio = false;
+    public final CinematicType type;
+    public final Trigger trigger;
+    protected Consumer<Cinematic.SerializedCinematic> callback;
+    protected Cinematic.SerializedCinematic context;
 
     protected AdvancedButton chooseSourceButton;
     protected AdvancedButton setConditionValueButton;
@@ -49,11 +42,20 @@ public class EditCinematicScreen extends ScrollableScreen {
     protected AdvancedButton cancelButton;
     protected AdvancedButton saveButton;
 
-    public EditCinematicScreen(Screen parent, CinematicType type, Trigger trigger, Consumer<CinematicProperties> callback) {
+    public EditCinematicScreen(Screen parent, CinematicType type, Trigger trigger, Consumer<Cinematic.SerializedCinematic> callback) {
+        this(parent, type, trigger, null, callback);
+    }
+
+    public EditCinematicScreen(Screen parent, CinematicType type, Trigger trigger, @Nullable Cinematic.SerializedCinematic context, Consumer<Cinematic.SerializedCinematic> callback) {
         super(parent, Locals.localize("cinematica.trigger.ui.addeditcinematic"));
         this.type = type;
         this.trigger = trigger;
         this.callback = callback;
+        if (context != null) {
+            this.context = context;
+        } else {
+            this.context = new Cinematic.SerializedCinematic(null, type);
+        }
     }
 
     @Override
@@ -84,54 +86,43 @@ public class EditCinematicScreen extends ScrollableScreen {
             ChooseFilePopup p = new ChooseFilePopup((call) -> {
                 if (call != null) {
                     if (call.replace(" ", "").equals("")) {
-                        this.sourcePath = null;
+                        this.context.sourcePath = null;
                     } else {
-                        this.sourcePath = call;
+                        this.context.sourcePath = call;
                     }
                 }
             }, fileTypes);
-            if (this.sourcePath != null) {
-                p.setText(this.sourcePath);
+            if (this.context.sourcePath != null) {
+                p.setText(this.context.sourcePath);
             }
             PopupHandler.displayPopup(p);
         });
-        UIBase.colorizeButton(this.chooseSourceButton);
-        ScrollAreaEntryBase chooseSourceEntry = new ScrollAreaEntryBase(this.scrollArea, (render) -> {
-            int xCenter = render.entry.x + (render.entry.getWidth() / 2);
-            if (this.sourcePath != null) {
-                drawCenteredString(render.matrix, font, Locals.localize("cinematica.cinematic.source", this.sourcePath), xCenter, render.entry.y + 4, -1);
-            } else {
-                drawCenteredString(render.matrix, font, Locals.localize("cinematica.cinematic.source.nosource"), xCenter, render.entry.y + 4, -1);
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, "", true) {
+            @Override
+            public void renderEntry(MatrixStack matrix) {
+                this.text = Locals.localize("cinematica.cinematic.source.nosource");
+                if (context.sourcePath != null) {
+                    this.text = Locals.localize("cinematica.cinematic.source", context.sourcePath);
+                }
+                super.renderEntry(matrix);
             }
-            this.chooseSourceButton.setX(xCenter - (this.chooseSourceButton.getWidth() / 2));
-            this.chooseSourceButton.setY(render.entry.y + render.entry.getHeight() - this.chooseSourceButton.getHeight() - 2);
-            this.chooseSourceButton.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getRenderPartialTicks());
         });
-        chooseSourceEntry.setHeight(38);
-        this.scrollArea.addEntry(chooseSourceEntry);
+        this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.chooseSourceButton));
         //-------------------------------------
 
         // SET CONDITION ----------------------
-        String conValBtnLabel = this.trigger.getConditionValueButtonDisplayName();
+        String conValBtnLabel = this.trigger.getConditionMetaButtonDisplayName();
         if (conValBtnLabel == null) {
             conValBtnLabel = "";
         }
         this.setConditionValueButton = new AdvancedButton(0, 0, 200, 20, conValBtnLabel, true, (press) -> {
-            this.trigger.onConditionValueButtonClick((AdvancedButton)press, this);
+            this.trigger.onConditionMetaButtonClick((AdvancedButton)press, this);
         });
-        List<String> conValDesc = this.trigger.getConditionValueDescription();
+        List<String> conValDesc = this.trigger.getConditionMetaButtonDescription();
         if ((conValDesc != null) && !conValDesc.isEmpty()) {
             this.setConditionValueButton.setDescription(conValDesc.toArray(new String[0]));
         }
-        UIBase.colorizeButton(this.setConditionValueButton);
-        ScrollAreaEntryBase setConditionEntry = new ScrollAreaEntryBase(this.scrollArea, (render) -> {
-            int xCenter = render.entry.x + (render.entry.getWidth() / 2);
-            this.setConditionValueButton.setX(xCenter - (this.setConditionValueButton.getWidth() / 2));
-            this.setConditionValueButton.setY(render.entry.y + 2);
-            this.setConditionValueButton.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getRenderPartialTicks());
-        });
-        setConditionEntry.setHeight(24);
-        this.scrollArea.addEntry(setConditionEntry);
+        this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.setConditionValueButton));
         //-------------------------------------
 
         // SET TRIGGER DELAY ------------------
@@ -139,38 +130,30 @@ public class EditCinematicScreen extends ScrollableScreen {
             CinematicaTextInputPopup p = new CinematicaTextInputPopup(new Color(0, 0, 0, 0), Locals.localize("cinematica.cinematic.setdelay"), CharacterFilter.getDoubleCharacterFiler(), 240, (call) -> {
                 if (call != null) {
                     if (MathUtils.isDouble(call)) {
-                        this.triggerDelay = Double.parseDouble(call);
+                        this.context.triggerDelay = Double.parseDouble(call);
                     } else {
-                        this.triggerDelay = 0D;
+                        this.context.triggerDelay = 0D;
                     }
                 }
             });
-            p.setText("" + this.triggerDelay);
+            p.setText("" + this.context.triggerDelay);
             PopupHandler.displayPopup(p);
         });
         this.setDelayButton.setDescription(StringUtils.splitLines(Locals.localize("cinematica.cinematic.setdelay.btn.desc"), "%n%"));
-        UIBase.colorizeButton(this.setDelayButton);
-        ScrollAreaEntryBase setTriggerDelayEntry = new ScrollAreaEntryBase(this.scrollArea, (render) -> {
-            int xCenter = render.entry.x + (render.entry.getWidth() / 2);
-            this.setDelayButton.setX(xCenter - (this.setDelayButton.getWidth() / 2));
-            this.setDelayButton.setY(render.entry.y + 2);
-            this.setDelayButton.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getRenderPartialTicks());
-        });
-        setTriggerDelayEntry.setHeight(24);
-        this.scrollArea.addEntry(setTriggerDelayEntry);
+        this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.setDelayButton));
         //-------------------------------------
 
         // TOGGLE ONE-TIME-CINEMATIC ------------
         this.oneTimeCinematicButton = new AdvancedButton(0, 0, 200, 20, "", true, (press) -> {
-            if (this.oneTimeCinematic) {
-                this.oneTimeCinematic = false;
+            if (this.context.oneTimeCinematic) {
+                this.context.oneTimeCinematic = false;
             } else {
-                this.oneTimeCinematic = true;
+                this.context.oneTimeCinematic = true;
             }
         }) {
             @Override
             public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-                if (oneTimeCinematic) {
+                if (context.oneTimeCinematic) {
                     this.setMessage(Locals.localize("cinematica.cinematic.onetimetrigger.on"));
                 } else {
                     this.setMessage(Locals.localize("cinematica.cinematic.onetimetrigger.off"));
@@ -179,29 +162,21 @@ public class EditCinematicScreen extends ScrollableScreen {
             }
         };
         this.oneTimeCinematicButton.setDescription(StringUtils.splitLines(Locals.localize("cinematica.cinematic.onetimetrigger.btn.desc"), "%n%"));
-        UIBase.colorizeButton(this.oneTimeCinematicButton);
-        ScrollAreaEntryBase oneTimeCinematicEntry = new ScrollAreaEntryBase(this.scrollArea, (render) -> {
-            int xCenter = render.entry.x + (render.entry.getWidth() / 2);
-            this.oneTimeCinematicButton.setX(xCenter - (this.oneTimeCinematicButton.getWidth() / 2));
-            this.oneTimeCinematicButton.setY(render.entry.y + 2);
-            this.oneTimeCinematicButton.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getRenderPartialTicks());
-        });
-        oneTimeCinematicEntry.setHeight(24);
-        this.scrollArea.addEntry(oneTimeCinematicEntry);
+        this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.oneTimeCinematicButton));
         //-------------------------------------
 
         // TOGGLE ALLOW SKIP ------------------
         if (this.type == CinematicType.CUTSCENE) {
             this.allowSkipButton = new AdvancedButton(0, 0, 200, 20, "", true, (press) -> {
-                if (this.allowSkip) {
-                    this.allowSkip = false;
+                if (this.context.allowCutsceneSkip) {
+                    this.context.allowCutsceneSkip = false;
                 } else {
-                    this.allowSkip = true;
+                    this.context.allowCutsceneSkip = true;
                 }
             }) {
                 @Override
                 public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-                    if (allowSkip) {
+                    if (context.allowCutsceneSkip) {
                         this.setMessage(Locals.localize("cinematica.cinematic.allowskip.on"));
                     } else {
                         this.setMessage(Locals.localize("cinematica.cinematic.allowskip.off"));
@@ -209,30 +184,22 @@ public class EditCinematicScreen extends ScrollableScreen {
                     super.render(matrixStack, mouseX, mouseY, partialTicks);
                 }
             };
-            UIBase.colorizeButton(this.allowSkipButton);
-            ScrollAreaEntryBase allowSkipEntry = new ScrollAreaEntryBase(this.scrollArea, (render) -> {
-                int xCenter = render.entry.x + (render.entry.getWidth() / 2);
-                this.allowSkipButton.setX(xCenter - (this.allowSkipButton.getWidth() / 2));
-                this.allowSkipButton.setY(render.entry.y + 2);
-                this.allowSkipButton.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getRenderPartialTicks());
-            });
-            allowSkipEntry.setHeight(24);
-            this.scrollArea.addEntry(allowSkipEntry);
+            this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.allowSkipButton));
         }
         //-------------------------------------
 
         // TOGGLE FADE-IN ---------------------
         if (this.type == CinematicType.CUTSCENE) {
             this.fadeInButton = new AdvancedButton(0, 0, 200, 20, "", true, (press) -> {
-                if (this.fadeInCutscene) {
-                    this.fadeInCutscene = false;
+                if (this.context.fadeInCutscene) {
+                    this.context.fadeInCutscene = false;
                 } else {
-                    this.fadeInCutscene = true;
+                    this.context.fadeInCutscene = true;
                 }
             }) {
                 @Override
                 public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-                    if (fadeInCutscene) {
+                    if (context.fadeInCutscene) {
                         this.setMessage(Locals.localize("cinematica.cinematic.fadein.on"));
                     } else {
                         this.setMessage(Locals.localize("cinematica.cinematic.fadein.off"));
@@ -241,30 +208,22 @@ public class EditCinematicScreen extends ScrollableScreen {
                 }
             };
             this.fadeInButton.setDescription(StringUtils.splitLines(Locals.localize("cinematica.cinematic.fadein.btn.desc"), "%n%"));
-            UIBase.colorizeButton(this.fadeInButton);
-            ScrollAreaEntryBase fadeInEntry = new ScrollAreaEntryBase(this.scrollArea, (render) -> {
-                int xCenter = render.entry.x + (render.entry.getWidth() / 2);
-                this.fadeInButton.setX(xCenter - (this.fadeInButton.getWidth() / 2));
-                this.fadeInButton.setY(render.entry.y + 2);
-                this.fadeInButton.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getRenderPartialTicks());
-            });
-            fadeInEntry.setHeight(24);
-            this.scrollArea.addEntry(fadeInEntry);
+            this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.fadeInButton));
         }
         //-------------------------------------
 
         // TOGGLE FADE-OUT --------------------
         if (this.type == CinematicType.CUTSCENE) {
             this.fadeOutButton = new AdvancedButton(0, 0, 200, 20, "", true, (press) -> {
-                if (this.fadeOutCutscene) {
-                    this.fadeOutCutscene = false;
+                if (this.context.fadeOutCutscene) {
+                    this.context.fadeOutCutscene = false;
                 } else {
-                    this.fadeOutCutscene = true;
+                    this.context.fadeOutCutscene = true;
                 }
             }) {
                 @Override
                 public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-                    if (fadeOutCutscene) {
+                    if (context.fadeOutCutscene) {
                         this.setMessage(Locals.localize("cinematica.cinematic.fadeout.on"));
                     } else {
                         this.setMessage(Locals.localize("cinematica.cinematic.fadeout.off"));
@@ -273,30 +232,22 @@ public class EditCinematicScreen extends ScrollableScreen {
                 }
             };
             this.fadeOutButton.setDescription(StringUtils.splitLines(Locals.localize("cinematica.cinematic.fadeout.btn.desc"), "%n%"));
-            UIBase.colorizeButton(this.fadeOutButton);
-            ScrollAreaEntryBase fadeOutEntry = new ScrollAreaEntryBase(this.scrollArea, (render) -> {
-                int xCenter = render.entry.x + (render.entry.getWidth() / 2);
-                this.fadeOutButton.setX(xCenter - (this.fadeOutButton.getWidth() / 2));
-                this.fadeOutButton.setY(render.entry.y + 2);
-                this.fadeOutButton.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getRenderPartialTicks());
-            });
-            fadeOutEntry.setHeight(24);
-            this.scrollArea.addEntry(fadeOutEntry);
+            this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.fadeOutButton));
         }
         //-------------------------------------
 
         // TOGGLE STOP WORLD MUSIC ------------
         if (this.type == CinematicType.AUDIO) {
             this.stopWorldMusicButton = new AdvancedButton(0, 0, 200, 20, "", true, (press) -> {
-                if (this.stopWorldMusicOnAudio) {
-                    this.stopWorldMusicOnAudio = false;
+                if (this.context.stopWorldMusicOnAudio) {
+                    this.context.stopWorldMusicOnAudio = false;
                 } else {
-                    this.stopWorldMusicOnAudio = true;
+                    this.context.stopWorldMusicOnAudio = true;
                 }
             }) {
                 @Override
                 public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-                    if (stopWorldMusicOnAudio) {
+                    if (context.stopWorldMusicOnAudio) {
                         this.setMessage(Locals.localize("cinematica.cinematic.stopworldmusic.on"));
                     } else {
                         this.setMessage(Locals.localize("cinematica.cinematic.stopworldmusic.off"));
@@ -305,15 +256,7 @@ public class EditCinematicScreen extends ScrollableScreen {
                 }
             };
             this.stopWorldMusicButton.setDescription(StringUtils.splitLines(Locals.localize("cinematica.cinematic.stopworldmusic.btn.desc"), "%n%"));
-            UIBase.colorizeButton(this.stopWorldMusicButton);
-            ScrollAreaEntryBase stopWorldMusicEntry = new ScrollAreaEntryBase(this.scrollArea, (render) -> {
-                int xCenter = render.entry.x + (render.entry.getWidth() / 2);
-                this.stopWorldMusicButton.setX(xCenter - (this.stopWorldMusicButton.getWidth() / 2));
-                this.stopWorldMusicButton.setY(render.entry.y + 2);
-                this.stopWorldMusicButton.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getRenderPartialTicks());
-            });
-            stopWorldMusicEntry.setHeight(24);
-            this.scrollArea.addEntry(stopWorldMusicEntry);
+            this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.stopWorldMusicButton));
         }
         //-------------------------------------
 
@@ -360,17 +303,7 @@ public class EditCinematicScreen extends ScrollableScreen {
 
     protected void onSave() {
         if (this.callback != null) {
-            CinematicProperties p = new CinematicProperties();
-            p.type = this.type;
-            p.sourcePath = this.sourcePath;
-            p.conditionValue = this.conditionValue;
-            p.allowCutsceneSkip = this.allowSkip;
-            p.triggerDelay = this.triggerDelay;
-            p.onTimeCinematic = this.oneTimeCinematic;
-            p.fadeInCutscene = this.fadeInCutscene;
-            p.fadeOutCutscene = this.fadeOutCutscene;
-            p.stopWorldMusicOnAudio = this.stopWorldMusicOnAudio;
-            this.callback.accept(p);
+            this.callback.accept(this.context);
         }
     }
 
@@ -380,58 +313,8 @@ public class EditCinematicScreen extends ScrollableScreen {
         }
     }
 
-    public Trigger getTrigger() {
-        return this.trigger;
-    }
-
-    public void setConditionValue(String s) {
-        this.conditionValue = s;
-    }
-
-    public String getConditionValue() {
-        return this.conditionValue;
-    }
-
-    public void setSourcePath(String s) {
-        this.sourcePath = s;
-    }
-
-    public void setAllowSkip(boolean b) {
-        this.allowSkip = b;
-    }
-
-    public void setOneTimeCinematic(boolean b) {
-        this.oneTimeCinematic = b;
-    }
-
-    public void setTriggerDelay(double d) {
-        this.triggerDelay = d;
-    }
-
-    public void setFadeInCutscene(boolean b) {
-        this.fadeInCutscene = b;
-    }
-
-    public void setFadeOutCutscene(boolean b) {
-        this.fadeOutCutscene = b;
-    }
-
-    public void setStopWorldMusicOnAudio(boolean b) {
-        this.stopWorldMusicOnAudio = b;
-    }
-
-    public static class CinematicProperties {
-
-        public CinematicType type;
-        public String sourcePath;
-        public String conditionValue;
-        public boolean allowCutsceneSkip;
-        public double triggerDelay;
-        public boolean onTimeCinematic;
-        public boolean fadeInCutscene = true;
-        public boolean fadeOutCutscene = true;
-        public boolean stopWorldMusicOnAudio = false;
-
+    public Cinematic.SerializedCinematic getContext() {
+        return this.context;
     }
 
 }

@@ -33,7 +33,6 @@ cinematica.cinematic.choosesource.video = Choose Video Source
 cinematica.cinematic.choosesource.audio = Choose Audio Source
 
 cinematica.cinematic.save = Save
-cinematica.cinematic.conditionvalue.set = Set Condition Value
 cinematica.cinematic.allowskip.on = Allow Skip: §aYes
 cinematica.cinematic.allowskip.off = Allow Skip: §cNo
 cinematica.cinematic.source.nosource = §lNo Source Selected.
@@ -57,8 +56,6 @@ cinematica.cinematic.choosecinematic = Select Cinematic
 cinematica.cinematic.choosecinematic.source = Source: {}
 cinematica.cinematic.choosecinematic.type = Cinematic Type: {}
 
-cinematica.cinematic.edit.conditionvalue = Condition Value
-
 cinematica.config = Cinematica Settings
 
 cinematica.config.categories.ui = UI
@@ -74,10 +71,12 @@ cinematica.config.uiscale.desc = The scale of context menus%n%and other UI eleme
 cinematica.config.show_controls_in_pause_screen = Show Button In Pause Menu
 cinematica.config.show_controls_in_pause_screen.desc = If the button in the pause menu%n%should be visible or not.%n%%n%This can also be toggled by%n%pressing CTRL + ALT + C.%n%Keybind can be changed%n%in the controls settings.
 
+cinematica.trigger.conditionmeta.configure = Configure Conditions
+cinematica.trigger.conditionmeta.configure.btn.desc = Configure trigger-specific conditions.
+
 cinematica.trigger.enterarea = On Player Enters Area
 cinematica.trigger.enterarea.desc = Gets triggered when the player%n%enters a specific area in the world.
-cinematica.trigger.enterarea.definearea = Define Area
-cinematica.trigger.enterarea.definearea.from = §lFrom Coordinates
-cinematica.trigger.enterarea.definearea.to = §lTo Coordinates
-cinematica.trigger.enterarea.definearea.dimension = §lTarget Dimension ID [Blank = All Dimensions]
-cinematica.trigger.enterarea.definearea.dimension.current = Current Player Dimension: {}
+cinematica.trigger.enterarea.conditionmeta.from = §lFrom Coordinates
+cinematica.trigger.enterarea.conditionmeta.to = §lTo Coordinates
+cinematica.trigger.enterarea.conditionmeta.dimension = §lTarget Dimension ID [Blank = All Dimensions]
+cinematica.trigger.enterarea.conditionmeta.dimension.current = Current Player Dimension: {}

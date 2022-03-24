@@ -7,12 +7,12 @@ import de.keksuccino.konkrete.properties.PropertiesSection;
 
 public class KillEntityCinematic extends Cinematic {
 
-    public KillEntityCinematic(Trigger parent, CinematicType type, String cinematicSource, PropertiesSection conditionMeta) {
-        super(parent, type, cinematicSource, conditionMeta);
+    public KillEntityCinematic(String identifier, Trigger parent, CinematicType type, String cinematicSource, PropertiesSection conditionMeta) {
+        super(identifier, parent, type, cinematicSource, conditionMeta);
     }
 
     @Override
-    public boolean conditionsMet(PropertiesSection parentConditionMeta) {
+    public boolean conditionsMet(PropertiesSection triggerContext) {
         //TODO
         return false;
     }

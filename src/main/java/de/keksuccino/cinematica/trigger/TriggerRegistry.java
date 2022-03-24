@@ -81,7 +81,6 @@ public class TriggerRegistry {
                     if (sc != null) {
                         Cinematic c = trigger.createCinematicFromSerializedObject(sc);
                         if (c != null) {
-                            c.identifier = sc.identifier;
                             trigger.addCinematic(c);
                         }
                     }

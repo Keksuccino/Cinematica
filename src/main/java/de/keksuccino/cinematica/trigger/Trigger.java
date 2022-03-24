@@ -5,19 +5,14 @@ import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.audio.AudioCinematicHandler;
 import de.keksuccino.cinematica.audio.VanillaAudioHandler;
 import de.keksuccino.cinematica.gui.EditCinematicScreen;
-import de.keksuccino.cinematica.ui.popup.CinematicaTextInputPopup;
 import de.keksuccino.konkrete.gui.content.AdvancedButton;
-import de.keksuccino.konkrete.gui.screens.popup.PopupHandler;
+import de.keksuccino.konkrete.input.StringUtils;
 import de.keksuccino.konkrete.localization.Locals;
 import de.keksuccino.konkrete.properties.PropertiesSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class Trigger {
 
@@ -35,10 +30,10 @@ public abstract class Trigger {
     /**
      * Needs to be called when the trigger should get triggered.
      */
-    public void trigger(PropertiesSection conditionMeta) {
+    public void trigger(PropertiesSection triggerContext) {
         try {
             for (Cinematic c : this.cinematics) {
-                if (c.conditionsMet(conditionMeta)) {
+                if (c.conditionsMet(triggerContext)) {
                     if (!triggeredCinematics.containsKey(c)) {
                         if (c.oneTimeCinematic) {
                             if (CinematicHandler.isTriggeredOneTimeCinematic(c)) {
@@ -97,7 +92,7 @@ public abstract class Trigger {
                 //Handle audio
                 if (m.getKey().type == CinematicType.AUDIO) {
                     if ((Minecraft.getInstance().currentScreen == null) || !Minecraft.getInstance().currentScreen.getClass().getName().startsWith("de.keksuccino.cinematica.cutscene.")) {
-                        AudioClip c = AudioCinematicHandler.getAudio(m.getKey().cinematicSource);
+                        AudioClip c = AudioCinematicHandler.getAudio(m.getKey().sourcePath);
                         if (c != null) {
                             if (m.getKey().stopWorldMusicOnAudio) {
                                 if (!this.activeAudioCinematicsThatStopWorldMusic.containsKey(c)) {
@@ -118,7 +113,7 @@ public abstract class Trigger {
                                 }
                             }
                         } else {
-                            Cinematica.LOGGER.error("[CINEMATICA] ERROR: Unable to start audio! File not found: " + m.getKey().cinematicSource);
+                            Cinematica.LOGGER.error("[CINEMATICA] ERROR: Unable to start audio! File not found: " + m.getKey().sourcePath);
                         }
                     }
                 }
@@ -188,7 +183,7 @@ public abstract class Trigger {
      * Create an instance of a cinematic out of a {@link de.keksuccino.cinematica.trigger.Cinematic.SerializedCinematic}.<br>
      * This is used to load saved cinematics on mod init.
      */
-    public abstract Cinematic createCinematicFromSerializedObject(Cinematic.SerializedCinematic serializedCinematic);
+    public abstract Cinematic createCinematicFromSerializedObject(Cinematic.SerializedCinematic serialized);
 
     /**
      * Gets called when the "Add Cinematic" button in the UI is getting clicked (to add a new cinematic of this type).<br>
@@ -197,7 +192,16 @@ public abstract class Trigger {
      * You need to manually add the new {@link Cinematic} to the {@link Trigger#cinematics} list here!<br>
      * You need to manually sync changes made to cinematics by calling {@link Trigger#saveChanges()}!
      */
-    public abstract void onAddCinematicButtonClick(Screen parentScreen, CinematicType type);
+    public void onAddCinematicButtonClick(Screen parentScreen, CinematicType type) {
+        EditCinematicScreen s = new EditCinematicScreen(parentScreen, type, this, (call) -> {
+            if (call != null) {
+                Cinematic c = this.createCinematicFromSerializedObject(call);
+                this.addCinematic(c);
+                this.saveChanges();
+            }
+        });
+        Minecraft.getInstance().displayGuiScreen(s);
+    }
 
     /**
      * Gets called when the button to edit a cinematic is getting clicked.<br>
@@ -205,28 +209,30 @@ public abstract class Trigger {
      *
      * You need to manually sync changes made to cinematics by calling {@link Trigger#saveChanges()}!
      */
-    public abstract void onEditCinematicButtonClick(Screen parentScreen, Cinematic cinematic);
+    public void onEditCinematicButtonClick(Screen parentScreen, Cinematic cinematic) {
+        EditCinematicScreen s = new EditCinematicScreen(parentScreen, cinematic.type, this, cinematic.serialize(), (call) -> {
+            if (call != null) {
+                cinematic.sourcePath = call.sourcePath;
+                cinematic.conditionMeta = call.conditionMeta;
+                cinematic.allowCutsceneSkip = call.allowCutsceneSkip;
+                cinematic.triggerDelay = call.triggerDelay;
+                cinematic.oneTimeCinematic = call.oneTimeCinematic;
+                if (!cinematic.oneTimeCinematic && CinematicHandler.isTriggeredOneTimeCinematic(cinematic)) {
+                    CinematicHandler.removeFromTriggeredOneTimeCinematics(cinematic);
+                }
+                cinematic.fadeInCutscene = call.fadeInCutscene;
+                cinematic.fadeOutCutscene = call.fadeOutCutscene;
+                cinematic.stopWorldMusicOnAudio = call.stopWorldMusicOnAudio;
+                this.saveChanges();
+            }
+        });
+        Minecraft.getInstance().displayGuiScreen(s);
+    }
 
     /**
      * Used by the default edit/create cinematic screen.
      */
-    public void onConditionValueButtonClick(AdvancedButton parentBtn, EditCinematicScreen parentScreen) {
-        CinematicaTextInputPopup p = new CinematicaTextInputPopup(new Color(0, 0, 0, 0), parentBtn.getMessageString(), null, 240, (call) -> {
-            if (call != null) {
-                if (call.replace(" ", "").equals("")) {
-                    parentScreen.setConditionValue(null);
-                } else {
-                    parentScreen.setConditionValue(call);
-                }
-            }
-        });
-        if (parentScreen.getConditionValue() != null) {
-            p.setText(parentScreen.getConditionValue());
-        } else if (parentScreen.getTrigger().getConditionValueExample() != null) {
-            p.setText(parentScreen.getTrigger().getConditionValueExample());
-        }
-        PopupHandler.displayPopup(p);
-    }
+    public abstract void onConditionMetaButtonClick(AdvancedButton parentBtn, EditCinematicScreen parentScreen);
 
     /**
      * Used by the default select/choose trigger screen.
@@ -241,19 +247,16 @@ public abstract class Trigger {
     /**
      * Used by the default edit/create cinematic screen.
      */
-    public String getConditionValueButtonDisplayName() {
-        return Locals.localize("cinematica.cinematic.conditionvalue.set");
+    public String getConditionMetaButtonDisplayName() {
+        return Locals.localize("cinematica.trigger.conditionmeta.configure");
     }
 
     /**
      * Used by the default cinematic edit/creation screen.
      */
-    public abstract List<String> getConditionValueDescription();
-
-    /**
-     * Used by the default cinematic edit/creation screen.
-     */
-    public abstract String getConditionValueExample();
+    public List<String> getConditionMetaButtonDescription() {
+        return Arrays.asList(StringUtils.splitLines(Locals.localize("cinematica.trigger.conditionmeta.configure.btn.desc"), "%n%"));
+    }
 
     public String getIdentifier() {
         return this.identifier;
