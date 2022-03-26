@@ -3,11 +3,11 @@ package de.keksuccino.cinematica;
 import de.keksuccino.auudio.audio.AudioClip;
 import de.keksuccino.cinematica.audio.AudioCinematicHandler;
 import de.keksuccino.cinematica.audio.VanillaAudioHandler;
+import de.keksuccino.cinematica.cutscene.CutScenePauseMenu;
 import de.keksuccino.cinematica.gui.CinematicVolumeScreen;
 import de.keksuccino.cinematica.gui.CinematicaConfigScreen;
-import de.keksuccino.cinematica.gui.ManageTriggerScreen;
-import de.keksuccino.cinematica.gui.SelectTriggerScreen;
-import de.keksuccino.cinematica.trigger.CinematicHandler;
+import de.keksuccino.cinematica.gui.ManageCinematicsScreen;
+import de.keksuccino.cinematica.engine.cinematic.CinematicHandler;
 import de.keksuccino.cinematica.ui.CinematicaContextMenu;
 import de.keksuccino.cinematica.ui.UIBase;
 import de.keksuccino.cinematica.ui.popup.CinematicaYesNoPopup;
@@ -21,6 +21,7 @@ import de.keksuccino.konkrete.localization.Locals;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.IngameMenuScreen;
 import net.minecraft.client.gui.screen.OptionsSoundsScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.SoundSlider;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.ResourceLocation;
@@ -46,6 +47,8 @@ public class EventHandler {
     protected World lastActiveWorld = null;
     protected boolean stoppedCinematicAudiosInMenu = false;
 
+    protected Screen lastPauseScreen = null;
+
     @SubscribeEvent
     public void onDrawScreenPost(GuiScreenEvent.DrawScreenEvent.Post e) {
 
@@ -54,16 +57,11 @@ public class EventHandler {
             this.cinematicaControlsMenu = new CinematicaContextMenu();
             this.cinematicaControlsMenu.setAutoclose(true);
 
-            AdvancedButton manageTriggersButton = new AdvancedButton(0, 0, 0, 0, Locals.localize("cinematica.controls.managetriggers"), true, (press) -> {
-                SelectTriggerScreen s = new SelectTriggerScreen(new IngameMenuScreen(true), (call) -> {
-                    if (call != null) {
-                        ManageTriggerScreen ms = new ManageTriggerScreen(Minecraft.getInstance().currentScreen, call);
-                        Minecraft.getInstance().displayGuiScreen(ms);
-                    }
-                });
+            AdvancedButton manageCinematicsButton = new AdvancedButton(0, 0, 0, 0, Locals.localize("cinematica.controls.managecinematics"), true, (press) -> {
+                ManageCinematicsScreen s = new ManageCinematicsScreen(this.lastPauseScreen);
                 Minecraft.getInstance().displayGuiScreen(s);
             });
-            this.cinematicaControlsMenu.addContent(manageTriggersButton);
+            this.cinematicaControlsMenu.addContent(manageCinematicsButton);
 
             AdvancedButton resetTriggeredOneTimeCinematicsButton = new AdvancedButton(0, 0, 0, 0, Locals.localize("cinematica.controls.resetonetimecinematics"), true, (press) -> {
                 CinematicaYesNoPopup p = new CinematicaYesNoPopup(300, new Color(0, 0, 0, 0), 240, (call) -> {
@@ -96,7 +94,9 @@ public class EventHandler {
             this.cinematicaControlsMenu.setParentButton(this.cinematicaButton);
         }
 
-        if ((e.getGui() instanceof IngameMenuScreen) && Cinematica.config.getOrDefault("show_controls_in_pause_screen", true) && !PopupHandler.isPopupActive()) {
+        if (((e.getGui() instanceof IngameMenuScreen) || (e.getGui() instanceof CutScenePauseMenu)) && Cinematica.config.getOrDefault("show_controls_in_pause_screen", true) && !PopupHandler.isPopupActive()) {
+
+            this.lastPauseScreen = e.getGui();
 
             if (!this.cinematicaButton.isHovered()) {
                 this.cinematicaButton.setX(-10);

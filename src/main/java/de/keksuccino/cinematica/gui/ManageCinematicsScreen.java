@@ -2,7 +2,7 @@ package de.keksuccino.cinematica.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.keksuccino.cinematica.trigger.Trigger;
+import de.keksuccino.cinematica.engine.cinematic.CinematicHandler;
 import de.keksuccino.cinematica.ui.UIBase;
 import de.keksuccino.cinematica.ui.popup.CinematicaYesNoPopup;
 import de.keksuccino.konkrete.gui.content.AdvancedButton;
@@ -15,46 +15,46 @@ import net.minecraft.util.text.StringTextComponent;
 
 import java.awt.*;
 
-public class ManageTriggerScreen extends Screen {
+public class ManageCinematicsScreen extends Screen {
 
     protected static final Color BACKGROUND_COLOR = new Color(38, 38, 38);
 
     protected Screen parent;
-    protected Trigger trigger;
 
     protected AdvancedButton addCinematicButton;
     protected AdvancedButton removeCinematicButton;
     protected AdvancedButton editCinematicButton;
     protected AdvancedButton backButton;
 
-    public ManageTriggerScreen(Screen parent, Trigger trigger) {
+    public ManageCinematicsScreen(Screen parent) {
 
         super(new StringTextComponent(""));
 
         this.parent = parent;
-        this.trigger = trigger;
 
-        this.addCinematicButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.trigger.ui.addcinematic"), true, (press) -> {
+        this.addCinematicButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.cinematic.add"), true, (press) -> {
             SelectCinematicTypeScreen s = new SelectCinematicTypeScreen(this, (call) -> {
                 if (call != null) {
-                    Minecraft.getInstance().displayGuiScreen(this);
-                    this.trigger.onAddCinematicButtonClick(this, call);
+                    Minecraft.getInstance().displayGuiScreen(new EditCinematicScreen(this, call, (call2) -> {
+                        if (call2 != null) {
+                            CinematicHandler.addCinematic(call2);
+                        }
+                    }));
                 }
             });
             Minecraft.getInstance().displayGuiScreen(s);
         });
         UIBase.colorizeButton(this.addCinematicButton);
 
-        this.removeCinematicButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.trigger.ui.removecinematic"), true, (press) -> {
-            SelectCinematicScreen s = new SelectCinematicScreen(this, this.trigger, (call) -> {
+        this.removeCinematicButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.cinematic.remove"), true, (press) -> {
+            SelectCinematicScreen s = new SelectCinematicScreen(this, (call) -> {
                 if (call != null) {
                     CinematicaYesNoPopup p = new CinematicaYesNoPopup(300, new Color(0, 0, 0, 0), 240, (call2) -> {
                         if (call2) {
-                            this.trigger.removeCinematic(call);
-                            this.trigger.saveChanges();
+                            CinematicHandler.removeCinematic(call);
                             Minecraft.getInstance().displayGuiScreen(this);
                         }
-                    }, StringUtils.splitLines(Locals.localize("cinematica.trigger.ui.removecinematic.sure"), "%n%"));
+                    }, StringUtils.splitLines(Locals.localize("cinematica.cinematic.remove.confirm"), "%n%"));
                     PopupHandler.displayPopup(p);
                 }
             });
@@ -62,17 +62,21 @@ public class ManageTriggerScreen extends Screen {
         });
         UIBase.colorizeButton(this.removeCinematicButton);
 
-        this.editCinematicButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.trigger.ui.editcinematics"), true, (press) -> {
-            SelectCinematicScreen s = new SelectCinematicScreen(this, this.trigger, (call) -> {
+        this.editCinematicButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.cinematic.edit"), true, (press) -> {
+            SelectCinematicScreen s = new SelectCinematicScreen(this, (call) -> {
                 if (call != null) {
-                    this.trigger.onEditCinematicButtonClick(this, call);
+                    Minecraft.getInstance().displayGuiScreen(new EditCinematicScreen(this, call, (call2) -> {
+                        if (call2 != null) {
+                            call.saveChanges();
+                        }
+                    }));
                 }
             });
             Minecraft.getInstance().displayGuiScreen(s);
         });
         UIBase.colorizeButton(this.editCinematicButton);
 
-        this.backButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.trigger.ui.back"), true, (press) -> {
+        this.backButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.ui.back"), true, (press) -> {
             Minecraft.getInstance().displayGuiScreen(this.parent);
         });
         UIBase.colorizeButton(this.backButton);
@@ -89,7 +93,7 @@ public class ManageTriggerScreen extends Screen {
 
         fill(matrix, 0, 0, this.width, this.height, BACKGROUND_COLOR.getRGB());
 
-        drawCenteredString(matrix, font, Locals.localize("cinematica.trigger.ui.managetrigger"), this.width / 2, 20, -1);
+        drawCenteredString(matrix, font, Locals.localize("cinematica.controls.managecinematics"), this.width / 2, 20, -1);
 
         this.addCinematicButton.setX(xCenter - (this.addCinematicButton.getWidth() / 2));
         this.addCinematicButton.setY(yCenter - 35);

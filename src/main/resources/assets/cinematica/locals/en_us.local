@@ -5,25 +5,25 @@ cinematica.choosefile.choose = Choose File
 cinematica.cutscene.skip = Skip Cutscene
 cinematica.cutscene.confirmskip = Press §lENTER §ragain to skip this cutscene.
 
-cinematica.controls.managetriggers = Manage Triggers
+cinematica.controls.managecinematics = Manage Cinematics
 cinematica.controls.resetonetimecinematics = Reset One-Time-Cinematics
 cinematica.controls.resetonetimecinematics.confirm = §c§lAre you sure?%n%%n%Do you really want to §creset §rall%n%triggered one-time-cinematics, so they can get triggered again?%n% %n% %n% %n%
 
-cinematica.trigger.ui.back = Back
-cinematica.trigger.ui.select = Select
-cinematica.trigger.ui.cancel = Cancel
+cinematica.ui.back = Back
+cinematica.ui.select = Select
+cinematica.ui.cancel = Cancel
+cinematica.ui.done = Done
 
 cinematica.audiochannel = Cinematic Volumes
 cinematica.audiochannel.cutscenes = Cutscenes
 cinematica.audiochannel.audios = Audios
 
-cinematica.trigger.ui.selecttrigger = Select Trigger
-cinematica.trigger.ui.managetrigger = Manage Trigger
-cinematica.trigger.ui.addcinematic = Add Cinematic
-cinematica.trigger.ui.removecinematic = Remove Cinematic
-cinematica.trigger.ui.removecinematic.sure = §c§lAre you sure?%n%%n%Do you really want to §cdelete §rthis cinematic?%n% %n% %n% %n%
-cinematica.trigger.ui.editcinematics = Edit Cinematics
-cinematica.trigger.ui.addeditcinematic = Add/Edit Cinematic
+cinematica.cinematic.add = Add Cinematic
+cinematica.cinematic.remove = Remove Cinematic
+cinematica.cinematic.remove.confirm = §c§lAre you sure?%n%%n%Do you really want to §cdelete §rthis cinematic?%n% %n% %n% %n%
+cinematica.cinematic.edit = Edit Cinematics
+cinematica.cinematic.add_or_edit = Add/Edit Cinematic
+cinematica.cinematic.choose = Choose Cinematic
 
 cinematica.cinematic.type.cutscene = Cutscene
 cinematica.cinematic.type.audio = Audio
@@ -52,10 +52,6 @@ cinematica.cinematic.fadeout.on = Fade-Out: §aYes
 cinematica.cinematic.fadeout.off = Fade-Out: §cNo
 cinematica.cinematic.fadeout.btn.desc = If the cutscene should fade-out.
 
-cinematica.cinematic.choosecinematic = Select Cinematic
-cinematica.cinematic.choosecinematic.source = Source: {}
-cinematica.cinematic.choosecinematic.type = Cinematic Type: {}
-
 cinematica.config = Cinematica Settings
 
 cinematica.config.categories.ui = UI
@@ -71,12 +67,25 @@ cinematica.config.uiscale.desc = The scale of context menus%n%and other UI eleme
 cinematica.config.show_controls_in_pause_screen = Show Button In Pause Menu
 cinematica.config.show_controls_in_pause_screen.desc = If the button in the pause menu%n%should be visible or not.%n%%n%This can also be toggled by%n%pressing CTRL + ALT + C.%n%Keybind can be changed%n%in the controls settings.
 
-cinematica.trigger.conditionmeta.configure = Configure Conditions
-cinematica.trigger.conditionmeta.configure.btn.desc = Configure trigger-specific conditions.
+cinematica.condition.add = Add Condition
+cinematica.condition.remove = Remove Condition
+cinematica.condition.remove.confirm = §c§lAre you sure?%n%%n%Do you really want to §cremove §rthis condition?%n% %n% %n% %n%
+cinematica.condition.edit = Edit Condition
+cinematica.condition.factory.select = Select Condition
+cinematica.condition.manage = Manage Conditions
+cinematica.condition.choose = Choose Condition
+cinematica.condition.configure = Configure Condition
 
-cinematica.trigger.enterarea = On Player Enters Area
-cinematica.trigger.enterarea.desc = Gets triggered when the player%n%enters a specific area in the world.
-cinematica.trigger.enterarea.conditionmeta.from = §lFrom Coordinates
-cinematica.trigger.enterarea.conditionmeta.to = §lTo Coordinates
-cinematica.trigger.enterarea.conditionmeta.dimension = §lTarget Dimension ID [Blank = All Dimensions]
-cinematica.trigger.enterarea.conditionmeta.dimension.current = Current Player Dimension: {}
+cinematica.condition.area.conditionmeta.from = §lFrom Coordinates
+cinematica.condition.area.conditionmeta.to = §lTo Coordinates
+cinematica.condition.area.enterarea = Player Enters Area
+cinematica.condition.area.enterarea.desc = Gets triggered when the player%n%enters a specific area in the world.
+cinematica.condition.area.isarea = Player Is In Area
+cinematica.condition.area.isarea.desc = Gets triggered while the player%n%is in a specific area in the world.
+
+cinematica.condition.dimension.conditionmeta.dimension = §lTarget Dimension ID [Blank = All Dimensions]
+cinematica.condition.dimension.conditionmeta.dimension.current = Current Player Dimension: {}
+cinematica.condition.dimension.enterdimension = Player Enters Dimension
+cinematica.condition.dimension.enterdimension.desc = Gets triggered when the player%n%enters a specific dimension.
+cinematica.condition.dimension.isdimension = Player Is In Dimension
+cinematica.condition.dimension.isdimension.desc = Gets triggered while the player%n%is in a specific dimension.

@@ -8,8 +8,8 @@ import java.util.function.Consumer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import de.keksuccino.cinematica.trigger.Trigger;
-import de.keksuccino.cinematica.trigger.TriggerRegistry;
+import de.keksuccino.cinematica.engine.condition.ConditionFactory;
+import de.keksuccino.cinematica.engine.condition.ConditionFactoryRegistry;
 import de.keksuccino.cinematica.ui.UIBase;
 import de.keksuccino.konkrete.gui.content.AdvancedButton;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollArea;
@@ -23,7 +23,7 @@ import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.StringTextComponent;
 
-public class SelectTriggerScreen extends Screen {
+public class SelectConditionFactoryScreen extends Screen {
 
     protected static final Color ENTRY_BACKGROUND_COLOR = new Color(92, 92, 92);
     protected static final Color SCREEN_BACKGROUND_COLOR = new Color(54, 54, 54);
@@ -33,9 +33,9 @@ public class SelectTriggerScreen extends Screen {
     protected Screen parent;
     protected AdvancedButton backButton;
 
-    protected Consumer<Trigger> callback;
+    protected Consumer<ConditionFactory> callback;
 
-    public SelectTriggerScreen(Screen parent, Consumer<Trigger> callback) {
+    public SelectConditionFactoryScreen(Screen parent, Consumer<ConditionFactory> callback) {
 
         super(new StringTextComponent(""));
         this.parent = parent;
@@ -44,7 +44,7 @@ public class SelectTriggerScreen extends Screen {
         this.triggerScrollList = new ScrollArea(0, 50, 300, 0);
         this.triggerScrollList.backgroundColor = ENTRY_BACKGROUND_COLOR;
 
-        this.backButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.trigger.ui.back"), true, (press) -> {
+        this.backButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.ui.back"), true, (press) -> {
             this.onCancel();
             Minecraft.getInstance().displayGuiScreen(this.parent);
         });
@@ -68,7 +68,7 @@ public class SelectTriggerScreen extends Screen {
             for (ScrollAreaEntry e : l) {
                 this.triggerScrollList.removeEntry(e);
             }
-            for (Trigger t : TriggerRegistry.getTriggers()) {
+            for (ConditionFactory t : ConditionFactoryRegistry.getFactories()) {
                 this.triggerScrollList.addEntry(new TriggerScrollAreaEntry(this.triggerScrollList, t, this));
             }
         }
@@ -108,7 +108,7 @@ public class SelectTriggerScreen extends Screen {
         fill(matrix, 0, 0, this.width, 50, HEADER_FOOTER_COLOR.getRGB());
 
         //Draw title
-        drawCenteredString(matrix, font, Locals.localize("cinematica.trigger.ui.selecttrigger"), this.width / 2, 20, -1);
+        drawCenteredString(matrix, font, Locals.localize("cinematica.condition.factory.select"), this.width / 2, 20, -1);
 
         //Draw footer
         fill(matrix, 0, this.height - 50, this.width, this.height, HEADER_FOOTER_COLOR.getRGB());
@@ -174,11 +174,11 @@ public class SelectTriggerScreen extends Screen {
 
     public static class TriggerScrollAreaEntry extends ScrollAreaEntry {
 
-        protected Trigger trigger;
+        protected ConditionFactory trigger;
         protected FontRenderer font = Minecraft.getInstance().fontRenderer;
-        protected SelectTriggerScreen parentScreen;
+        protected SelectConditionFactoryScreen parentScreen;
 
-        public TriggerScrollAreaEntry(ScrollArea parent, Trigger trigger, SelectTriggerScreen parentScreen) {
+        public TriggerScrollAreaEntry(ScrollArea parent, ConditionFactory trigger, SelectConditionFactoryScreen parentScreen) {
             super(parent);
             this.trigger = trigger;
             this.parentScreen = parentScreen;
@@ -198,7 +198,7 @@ public class SelectTriggerScreen extends Screen {
             //Render display name
             String name = this.trigger.getDisplayName();
             if (name == null) {
-                name = "Unnamed Trigger Type";
+                name = "Nameless Condition";
             }
             drawCenteredString(matrix, font, name, center, this.y + 10, -1);
 

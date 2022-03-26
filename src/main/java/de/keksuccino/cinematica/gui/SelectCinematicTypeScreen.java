@@ -2,7 +2,7 @@ package de.keksuccino.cinematica.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.keksuccino.cinematica.trigger.CinematicType;
+import de.keksuccino.cinematica.engine.cinematic.CinematicType;
 import de.keksuccino.cinematica.ui.UIBase;
 import de.keksuccino.konkrete.gui.content.AdvancedButton;
 import de.keksuccino.konkrete.localization.Locals;
@@ -40,7 +40,7 @@ public class SelectCinematicTypeScreen extends Screen {
         });
         UIBase.colorizeButton(this.audioTypeButton);
 
-        this.backButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.trigger.ui.back"), true, (press) -> {
+        this.backButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.ui.back"), true, (press) -> {
             this.onCancel();
             Minecraft.getInstance().displayGuiScreen(this.parent);
         });

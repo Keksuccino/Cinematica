@@ -2,13 +2,12 @@ package de.keksuccino.cinematica;
 
 import java.io.File;
 
-import de.keksuccino.cinematica.audio.AudioCinematicHandler;
 import de.keksuccino.cinematica.audio.AudioCinematicVolumeHandler;
 import de.keksuccino.cinematica.audio.VanillaAudioHandler;
-import de.keksuccino.cinematica.trigger.CinematicHandler;
-import de.keksuccino.cinematica.trigger.TriggerRegistry;
+import de.keksuccino.cinematica.engine.cinematic.CinematicHandler;
+import de.keksuccino.cinematica.engine.condition.ConditionFactoryRegistry;
 import de.keksuccino.cinematica.video.VideoVolumeHandler;
-import de.keksuccino.cinematica.trigger.triggers.Triggers;
+import de.keksuccino.cinematica.engine.condition.conditions.ConditionFactories;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -26,22 +25,15 @@ import net.minecraftforge.fml.network.FMLNetworkConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-//TODO dimension condition zu cinematic base hinzufügen (anstatt nur für area trigger)
+//TODO server IP condition
 
-//TODO server IP condition zu cinematic base adden (checken, ob auf server X; blank lassen für nicht checken)
+//TODO is Multiplayer condition
 
-//TODO only SP/MP condition zu cinematic base adden
-
-//TODO "Multi-Trigger" Trigger adden
-// - Triggert nur, wenn alle children, die part der haupt-cinematic sind, triggern
-// - Eigene Art von "Cinematic" (als child bezeichnen) (neben Cutscene und Audio): MULTI-TRIGGER
-//   - Multi-trigger children haben keine source, da sie nur child von eigentlicher Cinematic sind
-//   - Children werden zwar zu normaler cinematic liste geaddet, beim condition check in ticker aber geskippt (und dafür in main-cinematic gecheckt)
-// - Als condition meta werden in diesem fall nur die IDs der child cinematics festgelegt, auf die geprüft werden soll
+//TODO is Singleplayer condition
 
 //TODO "name" value zu cinematic base adden (damit man einen anzeigenamen für seine cinematics setzen kann)
 
-//TODO alle trigger adden
+//TODO alle conditions von notes file adden
 
 //TODO eventuell volume handling in Auudio zurück zu alter logik
 
@@ -74,17 +66,9 @@ public class Cinematica {
 
 	    		updateConfig();
 
-				VanillaAudioHandler.init();
+				ConditionFactoryRegistry.init();
 
-				CinematicHandler.init();
-
-				TriggerRegistry.init();
-
-				Triggers.init();
-
-				VideoVolumeHandler.init();
-
-				AudioCinematicVolumeHandler.init();
+				ConditionFactories.registerAll();
 
 				if (config.getOrDefault("enable_keybinds", true)) {
 					Keybinding.init();
@@ -109,6 +93,14 @@ public class Cinematica {
 		try {
 
 			initLocals();
+
+			VanillaAudioHandler.init();
+
+			CinematicHandler.init();
+
+			VideoVolumeHandler.init();
+
+			AudioCinematicVolumeHandler.init();
 	    	
 		} catch (Exception ex) {
 			ex.printStackTrace();

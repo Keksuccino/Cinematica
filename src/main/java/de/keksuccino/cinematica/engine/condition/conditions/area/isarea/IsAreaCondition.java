@@ -1,31 +1,28 @@
-package de.keksuccino.cinematica.trigger.triggers.enterarea;
+package de.keksuccino.cinematica.engine.condition.conditions.area.isarea;
 
 import de.keksuccino.cinematica.Cinematica;
-import de.keksuccino.cinematica.trigger.Cinematic;
-import de.keksuccino.cinematica.trigger.CinematicType;
-import de.keksuccino.cinematica.trigger.Trigger;
+import de.keksuccino.cinematica.engine.condition.Condition;
+import de.keksuccino.cinematica.engine.condition.ConditionFactory;
 import de.keksuccino.konkrete.math.MathUtils;
 import de.keksuccino.konkrete.properties.PropertiesSection;
 
 import javax.annotation.Nullable;
 
-public class EnterAreaCinematic extends Cinematic {
+public class IsAreaCondition extends Condition {
 
-    protected boolean gotTriggered = false;
-
-    public EnterAreaCinematic(@Nullable String identifier, Trigger parent, CinematicType type, String cinematicSource, PropertiesSection conditionMeta) {
-        super(identifier, parent, type, cinematicSource, conditionMeta);
+    public IsAreaCondition(@Nullable String identifier, ConditionFactory parent, PropertiesSection conditionMeta) {
+        super(identifier, parent, conditionMeta);
     }
 
     @Override
-    public boolean conditionsMet(PropertiesSection triggerContext) {
+    public boolean conditionsMet() {
 
-        Integer[] playerCoords = getCoordinates(triggerContext.getEntryValue("player_coordinates"));
+        PropertiesSection conditionContext = this.parent.getConditionContext();
+
+        Integer[] playerCoords = getCoordinates(conditionContext.getEntryValue("player_coordinates"));
 
         Integer[] fromCoords = getCoordinates(this.conditionMeta.getEntryValue("from_coordinates"));
         Integer[] toCoords = getCoordinates(this.conditionMeta.getEntryValue("to_coordinates"));
-        String curDim = triggerContext.getEntryValue("dimension");
-        String conDim = this.conditionMeta.getEntryValue("dimension");
 
         if ((playerCoords != null) && (fromCoords != null) && (toCoords != null)) {
 
@@ -45,22 +42,10 @@ public class EnterAreaCinematic extends Cinematic {
             boolean isY = (yPlayer >= yFrom) && (yPlayer <= yTo);
             boolean isZ = (zPlayer >= zFrom) && (zPlayer <= zTo);
 
-            boolean isDimension = false;
-            if ((conDim == null) || conDim.replace(" ", "").equals("") || conDim.equals("cinematica.blankdimension")) {
-                isDimension = true;
-            } else if ((curDim != null) && curDim.equals(conDim)) {
-                isDimension = true;
-            }
-
-            if (isX && isY && isZ && isDimension) {
-                if (!this.gotTriggered) {
-                    this.gotTriggered = true;
-                    //TODO remove debug
-                    Cinematica.LOGGER.info("############## CONDITIONS MET FOR AREA TRIGGER!");
-                    return true;
-                }
-            } else {
-                this.gotTriggered = false;
+            if (isX && isY && isZ) {
+                //TODO remove debug
+                Cinematica.LOGGER.info("############## CONDITIONS MET FOR IS AREA TRIGGER!");
+                return true;
             }
 
         }

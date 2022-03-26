@@ -1,15 +1,9 @@
 package de.keksuccino.cinematica.gui;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import de.keksuccino.cinematica.engine.cinematic.Cinematic;
-import de.keksuccino.cinematica.engine.cinematic.CinematicHandler;
+import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.ui.UIBase;
 import de.keksuccino.konkrete.gui.content.AdvancedButton;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollArea;
@@ -23,26 +17,33 @@ import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.StringTextComponent;
 
-public class SelectCinematicScreen extends Screen {
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+public class SelectConditionScreen extends Screen {
 
     protected static final Color ENTRY_BACKGROUND_COLOR = new Color(92, 92, 92);
     protected static final Color SCREEN_BACKGROUND_COLOR = new Color(54, 54, 54);
     protected static final Color HEADER_FOOTER_COLOR = new Color(33, 33, 33);
 
-    protected ScrollArea cinematicScrollList;
+    protected ScrollArea conditionScrollList;
     protected Screen parent;
     protected AdvancedButton backButton;
 
-    protected Consumer<Cinematic> callback;
+    protected Consumer<Condition> callback;
+    protected Cinematic cinematic;
 
-    public SelectCinematicScreen(Screen parent, Consumer<Cinematic> callback) {
+    public SelectConditionScreen(Screen parent, Cinematic cinematic, Consumer<Condition> callback) {
 
         super(new StringTextComponent(""));
         this.parent = parent;
+        this.cinematic = cinematic;
         this.callback = callback;
 
-        this.cinematicScrollList = new ScrollArea(0, 50, 300, 0);
-        this.cinematicScrollList.backgroundColor = ENTRY_BACKGROUND_COLOR;
+        this.conditionScrollList = new ScrollArea(0, 50, 300, 0);
+        this.conditionScrollList.backgroundColor = ENTRY_BACKGROUND_COLOR;
 
         this.backButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.ui.back"), true, (press) -> {
             this.onCancel();
@@ -56,20 +57,20 @@ public class SelectCinematicScreen extends Screen {
     protected void init() {
 
         this.updateEntries();
-        this.cinematicScrollList.x = (this.width / 2) - 150;
-        this.cinematicScrollList.height = this.height - 100;
+        this.conditionScrollList.x = (this.width / 2) - 150;
+        this.conditionScrollList.height = this.height - 100;
 
     }
 
     protected void updateEntries() {
-        if (this.cinematicScrollList != null) {
+        if (this.conditionScrollList != null) {
             List<ScrollAreaEntry> l = new ArrayList<>();
-            l.addAll(this.cinematicScrollList.getEntries());
+            l.addAll(this.conditionScrollList.getEntries());
             for (ScrollAreaEntry e : l) {
-                this.cinematicScrollList.removeEntry(e);
+                this.conditionScrollList.removeEntry(e);
             }
-            for (Cinematic c : CinematicHandler.getCinematics()) {
-                this.cinematicScrollList.addEntry(new CinematicScrollAreaEntry(this.cinematicScrollList, c, this));
+            for (Condition c : this.cinematic.getConditions()) {
+                this.conditionScrollList.addEntry(new ConditionEntry(this.conditionScrollList, c, this));
             }
         }
     }
@@ -102,13 +103,13 @@ public class SelectCinematicScreen extends Screen {
         //Draw screen background
         fill(matrix, 0, 0, this.width, this.height, SCREEN_BACKGROUND_COLOR.getRGB());
 
-        this.cinematicScrollList.render(matrix);
+        this.conditionScrollList.render(matrix);
 
         //Draw header
         fill(matrix, 0, 0, this.width, 50, HEADER_FOOTER_COLOR.getRGB());
 
         //Draw title
-        drawCenteredString(matrix, font, Locals.localize("cinematica.cinematic.choose"), this.width / 2, 20, -1);
+        drawCenteredString(matrix, font, Locals.localize("cinematica.condition.choose"), this.width / 2, 20, -1);
 
         //Draw footer
         fill(matrix, 0, this.height - 50, this.width, this.height, HEADER_FOOTER_COLOR.getRGB());
@@ -162,15 +163,15 @@ public class SelectCinematicScreen extends Screen {
         b.setBackgroundColor(new Color(100, 100, 100), new Color(130, 130, 130), new Color(180, 180, 180), new Color(199, 199, 199), 1);
     }
 
-    public static class CinematicScrollAreaEntry extends ScrollAreaEntry {
+    public static class ConditionEntry extends ScrollAreaEntry {
 
-        protected Cinematic cinematic;
+        protected Condition condition;
         protected FontRenderer font = Minecraft.getInstance().fontRenderer;
-        protected SelectCinematicScreen parentScreen;
+        protected SelectConditionScreen parentScreen;
 
-        public CinematicScrollAreaEntry(ScrollArea parent, Cinematic cinematic, SelectCinematicScreen parentScreen) {
+        public ConditionEntry(ScrollArea parent, Condition condition, SelectConditionScreen parentScreen) {
             super(parent);
-            this.cinematic = cinematic;
+            this.condition = condition;
             this.parentScreen = parentScreen;
         }
 
@@ -185,24 +186,18 @@ public class SelectCinematicScreen extends Screen {
                 fill(matrix, this.x, this.y, this.x + this.getWidth(), this.y + this.getHeight(), ENTRY_BACKGROUND_COLOR.brighter().brighter().getRGB());
             }
 
-            String sourceString = this.cinematic.sourcePath;
-            if (font.getStringWidth(sourceString) > this.getWidth() - 30) {
-                sourceString = new StringBuilder(sourceString).reverse().toString();
-                sourceString = font.trimStringToWidth(sourceString, this.getWidth() - 30);
-                sourceString = new StringBuilder(sourceString).reverse().toString();
-                sourceString = ".." + sourceString;
-            }
-            drawCenteredString(matrix, font, sourceString, center, this.y + 10, -1);
+            String nameString = this.condition.parent.getDisplayName();
+            drawCenteredString(matrix, font, nameString, center, this.y + 10, -1);
 
-            this.handleSelection(matrix);
+            this.handleSelection();
 
         }
 
-        protected void handleSelection(MatrixStack matrix) {
+        protected void handleSelection() {
 
             if (this.isHovered() && MouseInput.isLeftMouseDown()) {
                 if (this.parentScreen.callback != null) {
-                    this.parentScreen.callback.accept(this.cinematic);
+                    this.parentScreen.callback.accept(this.condition);
                 }
             }
 

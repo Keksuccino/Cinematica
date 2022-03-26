@@ -1,4 +1,4 @@
-package de.keksuccino.cinematica.trigger;
+package de.keksuccino.cinematica.engine.cinematic;
 
 public enum CinematicType {
 

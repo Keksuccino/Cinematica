@@ -13,7 +13,7 @@ import java.util.List;
 
 public class VideoVolumeHandler {
 
-    protected static final File PROPS_FILE = new File(Cinematica.MOD_DIRECTORY.getPath() + "/video_volume.properties");
+    protected static final File PROPS_FILE = new File(Cinematica.CINEMATICA_TEMP_DIR.getPath() + "/video_volume.properties");
 
     protected static int volume = 100;
 
