@@ -17,6 +17,10 @@ public abstract class ConditionFactory {
         this.identifier = uniqueIdentifier;
     }
 
+    public boolean isEditable() {
+        return true;
+    }
+
     /**
      * This method is called every tick to update the {@link ConditionFactory#conditionContext}.<br>
      * Conditions of this factory use the condition context to check if they meet all conditions to get triggered.

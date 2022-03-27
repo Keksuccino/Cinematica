@@ -3,6 +3,7 @@ package de.keksuccino.cinematica.gui;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -14,6 +15,7 @@ import de.keksuccino.cinematica.ui.UIBase;
 import de.keksuccino.konkrete.gui.content.AdvancedButton;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollArea;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollAreaEntry;
+import de.keksuccino.konkrete.gui.screens.popup.PopupHandler;
 import de.keksuccino.konkrete.input.MouseInput;
 import de.keksuccino.konkrete.localization.Locals;
 import de.keksuccino.konkrete.rendering.RenderUtils;
@@ -29,7 +31,7 @@ public class SelectConditionFactoryScreen extends Screen {
     protected static final Color SCREEN_BACKGROUND_COLOR = new Color(54, 54, 54);
     protected static final Color HEADER_FOOTER_COLOR = new Color(33, 33, 33);
 
-    protected ScrollArea triggerScrollList;
+    protected ScrollArea factoryScrollList;
     protected Screen parent;
     protected AdvancedButton backButton;
 
@@ -41,8 +43,8 @@ public class SelectConditionFactoryScreen extends Screen {
         this.parent = parent;
         this.callback = callback;
 
-        this.triggerScrollList = new ScrollArea(0, 50, 300, 0);
-        this.triggerScrollList.backgroundColor = ENTRY_BACKGROUND_COLOR;
+        this.factoryScrollList = new ScrollArea(0, 50, 300, 0);
+        this.factoryScrollList.backgroundColor = ENTRY_BACKGROUND_COLOR;
 
         this.backButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.ui.back"), true, (press) -> {
             this.onCancel();
@@ -56,20 +58,20 @@ public class SelectConditionFactoryScreen extends Screen {
     protected void init() {
 
         this.updateEntries();
-        this.triggerScrollList.x = (this.width / 2) - 150;
-        this.triggerScrollList.height = this.height - 100;
+        this.factoryScrollList.x = (this.width / 2) - 150;
+        this.factoryScrollList.height = this.height - 100;
 
     }
 
     protected void updateEntries() {
-        if (this.triggerScrollList != null) {
+        if (this.factoryScrollList != null) {
             List<ScrollAreaEntry> l = new ArrayList<>();
-            l.addAll(this.triggerScrollList.getEntries());
+            l.addAll(this.factoryScrollList.getEntries());
             for (ScrollAreaEntry e : l) {
-                this.triggerScrollList.removeEntry(e);
+                this.factoryScrollList.removeEntry(e);
             }
-            for (ConditionFactory t : ConditionFactoryRegistry.getFactories()) {
-                this.triggerScrollList.addEntry(new TriggerScrollAreaEntry(this.triggerScrollList, t, this));
+            for (Map.Entry<String, ConditionFactory> m : ConditionFactoryRegistry.getFactoriesMap().entrySet()) {
+                this.factoryScrollList.addEntry(new FactoryScrollAreaEntry(this.factoryScrollList, m.getValue(), this));
             }
         }
     }
@@ -102,7 +104,7 @@ public class SelectConditionFactoryScreen extends Screen {
         //Draw screen background
         fill(matrix, 0, 0, this.width, this.height, SCREEN_BACKGROUND_COLOR.getRGB());
 
-        this.triggerScrollList.render(matrix);
+        this.factoryScrollList.render(matrix);
 
         //Draw header
         fill(matrix, 0, 0, this.width, 50, HEADER_FOOTER_COLOR.getRGB());
@@ -120,10 +122,10 @@ public class SelectConditionFactoryScreen extends Screen {
         super.render(matrix, mouseX, mouseY, partialTicks);
 
         //Draw description for hovered entry
-        for (ScrollAreaEntry e : this.triggerScrollList.getEntries()) {
-            if (e instanceof TriggerScrollAreaEntry) {
+        for (ScrollAreaEntry e : this.factoryScrollList.getEntries()) {
+            if (e instanceof FactoryScrollAreaEntry) {
                 if (e.isHovered()) {
-                    renderDescription(matrix, ((TriggerScrollAreaEntry)e).trigger.getDescription(), mouseX, mouseY);
+                    renderDescription(matrix, ((FactoryScrollAreaEntry)e).factory.getDescription(), mouseX, mouseY);
                     break;
                 }
             }
@@ -172,15 +174,17 @@ public class SelectConditionFactoryScreen extends Screen {
         b.setBackgroundColor(new Color(100, 100, 100), new Color(130, 130, 130), new Color(180, 180, 180), new Color(199, 199, 199), 1);
     }
 
-    public static class TriggerScrollAreaEntry extends ScrollAreaEntry {
+    public static class FactoryScrollAreaEntry extends ScrollAreaEntry {
 
-        protected ConditionFactory trigger;
+        protected ConditionFactory factory;
         protected FontRenderer font = Minecraft.getInstance().fontRenderer;
         protected SelectConditionFactoryScreen parentScreen;
 
-        public TriggerScrollAreaEntry(ScrollArea parent, ConditionFactory trigger, SelectConditionFactoryScreen parentScreen) {
+        protected boolean isMouseDown = false;
+
+        public FactoryScrollAreaEntry(ScrollArea parent, ConditionFactory factory, SelectConditionFactoryScreen parentScreen) {
             super(parent);
-            this.trigger = trigger;
+            this.factory = factory;
             this.parentScreen = parentScreen;
         }
 
@@ -196,7 +200,7 @@ public class SelectConditionFactoryScreen extends Screen {
             }
 
             //Render display name
-            String name = this.trigger.getDisplayName();
+            String name = this.factory.getDisplayName();
             if (name == null) {
                 name = "Nameless Condition";
             }
@@ -208,10 +212,18 @@ public class SelectConditionFactoryScreen extends Screen {
 
         protected void handleSelection() {
 
-            if (this.isHovered() && MouseInput.isLeftMouseDown()) {
-                if (this.parentScreen.callback != null) {
-                    this.parentScreen.callback.accept(this.trigger);
+            if (!PopupHandler.isPopupActive() && !this.parentScreen.backButton.isHovered()) {
+                if (this.isHovered() && MouseInput.isLeftMouseDown() && !this.isMouseDown) {
+                    if (this.parentScreen.callback != null) {
+                        this.parentScreen.callback.accept(this.factory);
+                    }
+                    this.isMouseDown = true;
                 }
+                if (!MouseInput.isLeftMouseDown()) {
+                    this.isMouseDown = false;
+                }
+            } else if (MouseInput.isLeftMouseDown()) {
+                this.isMouseDown = true;
             }
 
         }

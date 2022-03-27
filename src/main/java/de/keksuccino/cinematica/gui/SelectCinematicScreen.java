@@ -14,6 +14,7 @@ import de.keksuccino.cinematica.ui.UIBase;
 import de.keksuccino.konkrete.gui.content.AdvancedButton;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollArea;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollAreaEntry;
+import de.keksuccino.konkrete.gui.screens.popup.PopupHandler;
 import de.keksuccino.konkrete.input.MouseInput;
 import de.keksuccino.konkrete.localization.Locals;
 import de.keksuccino.konkrete.rendering.RenderUtils;
@@ -168,6 +169,8 @@ public class SelectCinematicScreen extends Screen {
         protected FontRenderer font = Minecraft.getInstance().fontRenderer;
         protected SelectCinematicScreen parentScreen;
 
+        protected boolean isMouseDown = false;
+
         public CinematicScrollAreaEntry(ScrollArea parent, Cinematic cinematic, SelectCinematicScreen parentScreen) {
             super(parent);
             this.cinematic = cinematic;
@@ -194,16 +197,24 @@ public class SelectCinematicScreen extends Screen {
             }
             drawCenteredString(matrix, font, sourceString, center, this.y + 10, -1);
 
-            this.handleSelection(matrix);
+            this.handleSelection();
 
         }
 
-        protected void handleSelection(MatrixStack matrix) {
+        protected void handleSelection() {
 
-            if (this.isHovered() && MouseInput.isLeftMouseDown()) {
-                if (this.parentScreen.callback != null) {
-                    this.parentScreen.callback.accept(this.cinematic);
+            if (!PopupHandler.isPopupActive() && !this.parentScreen.backButton.isHovered()) {
+                if (this.isHovered() && MouseInput.isLeftMouseDown() && !this.isMouseDown) {
+                    if (this.parentScreen.callback != null) {
+                        this.parentScreen.callback.accept(this.cinematic);
+                    }
+                    this.isMouseDown = true;
                 }
+                if (!MouseInput.isLeftMouseDown()) {
+                    this.isMouseDown = false;
+                }
+            } else if (MouseInput.isLeftMouseDown()) {
+                this.isMouseDown = true;
             }
 
         }

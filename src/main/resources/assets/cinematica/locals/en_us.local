@@ -56,6 +56,7 @@ cinematica.config = Cinematica Settings
 
 cinematica.config.categories.ui = UI
 cinematica.config.categories.general = General
+cinematica.config.categories.debug = Debug
 
 cinematica.config.enable_keybinds = Enable Keybinds
 cinematica.config.enable_keybinds.desc = If mod keybinds should be%n%enabled or not.%n%%n%You need to restart the game%n%after changing this option.%n%%n%§cKeep in mind that you will%n%§cneed to manually re-enable%n%§cthe pause menu button%n%§cin the config, if you%n%§cdisable both the button and%n%§cthis option.
@@ -67,10 +68,14 @@ cinematica.config.uiscale.desc = The scale of context menus%n%and other UI eleme
 cinematica.config.show_controls_in_pause_screen = Show Button In Pause Menu
 cinematica.config.show_controls_in_pause_screen.desc = If the button in the pause menu%n%should be visible or not.%n%%n%This can also be toggled by%n%pressing CTRL + ALT + C.%n%Keybind can be changed%n%in the controls settings.
 
+cinematica.config.print_died_entities = Observe Entity Deaths
+cinematica.config.print_died_entities.desc = If information about died entities%n%should get printed to the chat.
+
 cinematica.condition.add = Add Condition
 cinematica.condition.remove = Remove Condition
 cinematica.condition.remove.confirm = §c§lAre you sure?%n%%n%Do you really want to §cremove §rthis condition?%n% %n% %n% %n%
 cinematica.condition.edit = Edit Condition
+cinematica.condition.edit.not_editable.desc = §cThis condition is not editable!
 cinematica.condition.factory.select = Select Condition
 cinematica.condition.manage = Manage Conditions
 cinematica.condition.choose = Choose Condition
@@ -84,8 +89,34 @@ cinematica.condition.area.isarea = Player Is In Area
 cinematica.condition.area.isarea.desc = Gets triggered while the player%n%is in a specific area in the world.
 
 cinematica.condition.dimension.conditionmeta.dimension = §lTarget Dimension ID [Blank = All Dimensions]
-cinematica.condition.dimension.conditionmeta.dimension.current = Current Player Dimension: {}
+cinematica.condition.dimension.conditionmeta.dimension.current = §7Current Player Dimension: {}
 cinematica.condition.dimension.enterdimension = Player Enters Dimension
 cinematica.condition.dimension.enterdimension.desc = Gets triggered when the player%n%enters a specific dimension.
 cinematica.condition.dimension.isdimension = Player Is In Dimension
 cinematica.condition.dimension.isdimension.desc = Gets triggered while the player%n%is in a specific dimension.
+
+cinematica.condition.killentity = Player Kills Entity
+cinematica.condition.killentity.desc = Gets triggered when the player%n%kills an entity.
+cinematica.condition.killentity.conditionmeta.type = Entity Type [Blank = Any Type]
+cinematica.condition.killentity.conditionmeta.type.lastkilled = §7Last Killed Entity Type: {}
+cinematica.condition.killentity.conditionmeta.name = Entity Name [Blank = Any Name]
+cinematica.condition.killentity.conditionmeta.name.lastkilled = §7Last Killed Entity Name: {}
+
+cinematica.condition.serverip = Is Server IP
+cinematica.condition.serverip.desc = Gets triggered while connected%n%to a specific server IP.
+cinematica.condition.serverip.conditionmeta.ip = Server IP
+cinematica.condition.serverip.conditionmeta.ip.current = §7Current Server IP: {}
+
+cinematica.condition.multiplayer = Is Multiplayer
+cinematica.condition.multiplayer.desc = Gets triggered while%n%playing Multiplayer.
+cinematica.condition.multiplayer.added = §a§lCondition Added!%n%%n%Condition successfully added to the cinematic.%n% %n% %n% %n%
+
+cinematica.condition.singleplayer = Is Singleplayer
+cinematica.condition.singleplayer.desc = Gets triggered while%n%playing Singleplayer.
+cinematica.condition.singleplayer.added = §a§lCondition Added!%n%%n%Condition successfully added to the cinematic.%n% %n% %n% %n%
+
+cinematica.condition.entitydied = Entity Dies In Range
+cinematica.condition.entitydied.desc = Gets triggered when an entity%n%dies in a specific range%n%around the player.
+cinematica.condition.entitydied.conditionmeta.type = Entity Type [Blank = Any Type]
+cinematica.condition.entitydied.conditionmeta.name = Entity Name [Blank = Any Name]
+cinematica.condition.entitydied.conditionmeta.range = Range Around Player [Radius]

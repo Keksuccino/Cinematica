@@ -3,7 +3,8 @@
   "package": "de.keksuccino.cinematica.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "client.MixinSoundHandler"
+    "client.MixinSoundHandler",
+    "client.MixinClientWorld"
   ],
   "injectors": {
     "defaultRequire": 1

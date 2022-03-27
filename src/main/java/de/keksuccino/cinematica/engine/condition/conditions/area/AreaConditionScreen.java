@@ -85,6 +85,21 @@ public class AreaConditionScreen extends ScrollableScreen {
     }
 
     @Override
+    public boolean isOverlayButtonHovered() {
+        if (this.doneButton != null) {
+            if (this.doneButton.isHovered()) {
+                return true;
+            }
+        }
+        if (this.cancelButton != null) {
+            if (this.cancelButton.isHovered()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     protected void init() {
 
         FontRenderer font = Minecraft.getInstance().fontRenderer;

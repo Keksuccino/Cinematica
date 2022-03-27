@@ -45,7 +45,7 @@ public class ManageConditionsScreen extends Screen {
         UIBase.colorizeButton(this.addConditionButton);
 
         this.removeConditionButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.condition.remove"), true, (press) -> {
-            SelectConditionScreen s = new SelectConditionScreen(this, this.cinematic, (call) -> {
+            SelectConditionScreen s = new SelectConditionScreen(this, this.cinematic, false, (call) -> {
                 if (call != null) {
                     CinematicaYesNoPopup p = new CinematicaYesNoPopup(300, new Color(0, 0, 0, 0), 240, (call2) -> {
                         if (call2) {
@@ -61,7 +61,7 @@ public class ManageConditionsScreen extends Screen {
         UIBase.colorizeButton(this.removeConditionButton);
 
         this.editConditionButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.condition.edit"), true, (press) -> {
-            SelectConditionScreen s = new SelectConditionScreen(this, this.cinematic, (call) -> {
+            SelectConditionScreen s = new SelectConditionScreen(this, this.cinematic, true, (call) -> {
                 if (call != null) {
                     call.parent.onEditConditionButtonClick(this.editConditionButton, this, call, this.cinematic);
                 }

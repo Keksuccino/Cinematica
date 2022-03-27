@@ -72,6 +72,12 @@ public class ScrollableScreen extends Screen {
         //Draw screen background
         fill(matrix, 0, 0, this.width, this.height, SCREEN_BACKGROUND_COLOR.getRGB());
 
+        for (ScrollAreaEntry e : this.scrollArea.getEntries()) {
+            if (e instanceof ScrollAreaEntryBase) {
+                ((ScrollAreaEntryBase) e).isOverlayButtonHovered = this.isOverlayButtonHovered();
+            }
+        }
+
         this.scrollArea.render(matrix);
 
         //Draw header
@@ -124,11 +130,17 @@ public class ScrollableScreen extends Screen {
         IngameGui.fill(matrix, x, y, x + width, y + height, new Color(26, 26, 26, 250).getRGB());
     }
 
+    public boolean isOverlayButtonHovered() {
+        return false;
+    }
+
     public static class ScrollAreaEntryBase extends ScrollAreaEntry {
 
         protected int entryHeight = 25;
         protected List<String> description = null;
         protected Consumer<EntryRenderCallback> renderBody;
+
+        protected boolean isOverlayButtonHovered = false;
 
         public ScrollAreaEntryBase(ScrollArea parent, Consumer<EntryRenderCallback> renderBody) {
             super(parent);
@@ -163,6 +175,10 @@ public class ScrollableScreen extends Screen {
             return this.description;
         }
 
+        public boolean isOverlayButtonHoveredAndOverlapsArea() {
+            return (this.isOverlayButtonHovered && this.isHovered());
+        }
+
         public void setDescription(List<String> desc) {
             this.description = desc;
         }
@@ -190,6 +206,11 @@ public class ScrollableScreen extends Screen {
             this.renderBody = (render) -> {
                 int xCenter = render.entry.x + (render.entry.getWidth() / 2);
                 UIBase.colorizeButton(this.button);
+                if (!this.isOverlayButtonHoveredAndOverlapsArea()) {
+                    this.button.active = true;
+                } else {
+                    this.button.active = false;
+                }
                 this.button.setWidth(200);
                 this.button.setHeight(20);
                 this.button.setX(xCenter - (this.button.getWidth() / 2));
@@ -211,6 +232,11 @@ public class ScrollableScreen extends Screen {
             this.textField.setMaxStringLength(10000);
             this.renderBody = (render) -> {
                 int xCenter = render.entry.x + (render.entry.getWidth() / 2);
+                if (!this.isOverlayButtonHoveredAndOverlapsArea()) {
+                    this.textField.active = true;
+                } else {
+                    this.textField.active = false;
+                }
                 this.textField.setWidth(200);
                 this.textField.setHeight(20);
                 this.textField.setX(xCenter - (this.textField.getWidth() / 2));

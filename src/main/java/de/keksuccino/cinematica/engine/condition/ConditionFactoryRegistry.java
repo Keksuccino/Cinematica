@@ -3,14 +3,11 @@ package de.keksuccino.cinematica.engine.condition;
 import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.konkrete.input.CharacterFilter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ConditionFactoryRegistry {
 
-    protected static Map<String, ConditionFactory> factories = new HashMap<>();
+    protected static Map<String, ConditionFactory> factories = new LinkedHashMap<>();
 
     public static void init() {
 
@@ -56,6 +53,11 @@ public class ConditionFactoryRegistry {
         List<ConditionFactory> l = new ArrayList<>();
         l.addAll(factories.values());
         return l;
+    }
+
+    /** ONLY GET FROM THIS MAP! DON'T MODIFY IT IN ANY WAY! **/
+    public static Map<String, ConditionFactory> getFactoriesMap() {
+        return factories;
     }
 
 }

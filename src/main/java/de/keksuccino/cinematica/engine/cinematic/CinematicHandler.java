@@ -21,11 +21,6 @@ import java.util.*;
 
 public class CinematicHandler {
 
-    //TODO ALLE ConditionFactories müssen JEDEN TICK ihren TriggerContext aktualisieren, auf den die conditions dann zugreifen können
-    //  - Dieser aktualsierungs-tick sollte VOR abfragen der conditions durch die cinematics passieren
-    //  - conditionsMet methode in cinematic hat keinen trigger context mehr, da dieser schon davor in condition abgefragt wird
-    //  - conditionMet methode in condition hat keinen trigger context param mehr, da sie ihn einfach selbst bei parent factory abfragen kann
-
     protected static final File CINEMATICS_DIR = new File(Cinematica.MOD_DIRECTORY.getPath() + "/cinematics");
     protected static final File CINEMATICS_FILE = new File(CINEMATICS_DIR.getPath() + "/cinematics.properties");
     public static final File ONE_TIME_CINEMATICS_FILE = new File(Cinematica.CINEMATICA_TEMP_DIR.getPath() + "/one-time-cinematics.properties");
@@ -53,7 +48,7 @@ public class CinematicHandler {
         }
     }
 
-    public static boolean isIsInitialized() {
+    public static boolean isInitialized() {
         return isInitialized;
     }
 

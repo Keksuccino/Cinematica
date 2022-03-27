@@ -25,15 +25,30 @@ import net.minecraftforge.fml.network.FMLNetworkConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-//TODO server IP condition
+//TODO is player list header/footer condition (toggle button, um modi zu switchen: starts-with, ends-with, contains, is)
 
-//TODO is Multiplayer condition
+//TODO player got achievement X condition -
 
-//TODO is Singleplayer condition
+//TODO player stepped on block type X condition
 
-//TODO "name" value zu cinematic base adden (damit man einen anzeigenamen für seine cinematics setzen kann)
+//TODO player harvested block/item X condition (use item/block id here)
 
-//TODO alle conditions von notes file adden
+//TODO player interacted with entity X condition (wie kill entity mit type + name)
+
+//TODO player interacted with block X condition (when entering forge, brewing stand, etc.)
+
+//TODO player consumed item X (triggert nur bei richtigen consumables, nicht bei right-click actions von items, etc.)
+
+//TODO player used item X (right-click action von item in hand)
+
+//TODO player entered biome X condition
+
+//TODO "name" value zu cinematic base adden (um Anzeigenamen für Cinematics zu setzen)
+
+//TODO command, um cinematics zu starten (identifier nutzen; entry zu edit cinematic screen adden, der bei links-klick ID in clipboard kopiert)
+
+//TODO kill entity condition verbessern + re-implementieren
+
 
 //TODO eventuell volume handling in Auudio zurück zu alter logik
 
@@ -65,6 +80,8 @@ public class Cinematica {
 				}
 
 	    		updateConfig();
+
+				MixinHandler.init();
 
 				ConditionFactoryRegistry.init();
 
@@ -130,6 +147,8 @@ public class Cinematica {
 			config.registerValue("uiscale", 1.0F, "ui");
 			config.registerValue("show_controls_in_pause_screen", true, "ui");
 			config.registerValue("add_slider_to_sound_controls", true, "ui");
+
+			config.registerValue("print_died_entities", false, "debug");
 			
 			config.syncConfig();
 			

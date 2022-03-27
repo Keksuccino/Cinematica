@@ -1,14 +1,16 @@
-package de.keksuccino.cinematica.engine.condition.conditions.dimension;
+package de.keksuccino.cinematica.engine.condition.conditions.entitydied;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.keksuccino.cinematica.gui.ScrollableScreen;
 import de.keksuccino.cinematica.ui.UIBase;
-import de.keksuccino.cinematica.utils.WorldUtils;
 import de.keksuccino.konkrete.gui.content.AdvancedButton;
 import de.keksuccino.konkrete.gui.content.AdvancedTextField;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollAreaEntry;
 import de.keksuccino.konkrete.gui.screens.popup.PopupHandler;
+import de.keksuccino.konkrete.input.CharacterFilter;
+import de.keksuccino.konkrete.input.StringUtils;
 import de.keksuccino.konkrete.localization.Locals;
+import de.keksuccino.konkrete.math.MathUtils;
 import de.keksuccino.konkrete.properties.PropertiesSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -19,30 +21,50 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class DimensionConditionScreen extends ScrollableScreen {
+public class EntityDiedConditionScreen extends ScrollableScreen {
 
     protected Consumer<PropertiesSection> callback;
 
-    protected AdvancedTextField dimensionTextField;
+    protected AdvancedTextField typeTextField;
+    protected AdvancedTextField nameTextField;
+    protected AdvancedTextField rangeTextField;
 
     protected AdvancedButton cancelButton;
     protected AdvancedButton doneButton;
 
-    public DimensionConditionScreen(Screen parent, @Nullable PropertiesSection conditionMeta, Consumer<PropertiesSection> callback) {
+    public EntityDiedConditionScreen(Screen parent, @Nullable PropertiesSection conditionMeta, Consumer<PropertiesSection> callback) {
 
         super(parent, Locals.localize("cinematica.condition.configure"));
         this.callback = callback;
 
         FontRenderer font = Minecraft.getInstance().fontRenderer;
 
-        dimensionTextField = new AdvancedTextField(font, 0, 0, 200, 20, true, null);
-        dimensionTextField.setMaxStringLength(100000);
+        typeTextField = new AdvancedTextField(font, 0, 0, 200, 20, true, null);
+        typeTextField.setMaxStringLength(100000);
+
+        nameTextField = new AdvancedTextField(font, 0, 0, 200, 20, true, null);
+        nameTextField.setMaxStringLength(100000);
+
+        rangeTextField = new AdvancedTextField(font, 0, 0, 200, 20, true, CharacterFilter.getIntegerCharacterFiler());
+        rangeTextField.setMaxStringLength(100000);
 
         if (conditionMeta != null) {
-            String dimensionString = conditionMeta.getEntryValue("dimension");
-            if ((dimensionString != null) && !dimensionString.replace(" ", "").equals("") && !dimensionString.equals("cinematica.blankdimension")) {
-                dimensionTextField.setText(dimensionString);
+
+            String typeString = conditionMeta.getEntryValue("entity_type");
+            if ((typeString != null) && !typeString.replace(" ", "").equals("")) {
+                typeTextField.setText(typeString);
             }
+
+            String nameString = conditionMeta.getEntryValue("entity_name");
+            if (nameString != null) {
+                nameTextField.setText(nameString);
+            }
+
+            String rangeString = conditionMeta.getEntryValue("range");
+            if ((rangeString != null) && MathUtils.isInteger(rangeString)) {
+                rangeTextField.setText(rangeString);
+            }
+
         }
 
     }
@@ -74,12 +96,19 @@ public class DimensionConditionScreen extends ScrollableScreen {
             this.scrollArea.removeEntry(e);
         }
 
-        // DIMENSION --------------------------
-        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.dimension.conditionmeta.dimension"), true));
-        this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.dimensionTextField));
-        TextEntry currentDimensionEntry = new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.dimension.conditionmeta.dimension.current", "" + WorldUtils.getCurrentDimensionKey()), false);
-        currentDimensionEntry.setHeight(14);
-        this.scrollArea.addEntry(currentDimensionEntry);
+        // TYPE -------------------------------
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.entitydied.conditionmeta.type"), true));
+        this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.typeTextField));
+        //-------------------------------------
+
+        // NAME -------------------------------
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.entitydied.conditionmeta.name"), true));
+        this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.nameTextField));
+        //-------------------------------------
+
+        // RANGE ------------------------------
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.entitydied.conditionmeta.range"), true));
+        this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.rangeTextField));
         //-------------------------------------
 
         this.cancelButton = new AdvancedButton(0, 0, 95, 20, Locals.localize("cinematica.ui.cancel"), true, (press) -> {
@@ -125,12 +154,17 @@ public class DimensionConditionScreen extends ScrollableScreen {
 
     protected void onDone() {
         if (this.callback != null) {
-            String dimString = this.dimensionTextField.getText().replace(" ", "");
-            if (dimString.equals("")) {
-                dimString = "cinematica.blankdimension";
-            }
+            String typeString = this.typeTextField.getText().replace(" ", "");
+            String nameString = StringUtils.convertFormatCodes(this.nameTextField.getText(), "§", "&");
+            String rangeString = this.rangeTextField.getText().replace(" ", "");
             PropertiesSection sec = new PropertiesSection("condition-meta");
-            sec.addEntry("dimension", dimString);
+            sec.addEntry("entity_type", typeString);
+            sec.addEntry("entity_name", nameString);
+            if (!rangeString.equals("") && MathUtils.isInteger(rangeString)) {
+                sec.addEntry("range", rangeString);
+            } else {
+                sec.addEntry("range", "");
+            }
             this.callback.accept(sec);
         }
     }

@@ -1,9 +1,8 @@
-package de.keksuccino.cinematica.engine.condition.conditions.dimension;
+package de.keksuccino.cinematica.engine.condition.conditions.serverip;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.keksuccino.cinematica.gui.ScrollableScreen;
 import de.keksuccino.cinematica.ui.UIBase;
-import de.keksuccino.cinematica.utils.WorldUtils;
 import de.keksuccino.konkrete.gui.content.AdvancedButton;
 import de.keksuccino.konkrete.gui.content.AdvancedTextField;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollAreaEntry;
@@ -19,30 +18,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class DimensionConditionScreen extends ScrollableScreen {
+public class ServerIpConditionScreen extends ScrollableScreen {
 
     protected Consumer<PropertiesSection> callback;
 
-    protected AdvancedTextField dimensionTextField;
+    protected AdvancedTextField ipTextField;
 
     protected AdvancedButton cancelButton;
     protected AdvancedButton doneButton;
 
-    public DimensionConditionScreen(Screen parent, @Nullable PropertiesSection conditionMeta, Consumer<PropertiesSection> callback) {
+    public ServerIpConditionScreen(Screen parent, @Nullable PropertiesSection conditionMeta, Consumer<PropertiesSection> callback) {
 
         super(parent, Locals.localize("cinematica.condition.configure"));
         this.callback = callback;
 
         FontRenderer font = Minecraft.getInstance().fontRenderer;
 
-        dimensionTextField = new AdvancedTextField(font, 0, 0, 200, 20, true, null);
-        dimensionTextField.setMaxStringLength(100000);
+        ipTextField = new AdvancedTextField(font, 0, 0, 200, 20, true, null);
+        ipTextField.setMaxStringLength(100000);
 
         if (conditionMeta != null) {
-            String dimensionString = conditionMeta.getEntryValue("dimension");
-            if ((dimensionString != null) && !dimensionString.replace(" ", "").equals("") && !dimensionString.equals("cinematica.blankdimension")) {
-                dimensionTextField.setText(dimensionString);
+
+            String ipString = conditionMeta.getEntryValue("ip");
+            if ((ipString != null) && !ipString.replace(" ", "").equals("")) {
+                ipTextField.setText(ipString);
             }
+
         }
 
     }
@@ -74,12 +75,19 @@ public class DimensionConditionScreen extends ScrollableScreen {
             this.scrollArea.removeEntry(e);
         }
 
-        // DIMENSION --------------------------
-        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.dimension.conditionmeta.dimension"), true));
-        this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.dimensionTextField));
-        TextEntry currentDimensionEntry = new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.dimension.conditionmeta.dimension.current", "" + WorldUtils.getCurrentDimensionKey()), false);
-        currentDimensionEntry.setHeight(14);
-        this.scrollArea.addEntry(currentDimensionEntry);
+        // IP ---------------------------------
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.serverip.conditionmeta.ip"), true));
+        this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.ipTextField));
+        String currentIpString = "---";
+        if (Minecraft.getInstance().getCurrentServerData() != null) {
+            currentIpString = Minecraft.getInstance().getCurrentServerData().serverIP;
+            if (currentIpString == null) {
+                currentIpString = "---";
+            }
+        }
+        TextEntry currentIpEntry = new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.serverip.conditionmeta.ip.current", currentIpString), false);
+        currentIpEntry.setHeight(14);
+        this.scrollArea.addEntry(currentIpEntry);
         //-------------------------------------
 
         this.cancelButton = new AdvancedButton(0, 0, 95, 20, Locals.localize("cinematica.ui.cancel"), true, (press) -> {
@@ -125,12 +133,9 @@ public class DimensionConditionScreen extends ScrollableScreen {
 
     protected void onDone() {
         if (this.callback != null) {
-            String dimString = this.dimensionTextField.getText().replace(" ", "");
-            if (dimString.equals("")) {
-                dimString = "cinematica.blankdimension";
-            }
+            String ipString = this.ipTextField.getText().replace(" ", "");
             PropertiesSection sec = new PropertiesSection("condition-meta");
-            sec.addEntry("dimension", dimString);
+            sec.addEntry("ip", ipString);
             this.callback.accept(sec);
         }
     }

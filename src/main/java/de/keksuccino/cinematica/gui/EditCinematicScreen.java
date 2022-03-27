@@ -28,6 +28,8 @@ public class EditCinematicScreen extends ScrollableScreen {
     protected Cinematic cinematic;
     protected Consumer<Cinematic> callback;
 
+    protected boolean isNewCinematic = false;
+
     protected AdvancedButton chooseSourceButton;
     protected AdvancedButton manageConditionsButton;
     protected AdvancedButton allowSkipButton;
@@ -38,6 +40,7 @@ public class EditCinematicScreen extends ScrollableScreen {
     protected AdvancedButton stopWorldMusicButton;
 
     protected AdvancedButton doneButton;
+    protected AdvancedButton cancelButton;
 
     public EditCinematicScreen(Screen parent, CinematicType type, Consumer<Cinematic> callback) {
         this(parent, type, null, callback);
@@ -52,9 +55,25 @@ public class EditCinematicScreen extends ScrollableScreen {
         this.type = type;
         this.cinematic = cinematicToEdit;
         if (this.cinematic == null) {
+            this.isNewCinematic = true;
             this.cinematic = new Cinematic(null, type, null);
         }
         this.callback = callback;
+    }
+
+    @Override
+    public boolean isOverlayButtonHovered() {
+        if (this.doneButton != null) {
+            if (this.doneButton.isHovered()) {
+                return true;
+            }
+        }
+        if (this.cancelButton != null) {
+            if (this.cancelButton.isHovered()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -258,6 +277,12 @@ public class EditCinematicScreen extends ScrollableScreen {
         });
         UIBase.colorizeButton(this.doneButton);
 
+        this.cancelButton = new AdvancedButton(0, 0, 95, 20, Locals.localize("cinematica.ui.cancel"), true, (press) -> {
+            this.onCancel();
+            Minecraft.getInstance().displayGuiScreen(this.parent);
+        });
+        UIBase.colorizeButton(this.cancelButton);
+
     }
 
     @Override
@@ -268,16 +293,30 @@ public class EditCinematicScreen extends ScrollableScreen {
         super.render(matrix, mouseX, mouseY, partialTicks);
 
         //Save Button
-        this.doneButton.setX(xCenter - (this.doneButton.getWidth() / 2));
+        if (!this.isNewCinematic) {
+            this.doneButton.setX(xCenter - (this.doneButton.getWidth() / 2));
+        } else {
+            this.doneButton.setX(xCenter + 5);
+        }
         this.doneButton.setY(this.height - 35);
         this.doneButton.render(matrix, mouseX, mouseY, partialTicks);
+
+        if (this.isNewCinematic) {
+            this.cancelButton.setX(xCenter - this.cancelButton.getWidth() - 5);
+            this.cancelButton.setY(this.height - 35);
+            this.cancelButton.render(matrix, mouseX, mouseY, partialTicks);
+        }
 
     }
 
     @Override
     public void closeScreen() {
         if (!PopupHandler.isPopupActive()) {
-            this.onDone();
+            if (this.isNewCinematic) {
+                this.onCancel();
+            } else {
+                this.onDone();
+            }
             super.closeScreen();
         }
     }
@@ -288,11 +327,11 @@ public class EditCinematicScreen extends ScrollableScreen {
         }
     }
 
-//    protected void onCancel() {
-//        if (this.callback != null) {
-//            this.callback.accept(null);
-//        }
-//    }
+    protected void onCancel() {
+        if (this.callback != null) {
+            this.callback.accept(null);
+        }
+    }
 
     public Cinematic getCinematic() {
         return this.cinematic;

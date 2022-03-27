@@ -58,6 +58,9 @@ public class Cinematic {
                 return false;
             }
         }
+        if (this.conditions.isEmpty()) {
+            return false;
+        }
         for (Condition c : this.conditions) {
             if (!c.conditionsMet()) {
                 return false;
@@ -69,7 +72,7 @@ public class Cinematic {
     public void addCondition(Condition c) {
         if (!this.conditions.contains(c)) {
             this.conditions.add(c);
-            if (CinematicHandler.isIsInitialized()) {
+            if (CinematicHandler.isInitialized()) {
                 CinematicHandler.saveCinematics();
             }
         }
@@ -78,7 +81,7 @@ public class Cinematic {
     public void overrideConditions(List<Condition> conditionsList) {
         if (conditionsList != null) {
             this.conditions = conditionsList;
-            if (CinematicHandler.isIsInitialized()) {
+            if (CinematicHandler.isInitialized()) {
                 CinematicHandler.saveCinematics();
             }
         }
@@ -87,7 +90,7 @@ public class Cinematic {
     public void removeCondition(Condition c) {
         if (this.conditions.contains(c)) {
             this.conditions.remove(c);
-            if (CinematicHandler.isIsInitialized()) {
+            if (CinematicHandler.isInitialized()) {
                 CinematicHandler.saveCinematics();
             }
         }
@@ -97,7 +100,7 @@ public class Cinematic {
         for (Condition con : this.conditions) {
             if (con.getIdentifier().equals(identifier)) {
                 this.removeCondition(con);
-                if (CinematicHandler.isIsInitialized()) {
+                if (CinematicHandler.isInitialized()) {
                     CinematicHandler.saveCinematics();
                 }
                 break;
@@ -107,7 +110,7 @@ public class Cinematic {
 
     public void removeAllConditions() {
         this.conditions.clear();
-        if (CinematicHandler.isIsInitialized()) {
+        if (CinematicHandler.isInitialized()) {
             CinematicHandler.saveCinematics();
         }
     }

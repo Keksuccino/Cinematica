@@ -8,7 +8,9 @@ import de.keksuccino.cinematica.ui.UIBase;
 import de.keksuccino.konkrete.gui.content.AdvancedButton;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollArea;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollAreaEntry;
+import de.keksuccino.konkrete.gui.screens.popup.PopupHandler;
 import de.keksuccino.konkrete.input.MouseInput;
+import de.keksuccino.konkrete.input.StringUtils;
 import de.keksuccino.konkrete.localization.Locals;
 import de.keksuccino.konkrete.rendering.RenderUtils;
 import net.minecraft.client.Minecraft;
@@ -19,6 +21,7 @@ import net.minecraft.util.text.StringTextComponent;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -31,16 +34,18 @@ public class SelectConditionScreen extends Screen {
     protected ScrollArea conditionScrollList;
     protected Screen parent;
     protected AdvancedButton backButton;
+    protected boolean filterEditable;
 
     protected Consumer<Condition> callback;
     protected Cinematic cinematic;
 
-    public SelectConditionScreen(Screen parent, Cinematic cinematic, Consumer<Condition> callback) {
+    public SelectConditionScreen(Screen parent, Cinematic cinematic, boolean filterEditable, Consumer<Condition> callback) {
 
         super(new StringTextComponent(""));
         this.parent = parent;
         this.cinematic = cinematic;
         this.callback = callback;
+        this.filterEditable = filterEditable;
 
         this.conditionScrollList = new ScrollArea(0, 50, 300, 0);
         this.conditionScrollList.backgroundColor = ENTRY_BACKGROUND_COLOR;
@@ -70,7 +75,11 @@ public class SelectConditionScreen extends Screen {
                 this.conditionScrollList.removeEntry(e);
             }
             for (Condition c : this.cinematic.getConditions()) {
-                this.conditionScrollList.addEntry(new ConditionEntry(this.conditionScrollList, c, this));
+                if (!c.parent.isEditable() && this.filterEditable) {
+                    this.conditionScrollList.addEntry(new NonEditableConditionEntry(this.conditionScrollList, c, this));
+                } else {
+                    this.conditionScrollList.addEntry(new ConditionEntry(this.conditionScrollList, c, this));
+                }
             }
         }
     }
@@ -119,6 +128,17 @@ public class SelectConditionScreen extends Screen {
         this.backButton.render(matrix, mouseX, mouseY, partialTicks);
 
         super.render(matrix, mouseX, mouseY, partialTicks);
+
+        if (filterEditable) {
+            for (ScrollAreaEntry c : this.conditionScrollList.getEntries()) {
+                if (c instanceof NonEditableConditionEntry) {
+                    if (c.isHovered()) {
+                        String[] desc = StringUtils.splitLines(Locals.localize("cinematica.condition.edit.not_editable.desc"), "%n%");
+                        renderDescription(matrix, Arrays.asList(desc), mouseX, mouseY);
+                    }
+                }
+            }
+        }
 
     }
 
@@ -169,6 +189,8 @@ public class SelectConditionScreen extends Screen {
         protected FontRenderer font = Minecraft.getInstance().fontRenderer;
         protected SelectConditionScreen parentScreen;
 
+        protected boolean isMouseDown = false;
+
         public ConditionEntry(ScrollArea parent, Condition condition, SelectConditionScreen parentScreen) {
             super(parent);
             this.condition = condition;
@@ -195,10 +217,18 @@ public class SelectConditionScreen extends Screen {
 
         protected void handleSelection() {
 
-            if (this.isHovered() && MouseInput.isLeftMouseDown()) {
-                if (this.parentScreen.callback != null) {
-                    this.parentScreen.callback.accept(this.condition);
+            if (!PopupHandler.isPopupActive() && !this.parentScreen.backButton.isHovered()) {
+                if (this.isHovered() && MouseInput.isLeftMouseDown() && !this.isMouseDown) {
+                    if (this.parentScreen.callback != null) {
+                        this.parentScreen.callback.accept(this.condition);
+                    }
+                    this.isMouseDown = true;
                 }
+                if (!MouseInput.isLeftMouseDown()) {
+                    this.isMouseDown = false;
+                }
+            } else if (MouseInput.isLeftMouseDown()) {
+                this.isMouseDown = true;
             }
 
         }
@@ -206,6 +236,26 @@ public class SelectConditionScreen extends Screen {
         @Override
         public int getHeight() {
             return 26;
+        }
+
+    }
+
+    public static class NonEditableConditionEntry extends ConditionEntry {
+
+        public NonEditableConditionEntry(ScrollArea parent, Condition condition, SelectConditionScreen parentScreen) {
+            super(parent, condition, parentScreen);
+        }
+
+        @Override
+        public void renderEntry(MatrixStack matrix) {
+
+            int center = this.x + (this.getWidth() / 2);
+
+            fill(matrix, this.x, this.y, this.x + this.getWidth(), this.y + this.getHeight(), ENTRY_BACKGROUND_COLOR.getRGB());
+
+            String nameString = "§7" + this.condition.parent.getDisplayName();
+            drawCenteredString(matrix, font, nameString, center, this.y + 10, -1);
+
         }
 
     }

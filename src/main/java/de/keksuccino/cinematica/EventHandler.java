@@ -4,6 +4,7 @@ import de.keksuccino.auudio.audio.AudioClip;
 import de.keksuccino.cinematica.audio.AudioCinematicHandler;
 import de.keksuccino.cinematica.audio.VanillaAudioHandler;
 import de.keksuccino.cinematica.cutscene.CutScenePauseMenu;
+import de.keksuccino.cinematica.events.EntityDiedEvent;
 import de.keksuccino.cinematica.gui.CinematicVolumeScreen;
 import de.keksuccino.cinematica.gui.CinematicaConfigScreen;
 import de.keksuccino.cinematica.gui.ManageCinematicsScreen;
@@ -26,6 +27,7 @@ import net.minecraft.client.gui.widget.SoundSlider;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.event.TickEvent;
@@ -34,6 +36,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class EventHandler {
 
@@ -220,6 +223,19 @@ public class EventHandler {
         }
         this.lastActiveWorld = Minecraft.getInstance().world;
 
+    }
+
+    @SubscribeEvent
+    public void onEntityDied(EntityDiedEvent e) {
+        if (Cinematica.config.getOrDefault("print_died_entities", false)) {
+            if ((Minecraft.getInstance().world != null) && (Minecraft.getInstance().player != null)) {
+                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: -----------------------"), UUID.randomUUID());
+                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: ENTITY DIED:"), UUID.randomUUID());
+                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: ID/TYPE: " + e.getEntity().getType().getRegistryName().toString()), UUID.randomUUID());
+                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: NAME: " + StringUtils.convertFormatCodes(e.getEntity().getName().getString(), "§", "&")), UUID.randomUUID());
+                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: -----------------------"), UUID.randomUUID());
+            }
+        }
     }
 
 }
