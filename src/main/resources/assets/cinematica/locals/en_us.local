@@ -32,6 +32,8 @@ cinematica.cinematic.type.selecttype = Select Cinematic Type
 cinematica.cinematic.choosesource.video = Choose Video Source
 cinematica.cinematic.choosesource.audio = Choose Audio Source
 
+cinematica.cinematic.copy_identifier = Copy Cinematic Identifier
+cinematica.cinematic.copy_identifier.desc = §cLeft-click to copy the%n%cinematic identifier%n%to your clipboard.
 cinematica.cinematic.save = Save
 cinematica.cinematic.allowskip.on = Allow Skip: §aYes
 cinematica.cinematic.allowskip.off = Allow Skip: §cNo
@@ -70,6 +72,8 @@ cinematica.config.show_controls_in_pause_screen.desc = If the button in the paus
 
 cinematica.config.print_died_entities = Observe Entity Deaths
 cinematica.config.print_died_entities.desc = If information about died entities%n%should get printed to the chat.
+cinematica.config.print_added_items = Observe Added Items
+cinematica.config.print_added_items.desc = If information about items%n%that get added to the%n%player inventory should%n%get printed to the chat.
 
 cinematica.condition.add = Add Condition
 cinematica.condition.remove = Remove Condition
@@ -102,10 +106,12 @@ cinematica.condition.killentity.conditionmeta.type.lastkilled = §7Last Killed E
 cinematica.condition.killentity.conditionmeta.name = Entity Name [Blank = Any Name]
 cinematica.condition.killentity.conditionmeta.name.lastkilled = §7Last Killed Entity Name: {}
 
-cinematica.condition.serverip = Is Server IP
-cinematica.condition.serverip.desc = Gets triggered while connected%n%to a specific server IP.
-cinematica.condition.serverip.conditionmeta.ip = Server IP
-cinematica.condition.serverip.conditionmeta.ip.current = §7Current Server IP: {}
+cinematica.condition.ip.conditionmeta.ip = Server IP
+cinematica.condition.ip.conditionmeta.ip.current = §7Current Server IP: {}
+cinematica.condition.ip.isip = Is Server IP
+cinematica.condition.ip.isip.desc = Gets triggered while connected%n%to a specific server IP.
+cinematica.condition.ip.joinip = Join Server IP
+cinematica.condition.ip.joinip.desc = Gets triggered when connecting%n%to a specific server IP.
 
 cinematica.condition.multiplayer = Is Multiplayer
 cinematica.condition.multiplayer.desc = Gets triggered while%n%playing Multiplayer.
@@ -120,3 +126,43 @@ cinematica.condition.entitydied.desc = Gets triggered when an entity%n%dies in a
 cinematica.condition.entitydied.conditionmeta.type = Entity Type [Blank = Any Type]
 cinematica.condition.entitydied.conditionmeta.name = Entity Name [Blank = Any Name]
 cinematica.condition.entitydied.conditionmeta.range = Range Around Player [Radius]
+
+cinematica.condition.addtoinventory = Item Added To Player Inventory
+cinematica.condition.addtoinventory.desc = Gets triggered when an item%n%gets added to the player inventory.%n%%n%§cThis condition is experimental!%n%§cIt can also trigger when%n%§cmoving items in the inventory.%n%§cIf you want to use this,%n%§cit's recommended to enable the%n%§cone-time-option for the%n%§cparent cinematic.
+cinematica.condition.addtoinventory.conditionmeta.type = Item Type [Blank = Any Type]
+cinematica.condition.addtoinventory.conditionmeta.name = Item Name [Blank = Any Name]
+cinematica.condition.addtoinventory.conditionmeta.lore = Item Lore [Blank = Any Lore]
+cinematica.condition.addtoinventory.conditionmeta.lore.checktype.equals = Lore Check Type: §6Equals
+cinematica.condition.addtoinventory.conditionmeta.lore.checktype.starts-with = Lore Check Type: §6Starts-With
+cinematica.condition.addtoinventory.conditionmeta.lore.checktype.ends-with = Lore Check Type: §6Ends-With
+cinematica.condition.addtoinventory.conditionmeta.lore.checktype.contains = Lore Check Type: §6Contains
+cinematica.condition.addtoinventory.conditionmeta.count = Item Count [Blank = Any Count]
+
+cinematica.condition.biome.conditionmeta.biome = Biome Type
+cinematica.condition.biome.conditionmeta.biome.current = §7Current Biome Type: {}
+cinematica.condition.biome.enterbiome = Player Enters Biome
+cinematica.condition.biome.enterbiome.desc = Gets triggered when the player%n%enters a specific biome.
+cinematica.condition.biome.isbiome = Player Is In Biome
+cinematica.condition.biome.isbiome.desc = Gets triggered while the player%n%is in a specific biome.
+
+cinematica.condition.block.conditionmeta.block = Block Type
+cinematica.condition.block.conditionmeta.block.current = §7Current Block Type: {}
+cinematica.condition.block.stepblock = Player Steps On Block
+cinematica.condition.block.stepblock.desc = Gets triggered when the player%n%steps on a specific block type.
+cinematica.condition.block.standblock = Player Stands On Block
+cinematica.condition.block.standblock.desc = Gets triggered while the player%n%stands on a specific block type.
+
+cinematica.condition.tablist.becomestab = Becomes Tab List Header/Footer Content
+cinematica.condition.tablist.becomestab.desc = Gets triggered when the tab list%n%footer/header gets set to%n%a specific content.
+cinematica.condition.tablist.istab = Is Tab List Header/Footer Content
+cinematica.condition.tablist.istab.desc = Gets triggered while the tab list%n%footer/header has a specific%n%content.
+cinematica.condition.tablist.conditionmeta.content = Footer/Header Content
+cinematica.condition.tablist.conditionmeta.content.checktype.equals = Content Check Type: §6Equals
+cinematica.condition.tablist.conditionmeta.content.checktype.starts-with = Content Check Type: §6Starts-With
+cinematica.condition.tablist.conditionmeta.content.checktype.ends-with = Content Check Type: §6Ends-With
+cinematica.condition.tablist.conditionmeta.content.checktype.contains = Content Check Type: §6Contains
+cinematica.condition.tablist.conditionmeta.line.header = Check For Line: §6Header
+cinematica.condition.tablist.conditionmeta.line.footer = Check For Line: §6Footer
+
+cinematica.command.cinematic.error = §cThere was an error while trying to trigger the cinematic.
+cinematica.command.cinematic.invalid = §cCinematic not found! Wrong identifier?

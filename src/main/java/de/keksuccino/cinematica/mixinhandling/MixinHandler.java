@@ -1,4 +1,4 @@
-package de.keksuccino.cinematica;
+package de.keksuccino.cinematica.mixinhandling;
 
 import de.keksuccino.cinematica.events.PlayerKilledEntityEvent;
 import net.minecraft.client.Minecraft;

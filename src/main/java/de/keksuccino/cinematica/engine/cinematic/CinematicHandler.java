@@ -366,6 +366,23 @@ public class CinematicHandler {
         }
     }
 
+    public static void forceTriggerCinematic(Cinematic c, boolean ignoreOneTime) {
+        if (cinematics.contains(c)) {
+            if (!triggeredCinematics.containsKey(c)) {
+                if (!ignoreOneTime) {
+                    if (c.oneTimeCinematic) {
+                        if (isTriggeredOneTimeCinematic(c)) {
+                            return;
+                        } else {
+                            addToTriggeredOneTimeCinematics(c);
+                        }
+                    }
+                }
+                triggeredCinematics.put(c, System.currentTimeMillis());
+            }
+        }
+    }
+
     public static class WorldMusicSuppressContext {
         public boolean startedPlaying = false;
         public long startTime = 0;

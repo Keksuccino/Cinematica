@@ -38,6 +38,7 @@ public class EditCinematicScreen extends ScrollableScreen {
     protected AdvancedButton fadeInButton;
     protected AdvancedButton fadeOutButton;
     protected AdvancedButton stopWorldMusicButton;
+    protected AdvancedButton copyIdentifierButton;
 
     protected AdvancedButton doneButton;
     protected AdvancedButton cancelButton;
@@ -87,6 +88,14 @@ public class EditCinematicScreen extends ScrollableScreen {
         for (ScrollAreaEntry e : oldEntries) {
             this.scrollArea.removeEntry(e);
         }
+
+        // COPY IDENTIFIER ---------------------
+        this.copyIdentifierButton = new AdvancedButton(0, 0, 200, 20, Locals.localize("cinematica.cinematic.copy_identifier"), true, (press) -> {
+            Minecraft.getInstance().keyboardListener.setClipboardString(this.cinematic.getIdentifier());
+        });
+        this.copyIdentifierButton.setDescription(StringUtils.splitLines(Locals.localize("cinematica.cinematic.copy_identifier.desc"), "%n%"));
+        this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.copyIdentifierButton));
+        //--------------------------------------
 
         // CHOOSE SOURCE -----------------------
         String chooseSourceLabel = Locals.localize("cinematica.cinematic.choosesource.video");

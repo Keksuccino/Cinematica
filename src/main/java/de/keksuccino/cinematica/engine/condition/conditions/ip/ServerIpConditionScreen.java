@@ -1,4 +1,4 @@
-package de.keksuccino.cinematica.engine.condition.conditions.serverip;
+package de.keksuccino.cinematica.engine.condition.conditions.ip;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.keksuccino.cinematica.gui.ScrollableScreen;
@@ -76,7 +76,7 @@ public class ServerIpConditionScreen extends ScrollableScreen {
         }
 
         // IP ---------------------------------
-        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.serverip.conditionmeta.ip"), true));
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.ip.conditionmeta.ip"), true));
         this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.ipTextField));
         String currentIpString = "---";
         if (Minecraft.getInstance().getCurrentServerData() != null) {
@@ -85,7 +85,7 @@ public class ServerIpConditionScreen extends ScrollableScreen {
                 currentIpString = "---";
             }
         }
-        TextEntry currentIpEntry = new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.serverip.conditionmeta.ip.current", currentIpString), false);
+        TextEntry currentIpEntry = new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.ip.conditionmeta.ip.current", currentIpString), false);
         currentIpEntry.setHeight(14);
         this.scrollArea.addEntry(currentIpEntry);
         //-------------------------------------

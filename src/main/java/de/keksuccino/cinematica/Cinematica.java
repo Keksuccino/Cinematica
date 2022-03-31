@@ -4,11 +4,15 @@ import java.io.File;
 
 import de.keksuccino.cinematica.audio.AudioCinematicVolumeHandler;
 import de.keksuccino.cinematica.audio.VanillaAudioHandler;
+import de.keksuccino.cinematica.commands.CinematicCommand;
 import de.keksuccino.cinematica.engine.cinematic.CinematicHandler;
 import de.keksuccino.cinematica.engine.condition.ConditionFactoryRegistry;
+import de.keksuccino.cinematica.mixinhandling.MixinHandler;
 import de.keksuccino.cinematica.video.VideoVolumeHandler;
 import de.keksuccino.cinematica.engine.condition.conditions.ConditionFactories;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import de.keksuccino.konkrete.Konkrete;
@@ -25,11 +29,10 @@ import net.minecraftforge.fml.network.FMLNetworkConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-//TODO is player list header/footer condition (toggle button, um modi zu switchen: starts-with, ends-with, contains, is)
+//TODO player list header/footer is X condition (toggle button, um modi zu switchen: starts-with, ends-with, contains, is)
+//TODO player list header/footer becomes X condition
 
-//TODO player got achievement X condition -
-
-//TODO player stepped on block type X condition
+//TODO player got achievement X condition
 
 //TODO player harvested block/item X condition (use item/block id here)
 
@@ -41,13 +44,11 @@ import org.apache.logging.log4j.Logger;
 
 //TODO player used item X (right-click action von item in hand)
 
-//TODO player entered biome X condition
-
 //TODO "name" value zu cinematic base adden (um Anzeigenamen für Cinematics zu setzen)
 
-//TODO command, um cinematics zu starten (identifier nutzen; entry zu edit cinematic screen adden, der bei links-klick ID in clipboard kopiert)
-
 //TODO kill entity condition verbessern + re-implementieren
+
+//TODO trigger-once-per-session option für cinematics (wird nur in session gespeichert, nicht in file)
 
 
 //TODO eventuell volume handling in Auudio zurück zu alter logik
@@ -93,6 +94,8 @@ public class Cinematica {
 
 	        	Konkrete.addPostLoadingEvent("cinematica", this::onClientSetup);
 
+				MinecraftForge.EVENT_BUS.register(this);
+
 				MinecraftForge.EVENT_BUS.register(new EventHandler());
 
 //				MinecraftForge.EVENT_BUS.register(new Test());
@@ -104,6 +107,13 @@ public class Cinematica {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@SubscribeEvent
+	public void onRegisterCommands(RegisterCommandsEvent e) {
+
+		CinematicCommand.register(e.getDispatcher());
+
 	}
 	
 	private void onClientSetup() {
@@ -149,6 +159,7 @@ public class Cinematica {
 			config.registerValue("add_slider_to_sound_controls", true, "ui");
 
 			config.registerValue("print_died_entities", false, "debug");
+			config.registerValue("print_added_items", false, "debug");
 			
 			config.syncConfig();
 			

@@ -1,4 +1,4 @@
-package de.keksuccino.cinematica.engine.condition.conditions.serverip;
+package de.keksuccino.cinematica.engine.condition.conditions.ip.isip;
 
 import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.engine.condition.Condition;
@@ -7,9 +7,9 @@ import de.keksuccino.konkrete.properties.PropertiesSection;
 
 import javax.annotation.Nullable;
 
-public class ServerIpCondition extends Condition {
+public class IsServerIpCondition extends Condition {
 
-    public ServerIpCondition(@Nullable String identifier, ConditionFactory parent, PropertiesSection conditionMeta) {
+    public IsServerIpCondition(@Nullable String identifier, ConditionFactory parent, PropertiesSection conditionMeta) {
         super(identifier, parent, conditionMeta);
     }
 
@@ -25,8 +25,6 @@ public class ServerIpCondition extends Condition {
             String conIp = this.conditionMeta.getEntryValue("ip");
 
             if ((curIp != null) && curIp.equals(conIp)) {
-                //TODO remove debug
-                Cinematica.LOGGER.info("############## CONDITIONS MET FOR SERVER IP TRIGGER!");
                 return true;
             }
 
