@@ -7,10 +7,7 @@ import de.keksuccino.konkrete.gui.content.AdvancedButton;
 import de.keksuccino.konkrete.gui.content.AdvancedTextField;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollAreaEntry;
 import de.keksuccino.konkrete.gui.screens.popup.PopupHandler;
-import de.keksuccino.konkrete.input.CharacterFilter;
-import de.keksuccino.konkrete.input.StringUtils;
 import de.keksuccino.konkrete.localization.Locals;
-import de.keksuccino.konkrete.math.MathUtils;
 import de.keksuccino.konkrete.properties.PropertiesSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -25,14 +22,13 @@ public class TabListConditionScreen extends ScrollableScreen {
 
     protected Consumer<PropertiesSection> callback;
 
-    protected String loreCheckType = "equals";
+    protected String contentCheckType = "equals";
+    protected String checkForLine = "header";
 
-    protected AdvancedTextField typeTextField;
-    protected AdvancedTextField nameTextField;
-    protected AdvancedTextField loreTextField;
-    protected AdvancedTextField countTextField;
+    protected AdvancedTextField contentTextField;
 
-    protected AdvancedButton loreCheckTypeButton;
+    protected AdvancedButton contentCheckTypeButton;
+    protected AdvancedButton lineButton;
 
     protected AdvancedButton cancelButton;
     protected AdvancedButton doneButton;
@@ -44,39 +40,48 @@ public class TabListConditionScreen extends ScrollableScreen {
 
         FontRenderer font = Minecraft.getInstance().fontRenderer;
 
-        typeTextField = new AdvancedTextField(font, 0, 0, 200, 20, true, null);
-        typeTextField.setMaxStringLength(100000);
+        contentTextField = new AdvancedTextField(font, 0, 0, 200, 20, true, null);
+        contentTextField.setMaxStringLength(100000);
 
-        nameTextField = new AdvancedTextField(font, 0, 0, 200, 20, true, null);
-        nameTextField.setMaxStringLength(100000);
-
-        loreTextField = new AdvancedTextField(font, 0, 0, 200, 20, true, null);
-        loreTextField.setMaxStringLength(100000);
-
-        countTextField = new AdvancedTextField(font, 0, 0, 200, 20, true, CharacterFilter.getIntegerCharacterFiler());
-        countTextField.setMaxStringLength(100000);
-
-        loreCheckTypeButton = new AdvancedButton(0, 0, 200, 20, "", true, (press) -> {
-            if (this.loreCheckType.equals("equals")) {
-                this.loreCheckType = "starts-with";
-            } else if (this.loreCheckType.equals("starts-with")) {
-                this.loreCheckType = "ends-with";
-            } else if (this.loreCheckType.equals("ends-with")) {
-                this.loreCheckType = "contains";
-            } else if (this.loreCheckType.equals("contains")) {
-                this.loreCheckType = "equals";
+        contentCheckTypeButton = new AdvancedButton(0, 0, 200, 20, "", true, (press) -> {
+            if (this.contentCheckType.equals("equals")) {
+                this.contentCheckType = "starts-with";
+            } else if (this.contentCheckType.equals("starts-with")) {
+                this.contentCheckType = "ends-with";
+            } else if (this.contentCheckType.equals("ends-with")) {
+                this.contentCheckType = "contains";
+            } else if (this.contentCheckType.equals("contains")) {
+                this.contentCheckType = "equals";
             }
         }) {
             @Override
             public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-                if (loreCheckType.equals("equals")) {
-                    this.setMessage(Locals.localize("cinematica.condition.addtoinventory.conditionmeta.lore.checktype.equals"));
-                } else if (loreCheckType.equals("starts-with")) {
-                    this.setMessage(Locals.localize("cinematica.condition.addtoinventory.conditionmeta.lore.checktype.starts-with"));
-                } else if (loreCheckType.equals("ends-with")) {
-                    this.setMessage(Locals.localize("cinematica.condition.addtoinventory.conditionmeta.lore.checktype.ends-with"));
-                } else if (loreCheckType.equals("contains")) {
-                    this.setMessage(Locals.localize("cinematica.condition.addtoinventory.conditionmeta.lore.checktype.contains"));
+                if (contentCheckType.equals("equals")) {
+                    this.setMessage(Locals.localize("cinematica.condition.tablist.conditionmeta.content.checktype.equals"));
+                } else if (contentCheckType.equals("starts-with")) {
+                    this.setMessage(Locals.localize("cinematica.condition.tablist.conditionmeta.content.checktype.starts-with"));
+                } else if (contentCheckType.equals("ends-with")) {
+                    this.setMessage(Locals.localize("cinematica.condition.tablist.conditionmeta.content.checktype.ends-with"));
+                } else if (contentCheckType.equals("contains")) {
+                    this.setMessage(Locals.localize("cinematica.condition.tablist.conditionmeta.content.checktype.contains"));
+                }
+                super.render(matrixStack, mouseX, mouseY, partialTicks);
+            }
+        };
+
+        lineButton = new AdvancedButton(0, 0, 200, 20, "", true, (press) -> {
+            if (this.checkForLine.equals("header")) {
+                this.checkForLine = "footer";
+            } else if (this.checkForLine.equals("footer")) {
+                this.checkForLine = "header";
+            }
+        }) {
+            @Override
+            public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+                if (checkForLine.equals("header")) {
+                    this.setMessage(Locals.localize("cinematica.condition.tablist.conditionmeta.line.header"));
+                } else if (checkForLine.equals("footer")) {
+                    this.setMessage(Locals.localize("cinematica.condition.tablist.conditionmeta.line.footer"));
                 }
                 super.render(matrixStack, mouseX, mouseY, partialTicks);
             }
@@ -84,29 +89,19 @@ public class TabListConditionScreen extends ScrollableScreen {
 
         if (conditionMeta != null) {
 
-            String typeString = conditionMeta.getEntryValue("item_type");
-            if ((typeString != null) && !typeString.replace(" ", "").equals("")) {
-                typeTextField.setText(typeString);
-            }
-
-            String nameString = conditionMeta.getEntryValue("item_name");
-            if (nameString != null) {
-                nameTextField.setText(nameString);
-            }
-
-            String loreString = conditionMeta.getEntryValue("item_lore");
+            String loreString = conditionMeta.getEntryValue("content");
             if (loreString != null) {
-                loreTextField.setText(loreString);
+                contentTextField.setText(loreString);
             }
 
-            String countString = conditionMeta.getEntryValue("item_count");
-            if ((countString != null) && MathUtils.isInteger(countString)) {
-                countTextField.setText(countString);
+            String lineString = conditionMeta.getEntryValue("line");
+            if (lineString != null) {
+                this.checkForLine = lineString;
             }
 
-            String loreCheckTypeString = conditionMeta.getEntryValue("item_lore_check_type");
-            if ((loreCheckTypeString != null) && (loreCheckTypeString.equals("starts-with") || loreCheckTypeString.equals("ends-with") || loreCheckTypeString.equals("contains"))) {
-                this.loreCheckType = loreCheckTypeString;
+            String checkTypeString = conditionMeta.getEntryValue("check_type");
+            if ((checkTypeString != null) && (checkTypeString.equals("starts-with") || checkTypeString.equals("ends-with") || checkTypeString.equals("contains"))) {
+                this.contentCheckType = checkTypeString;
             }
 
         }
@@ -140,25 +135,14 @@ public class TabListConditionScreen extends ScrollableScreen {
             this.scrollArea.removeEntry(e);
         }
 
-        // TYPE -------------------------------
-        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.addtoinventory.conditionmeta.type"), true));
-        this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.typeTextField));
+        // CHECK FOR LINE ---------------------
+        this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.lineButton));
         //-------------------------------------
 
-        // NAME -------------------------------
-        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.addtoinventory.conditionmeta.name"), true));
-        this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.nameTextField));
-        //-------------------------------------
-
-        // LORE -------------------------------
-        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.addtoinventory.conditionmeta.lore"), true));
-        this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.loreTextField));
-        this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.loreCheckTypeButton));
-        //-------------------------------------
-
-        // COUNT ------------------------------
-        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.addtoinventory.conditionmeta.count"), true));
-        this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.countTextField));
+        // CONTENT ----------------------------
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.tablist.conditionmeta.content"), true));
+        this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.contentTextField));
+        this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.contentCheckTypeButton));
         //-------------------------------------
 
         this.cancelButton = new AdvancedButton(0, 0, 95, 20, Locals.localize("cinematica.ui.cancel"), true, (press) -> {
@@ -204,20 +188,11 @@ public class TabListConditionScreen extends ScrollableScreen {
 
     protected void onDone() {
         if (this.callback != null) {
-            String typeString = this.typeTextField.getText().replace(" ", "");
-            String nameString = StringUtils.convertFormatCodes(this.nameTextField.getText(), "§", "&");
-            String loreString = this.loreTextField.getText();
-            String countString = this.countTextField.getText().replace(" ", "");
+            String contentString = this.contentTextField.getText();
             PropertiesSection sec = new PropertiesSection("condition-meta");
-            sec.addEntry("item_type", typeString);
-            sec.addEntry("item_name", nameString);
-            sec.addEntry("item_lore", loreString);
-            sec.addEntry("item_lore_check_type", this.loreCheckType);
-            if (!countString.equals("") && MathUtils.isInteger(countString)) {
-                sec.addEntry("item_count", countString);
-            } else {
-                sec.addEntry("item_count", "");
-            }
+            sec.addEntry("content", contentString);
+            sec.addEntry("check_type", this.contentCheckType);
+            sec.addEntry("line", this.checkForLine);
             this.callback.accept(sec);
         }
     }

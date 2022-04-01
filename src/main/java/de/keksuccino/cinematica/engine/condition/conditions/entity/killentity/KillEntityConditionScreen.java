@@ -1,4 +1,4 @@
-package de.keksuccino.cinematica.engine.condition.conditions.killentity;
+package de.keksuccino.cinematica.engine.condition.conditions.entity.killentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.keksuccino.cinematica.gui.ScrollableScreen;

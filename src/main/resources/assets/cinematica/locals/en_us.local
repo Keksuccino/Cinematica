@@ -33,7 +33,7 @@ cinematica.cinematic.choosesource.video = Choose Video Source
 cinematica.cinematic.choosesource.audio = Choose Audio Source
 
 cinematica.cinematic.copy_identifier = Copy Cinematic Identifier
-cinematica.cinematic.copy_identifier.desc = §cLeft-click to copy the%n%cinematic identifier%n%to your clipboard.
+cinematica.cinematic.copy_identifier.desc = §cLeft-click to copy the%n%§ccinematic identifier%n%§cto your clipboard.
 cinematica.cinematic.save = Save
 cinematica.cinematic.allowskip.on = Allow Skip: §aYes
 cinematica.cinematic.allowskip.off = Allow Skip: §cNo
@@ -121,11 +121,20 @@ cinematica.condition.singleplayer = Is Singleplayer
 cinematica.condition.singleplayer.desc = Gets triggered while%n%playing Singleplayer.
 cinematica.condition.singleplayer.added = §a§lCondition Added!%n%%n%Condition successfully added to the cinematic.%n% %n% %n% %n%
 
-cinematica.condition.entitydied = Entity Dies In Range
-cinematica.condition.entitydied.desc = Gets triggered when an entity%n%dies in a specific range%n%around the player.
-cinematica.condition.entitydied.conditionmeta.type = Entity Type [Blank = Any Type]
-cinematica.condition.entitydied.conditionmeta.name = Entity Name [Blank = Any Name]
-cinematica.condition.entitydied.conditionmeta.range = Range Around Player [Radius]
+cinematica.condition.entity.entitydied = Entity Dies In Range
+cinematica.condition.entity.entitydied.desc = Gets triggered when an entity%n%dies in a specific range%n%around the player.
+cinematica.condition.entity.comesinrange = Entity Comes In Range
+cinematica.condition.entity.comesinrange.desc = Gets triggered when an entity%n%comes in range of the player.%n%%n%§cThis condition is experimental!%n%§cThe client could start lagging%n%§cwhen using too many instances%n%§cof this condition in cinematics.
+cinematica.condition.entity.isinrange = Entity Is In Range
+cinematica.condition.entity.isinrange.desc = Gets triggered while an entity%n%is in range of the player.%n%%n%§cThis condition is experimental!%n%§cThe client could start lagging%n%§cwhen using too many instances%n%§cof this condition in cinematics.
+cinematica.condition.entity.spot = Player Spots Entity In Range
+cinematica.condition.entity.spot.desc = Gets triggered when the player%n%spots an entity in range.%n%%n%§cThis condition is experimental!%n%§cThe client could start lagging%n%§cwhen using too many instances%n%§cof this condition in cinematics.
+cinematica.condition.entity.watch = Player Watches Entity In Range
+cinematica.condition.entity.watch.desc = Gets triggered while the player%n%watches an entity in range.%n%%n%§cThis condition is experimental!%n%§cThe client could start lagging%n%§cwhen using too many instances%n%§cof this condition in cinematics.%n%%n%§7§oStop stalking helpless entities!
+cinematica.condition.entity.rangeselection.conditionmeta.type = Entity Type [Blank = Any Type]
+cinematica.condition.entity.rangeselection.conditionmeta.name = Entity Name [Blank = Any Name]
+cinematica.condition.entity.rangeselection.conditionmeta.range = Range Around Player [Radius]
+cinematica.condition.entity.spotselection.conditionmeta.fov_offset = FOV Offset [Field Of View Offset]
 
 cinematica.condition.addtoinventory = Item Added To Player Inventory
 cinematica.condition.addtoinventory.desc = Gets triggered when an item%n%gets added to the player inventory.%n%%n%§cThis condition is experimental!%n%§cIt can also trigger when%n%§cmoving items in the inventory.%n%§cIf you want to use this,%n%§cit's recommended to enable the%n%§cone-time-option for the%n%§cparent cinematic.

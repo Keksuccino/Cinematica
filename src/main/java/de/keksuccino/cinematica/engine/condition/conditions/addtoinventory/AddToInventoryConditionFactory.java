@@ -42,7 +42,11 @@ public class AddToInventoryConditionFactory extends ConditionFactory {
             PropertiesSection sec = new PropertiesSection("condition-context");
             sec.addEntry("item_type", item.getItem().getRegistryName().toString());
             sec.addEntry("item_name", StringUtils.convertFormatCodes(item.getDisplayName().getString(), "§", "&"));
-            sec.addEntry("item_lore", StringUtils.convertFormatCodes(FormattingUtils.deserializeItemLoreToString(item), "§", "&"));
+            String lore = FormattingUtils.deserializeItemLoreToString(item);
+            if (lore == null) {
+                lore = "";
+            }
+            sec.addEntry("item_lore", StringUtils.convertFormatCodes(lore, "§", "&"));
             sec.addEntry("item_count", "" + item.getCount());
             this.conditionContext = sec;
 

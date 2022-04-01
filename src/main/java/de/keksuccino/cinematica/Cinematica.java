@@ -29,10 +29,7 @@ import net.minecraftforge.fml.network.FMLNetworkConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-//TODO player list header/footer is X condition (toggle button, um modi zu switchen: starts-with, ends-with, contains, is)
-//TODO player list header/footer becomes X condition
-
-//TODO player got achievement X condition
+//TODO trigger-once-per-session option für cinematics (wird nur in session gespeichert, nicht in file)
 
 //TODO player harvested block/item X condition (use item/block id here)
 
@@ -48,7 +45,7 @@ import org.apache.logging.log4j.Logger;
 
 //TODO kill entity condition verbessern + re-implementieren
 
-//TODO trigger-once-per-session option für cinematics (wird nur in session gespeichert, nicht in file)
+//TODO player got achievement X condition
 
 
 //TODO eventuell volume handling in Auudio zurück zu alter logik

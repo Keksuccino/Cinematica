@@ -16,16 +16,16 @@ public class CinematicCommand {
     public static void register(CommandDispatcher<CommandSource> d) {
         d.register(Commands.literal("cinematic")
                 .then(Commands.argument("identifier", StringArgumentType.string())
-                        .then(Commands.argument("ignore_one_time", BoolArgumentType.bool())
-                                .executes((stack) -> {
-                                    return triggerCinematic(stack.getSource(), StringArgumentType.getString(stack, "identifier"), BoolArgumentType.getBool(stack, "ignore_one_time"));
-                                })
-                        )
+                .then(Commands.argument("ignore_only_trigger_once", BoolArgumentType.bool())
+                .executes((stack) -> {
+                    return triggerCinematic(stack.getSource(), StringArgumentType.getString(stack, "identifier"), BoolArgumentType.getBool(stack, "ignore_only_trigger_once"));
+                })
+                )
                 )
         );
     }
 
-    private static int triggerCinematic(CommandSource stack, String cinematicIdentifier, boolean ignoreOneTime) {
+    private static int triggerCinematic(CommandSource stack, String cinematicIdentifier, boolean forceTrigger) {
         try {
             Cinematic cTemp = null;
             for (Cinematic cin : CinematicHandler.getCinematics()) {
@@ -36,7 +36,7 @@ public class CinematicCommand {
             if (cTemp != null) {
                 final Cinematic c = cTemp;
                 Minecraft.getInstance().execute(() -> {
-                    CinematicHandler.forceTriggerCinematic(c, ignoreOneTime);
+                    CinematicHandler.forceTriggerCinematic(c, forceTrigger);
                 });
             } else {
                 stack.sendErrorMessage(new StringTextComponent(Locals.localize("cinematica.command.cinematic.invalid")));

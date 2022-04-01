@@ -1,18 +1,16 @@
-package de.keksuccino.cinematica.engine.condition.conditions.entitydied;
+package de.keksuccino.cinematica.engine.condition.conditions.entity.entitydiedinrange;
 
-import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.engine.condition.ConditionFactory;
 import de.keksuccino.konkrete.input.StringUtils;
 import de.keksuccino.konkrete.math.MathUtils;
 import de.keksuccino.konkrete.properties.PropertiesSection;
-import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 
-public class EntityDiedCondition extends Condition {
+public class EntityDiedInRangeCondition extends Condition {
 
-    public EntityDiedCondition(@Nullable String identifier, ConditionFactory parent, PropertiesSection conditionMeta) {
+    public EntityDiedInRangeCondition(@Nullable String identifier, ConditionFactory parent, PropertiesSection conditionMeta) {
         super(identifier, parent, conditionMeta);
     }
 

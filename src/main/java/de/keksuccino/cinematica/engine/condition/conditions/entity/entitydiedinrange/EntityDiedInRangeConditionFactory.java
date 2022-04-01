@@ -1,9 +1,9 @@
-package de.keksuccino.cinematica.engine.condition.conditions.entitydied;
+package de.keksuccino.cinematica.engine.condition.conditions.entity.entitydiedinrange;
 
-import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.engine.cinematic.Cinematic;
 import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.engine.condition.ConditionFactory;
+import de.keksuccino.cinematica.engine.condition.conditions.entity.EntityRangeConditionScreen;
 import de.keksuccino.cinematica.events.EntityDiedEvent;
 import de.keksuccino.konkrete.gui.content.AdvancedButton;
 import de.keksuccino.konkrete.input.StringUtils;
@@ -20,20 +20,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class EntityDiedConditionFactory extends ConditionFactory {
+public class EntityDiedInRangeConditionFactory extends ConditionFactory {
 
     protected List<EntityDiedEvent> diedEntityQueue = new ArrayList<>();
 
-    public EntityDiedConditionFactory() {
+    public EntityDiedInRangeConditionFactory() {
         super("cinematica_condition_entity_died_in_range");
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
-    public void onKillEntity(EntityDiedEvent e) {
+    public void onEntityDied(EntityDiedEvent e) {
         if (e.getEntity() instanceof LivingEntity) {
-            //TODO remove debug
-            Cinematica.LOGGER.info("############ ENTITY DIED: " + e.getEntity().getType().getRegistryName().toString());
             this.diedEntityQueue.add(e);
         }
     }
@@ -63,21 +61,21 @@ public class EntityDiedConditionFactory extends ConditionFactory {
 
     @Override
     public Condition createConditionFromSerializedObject(Condition.SerializedCondition serialized) {
-        return new EntityDiedCondition(serialized.identifier, this, serialized.conditionMeta);
+        return new EntityDiedInRangeCondition(serialized.identifier, this, serialized.conditionMeta);
     }
 
     @Override
     public void onAddConditionButtonClick(AdvancedButton parentBtn, Screen parentScreen, Cinematic cinematicToAddTheConditionTo) {
-        Minecraft.getInstance().displayGuiScreen(new EntityDiedConditionScreen(parentScreen, null, (call) -> {
+        Minecraft.getInstance().displayGuiScreen(new EntityRangeConditionScreen(parentScreen, null, (call) -> {
             if (call != null) {
-                cinematicToAddTheConditionTo.addCondition(new EntityDiedCondition(null, this, call));
+                cinematicToAddTheConditionTo.addCondition(new EntityDiedInRangeCondition(null, this, call));
             }
         }));
     }
 
     @Override
     public void onEditConditionButtonClick(AdvancedButton parentBtn, Screen parentScreen, Condition conditionToEdit, Cinematic parentOfCondition) {
-        Minecraft.getInstance().displayGuiScreen(new EntityDiedConditionScreen(parentScreen, conditionToEdit.conditionMeta, (call) -> {
+        Minecraft.getInstance().displayGuiScreen(new EntityRangeConditionScreen(parentScreen, conditionToEdit.conditionMeta, (call) -> {
             if (call != null) {
                 conditionToEdit.conditionMeta = call;
                 parentOfCondition.saveChanges();
@@ -87,12 +85,12 @@ public class EntityDiedConditionFactory extends ConditionFactory {
 
     @Override
     public String getDisplayName() {
-        return Locals.localize("cinematica.condition.entitydied");
+        return Locals.localize("cinematica.condition.entity.entitydied");
     }
 
     @Override
     public List<String> getDescription() {
-        return Arrays.asList(StringUtils.splitLines(Locals.localize("cinematica.condition.entitydied.desc"), "%n%"));
+        return Arrays.asList(StringUtils.splitLines(Locals.localize("cinematica.condition.entity.entitydied.desc"), "%n%"));
     }
 
 }

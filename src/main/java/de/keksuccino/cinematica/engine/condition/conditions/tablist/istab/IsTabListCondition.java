@@ -1,4 +1,4 @@
-package de.keksuccino.cinematica.engine.condition.conditions.tablist.becomestab;
+package de.keksuccino.cinematica.engine.condition.conditions.tablist.istab;
 
 import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.engine.condition.ConditionFactory;
@@ -7,11 +7,9 @@ import de.keksuccino.konkrete.properties.PropertiesSection;
 
 import javax.annotation.Nullable;
 
-public class BecomesTabListCondition extends Condition {
+public class IsTabListCondition extends Condition {
 
-    protected boolean gotTriggered = false;
-
-    public BecomesTabListCondition(@Nullable String identifier, ConditionFactory parent, PropertiesSection conditionMeta) {
+    public IsTabListCondition(@Nullable String identifier, ConditionFactory parent, PropertiesSection conditionMeta) {
         super(identifier, parent, conditionMeta);
     }
 
@@ -64,12 +62,7 @@ public class BecomesTabListCondition extends Condition {
             }
 
             if (isLine) {
-                if (!this.gotTriggered) {
-                    this.gotTriggered = true;
-                    return true;
-                }
-            } else {
-                this.gotTriggered = false;
+                return true;
             }
         }
 

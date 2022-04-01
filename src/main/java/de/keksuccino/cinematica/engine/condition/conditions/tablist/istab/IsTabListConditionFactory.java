@@ -1,6 +1,5 @@
-package de.keksuccino.cinematica.engine.condition.conditions.tablist.becomestab;
+package de.keksuccino.cinematica.engine.condition.conditions.tablist.istab;
 
-import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.engine.cinematic.Cinematic;
 import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.engine.condition.ConditionFactory;
@@ -13,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.overlay.PlayerTabOverlayGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
@@ -21,10 +19,10 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
-public class BecomesTabListConditionFactory extends ConditionFactory {
+public class IsTabListConditionFactory extends ConditionFactory {
 
-    public BecomesTabListConditionFactory() {
-        super("cinematica_condition_becomes_tab_list");
+    public IsTabListConditionFactory() {
+        super("cinematica_condition_is_tab_list");
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -75,14 +73,14 @@ public class BecomesTabListConditionFactory extends ConditionFactory {
 
     @Override
     public Condition createConditionFromSerializedObject(Condition.SerializedCondition serialized) {
-        return new BecomesTabListCondition(serialized.identifier, this, serialized.conditionMeta);
+        return new IsTabListCondition(serialized.identifier, this, serialized.conditionMeta);
     }
 
     @Override
     public void onAddConditionButtonClick(AdvancedButton parentBtn, Screen parentScreen, Cinematic cinematicToAddTheConditionTo) {
         Minecraft.getInstance().displayGuiScreen(new TabListConditionScreen(parentScreen, null, (call) -> {
             if (call != null) {
-                cinematicToAddTheConditionTo.addCondition(new BecomesTabListCondition(null, this, call));
+                cinematicToAddTheConditionTo.addCondition(new IsTabListCondition(null, this, call));
             }
         }));
     }
@@ -99,12 +97,12 @@ public class BecomesTabListConditionFactory extends ConditionFactory {
 
     @Override
     public String getDisplayName() {
-        return Locals.localize("cinematica.condition.tablist.becomestab");
+        return Locals.localize("cinematica.condition.tablist.istab");
     }
 
     @Override
     public List<String> getDescription() {
-        return Arrays.asList(StringUtils.splitLines(Locals.localize("cinematica.condition.tablist.becomestab.desc"), "%n%"));
+        return Arrays.asList(StringUtils.splitLines(Locals.localize("cinematica.condition.tablist.istab.desc"), "%n%"));
     }
 
 }

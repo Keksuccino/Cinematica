@@ -1,4 +1,4 @@
-package de.keksuccino.cinematica.engine.condition.conditions.entitydied;
+package de.keksuccino.cinematica.engine.condition.conditions.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.keksuccino.cinematica.gui.ScrollableScreen;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class EntityDiedConditionScreen extends ScrollableScreen {
+public class EntityRangeConditionScreen extends ScrollableScreen {
 
     protected Consumer<PropertiesSection> callback;
 
@@ -32,7 +32,7 @@ public class EntityDiedConditionScreen extends ScrollableScreen {
     protected AdvancedButton cancelButton;
     protected AdvancedButton doneButton;
 
-    public EntityDiedConditionScreen(Screen parent, @Nullable PropertiesSection conditionMeta, Consumer<PropertiesSection> callback) {
+    public EntityRangeConditionScreen(Screen parent, @Nullable PropertiesSection conditionMeta, Consumer<PropertiesSection> callback) {
 
         super(parent, Locals.localize("cinematica.condition.configure"));
         this.callback = callback;
@@ -97,17 +97,17 @@ public class EntityDiedConditionScreen extends ScrollableScreen {
         }
 
         // TYPE -------------------------------
-        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.entitydied.conditionmeta.type"), true));
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.entity.rangeselection.conditionmeta.type"), true));
         this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.typeTextField));
         //-------------------------------------
 
         // NAME -------------------------------
-        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.entitydied.conditionmeta.name"), true));
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.entity.rangeselection.conditionmeta.name"), true));
         this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.nameTextField));
         //-------------------------------------
 
         // RANGE ------------------------------
-        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.entitydied.conditionmeta.range"), true));
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.entity.rangeselection.conditionmeta.range"), true));
         this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.rangeTextField));
         //-------------------------------------
 

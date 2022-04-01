@@ -1,4 +1,4 @@
-package de.keksuccino.cinematica.engine.condition.conditions.killentity;
+package de.keksuccino.cinematica.engine.condition.conditions.entity.killentity;
 
 import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.engine.cinematic.Cinematic;

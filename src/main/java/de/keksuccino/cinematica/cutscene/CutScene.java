@@ -21,8 +21,11 @@ public class CutScene extends Screen {
 
     protected VideoRenderer renderer;
 
+    public int fadeTimeMultiplier = 2;
+    protected int fadeTick = 0;
+    protected int fadeTicks = 20;
     protected boolean fadeIn;
-    protected int fadeInTicker = 30;
+    protected int fadeInTicker = fadeTicks;
     protected boolean fadeOut;
     protected int fadeOutTicker = 1;
 
@@ -109,9 +112,15 @@ public class CutScene extends Screen {
 
                 if (this.fadeInTicker <= 1) {
                     this.fadeIn = false;
+                    this.fadeTick = 0;
                 }
                 if (!this.isPaused) {
-                    this.fadeInTicker--;
+                    if (this.fadeTick <= 0) {
+                        this.fadeInTicker--;
+                        this.fadeTick = this.fadeTimeMultiplier;
+                    } else {
+                        this.fadeTick--;
+                    }
                 }
             }
 
@@ -124,11 +133,17 @@ public class CutScene extends Screen {
                     RenderSystem.enableBlend();
                     fill(matrixStack, 0, 0, this.width, this.height, c.getRGB());
 
-                    if (this.fadeOutTicker >= 30) {
+                    if (this.fadeOutTicker >= this.fadeTicks) {
+                        this.fadeTick = 0;
                         this.closeCutScene();
                     }
                     if (!this.isPaused) {
-                        this.fadeOutTicker++;
+                        if (this.fadeTick <= 0) {
+                            this.fadeOutTicker++;
+                            this.fadeTick = this.fadeTimeMultiplier;
+                        } else {
+                            this.fadeTick--;
+                        }
                     }
                 } else {
                     this.closeCutScene();
