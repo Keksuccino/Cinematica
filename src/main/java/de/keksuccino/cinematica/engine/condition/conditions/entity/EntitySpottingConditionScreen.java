@@ -13,11 +13,11 @@ import net.minecraft.client.gui.screen.Screen;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
-public class EntitySpotConditionScreen extends EntityRangeConditionScreen {
+public class EntitySpottingConditionScreen extends EntityRangeConditionScreen {
 
     protected AdvancedTextField fovOffsetTextField;
 
-    public EntitySpotConditionScreen(Screen parent, @Nullable PropertiesSection conditionMeta, Consumer<PropertiesSection> callback) {
+    public EntitySpottingConditionScreen(Screen parent, @Nullable PropertiesSection conditionMeta, Consumer<PropertiesSection> callback) {
 
         super(parent, conditionMeta, callback);
 

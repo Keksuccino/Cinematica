@@ -25,8 +25,12 @@ public class Cinematic {
     public String sourcePath;
     protected List<Condition> conditions = new ArrayList<>();
 
+    /** The display name of this cinematic **/
+    public String name = "";
     /** If this cinematic should only trigger one time **/
     public boolean oneTimeCinematic = false;
+    /** If this cinematic should only trigger once per game session **/
+    public boolean oncePerSessionCinematic = false;
     /** The delay in seconds before this cinematic starts playing **/
     public double triggerDelay = 0D;
     /** If cutscenes should be skip-able or not **/
@@ -37,6 +41,8 @@ public class Cinematic {
     public boolean fadeOutCutscene = true;
     /** If world music should stop while audio cinematics are playing **/
     public boolean stopWorldMusicOnAudio = false;
+
+    protected boolean oncePerSessionTriggered = false;
 
     public Cinematic(@Nullable String identifier, CinematicType type, String cinematicSource) {
         if (identifier != null) {
@@ -65,6 +71,14 @@ public class Cinematic {
             if (!c.conditionsMet()) {
                 return false;
             }
+        }
+        if (this.oncePerSessionCinematic) {
+            if (this.oncePerSessionTriggered == true) {
+                return false;
+            }
+            this.oncePerSessionTriggered = true;
+        } else {
+            this.oncePerSessionTriggered = false;
         }
         return true;
     }
@@ -125,9 +139,15 @@ public class Cinematic {
 
         sec.addEntry("cinematic_identifier", this.identifier);
         sec.addEntry("cinematic_source", this.sourcePath);
+        if (this.name != null) {
+            sec.addEntry("name", this.name);
+        } else {
+            sec.addEntry("name", "");
+        }
         sec.addEntry("allow_skip", "" + this.allowCutsceneSkip);
         sec.addEntry("type", this.type.getName());
         sec.addEntry("one_time_cinematic", "" + this.oneTimeCinematic);
+        sec.addEntry("once_per_session_cinematic", "" + this.oncePerSessionCinematic);
         sec.addEntry("trigger_delay", "" + this.triggerDelay);
         sec.addEntry("fade_in", "" + this.fadeInCutscene);
         sec.addEntry("fade_out", "" + this.fadeOutCutscene);
@@ -170,6 +190,11 @@ public class Cinematic {
 
         sc.sourcePath = serializedObject.getEntryValue("cinematic_source");
 
+        String nameString = serializedObject.getEntryValue("name");
+        if ((nameString != null) && !nameString.replace(" ", "").equals("")) {
+            sc.name = nameString;
+        }
+
         String allowSkipString = serializedObject.getEntryValue("allow_skip");
         if ((allowSkipString != null) && allowSkipString.equals("false")) {
             sc.allowCutsceneSkip = false;
@@ -178,6 +203,11 @@ public class Cinematic {
         String oneTimeString = serializedObject.getEntryValue("one_time_cinematic");
         if ((oneTimeString != null) && oneTimeString.equals("true")) {
             sc.oneTimeCinematic = true;
+        }
+
+        String oncePerSessionString = serializedObject.getEntryValue("once_per_session_cinematic");
+        if ((oncePerSessionString != null) && oncePerSessionString.equals("true")) {
+            sc.oncePerSessionCinematic = true;
         }
 
         String triggerDelayString = serializedObject.getEntryValue("trigger_delay");
@@ -236,9 +266,11 @@ public class Cinematic {
 
         Cinematic c = new Cinematic(serialized.identifier, serialized.type, serialized.sourcePath);
 
+        c.name = serialized.name;
         c.allowCutsceneSkip = serialized.allowCutsceneSkip;
         c.triggerDelay = serialized.triggerDelay;
         c.oneTimeCinematic = serialized.oneTimeCinematic;
+        c.oncePerSessionCinematic = serialized.oncePerSessionCinematic;
         c.fadeInCutscene = serialized.fadeInCutscene;
         c.fadeOutCutscene = serialized.fadeOutCutscene;
         c.stopWorldMusicOnAudio = serialized.stopWorldMusicOnAudio;
@@ -275,8 +307,10 @@ public class Cinematic {
         public final CinematicType type;
         public String sourcePath;
         public List<Condition.SerializedCondition> conditions = new ArrayList<>();
+        public String name = "";
         public boolean allowCutsceneSkip = true;
         public boolean oneTimeCinematic = false;
+        public boolean oncePerSessionCinematic = false;
         public double triggerDelay = 0D;
         public boolean fadeInCutscene = true;
         public boolean fadeOutCutscene = true;

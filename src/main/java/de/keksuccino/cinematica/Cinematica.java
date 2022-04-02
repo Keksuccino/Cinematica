@@ -29,23 +29,13 @@ import net.minecraftforge.fml.network.FMLNetworkConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-//TODO trigger-once-per-session option für cinematics (wird nur in session gespeichert, nicht in file)
+//TODO block mine/harvest condition
 
-//TODO player harvested block/item X condition (use item/block id here)
-
-//TODO player interacted with entity X condition (wie kill entity mit type + name)
-
-//TODO player interacted with block X condition (when entering forge, brewing stand, etc.)
-
-//TODO player consumed item X (triggert nur bei richtigen consumables, nicht bei right-click actions von items, etc.)
-
-//TODO player used item X (right-click action von item in hand)
-
-//TODO "name" value zu cinematic base adden (um Anzeigenamen für Cinematics zu setzen)
+//TODO chat message condition (checks for content in chat message; same check types as for item lore)
 
 //TODO kill entity condition verbessern + re-implementieren
 
-//TODO player got achievement X condition
+//TODO player got achievement condition
 
 
 //TODO eventuell volume handling in Auudio zurück zu alter logik
@@ -55,10 +45,10 @@ public class Cinematica {
 
 	public static final String VERSION = "1.0.0";
 
-	public static final Logger LOGGER = LogManager.getLogger();
+	public static final Logger LOGGER = LogManager.getLogger("cinematica");
 
 	public static final File MOD_DIRECTORY = new File("config/cinematica");
-	public static final File CINEMATICA_TEMP_DIR = new File("cinematica_temp_data");
+	public static final File CINEMATICA_INSTANCE_DATA_DIR = new File("cinematica_instance_data");
 
 	public static Config config;
 
@@ -73,8 +63,8 @@ public class Cinematica {
 				if (!MOD_DIRECTORY.isDirectory()) {
 					MOD_DIRECTORY.mkdirs();
 				}
-				if (!CINEMATICA_TEMP_DIR.isDirectory()) {
-					CINEMATICA_TEMP_DIR.mkdirs();
+				if (!CINEMATICA_INSTANCE_DATA_DIR.isDirectory()) {
+					CINEMATICA_INSTANCE_DATA_DIR.mkdirs();
 				}
 
 	    		updateConfig();

@@ -39,9 +39,14 @@ cinematica.cinematic.allowskip.on = Allow Skip: §aYes
 cinematica.cinematic.allowskip.off = Allow Skip: §cNo
 cinematica.cinematic.source.nosource = §lNo Source Selected.
 cinematica.cinematic.source = §lSource: {}
+cinematica.cinematic.name = Name [Optional]
+cinematica.cinematic.name.desc = Name this cinematic to be able%n%to identify it better.
 cinematica.cinematic.onetimetrigger.on = Trigger Only Once: §aYes
 cinematica.cinematic.onetimetrigger.off = Trigger Only Once: §cNo
 cinematica.cinematic.onetimetrigger.btn.desc = If this is enabled, the cinematic%n%will only trigger once and then%n%never again, even after%n%restarting the game!
+cinematica.cinematic.oncepersession.on = Only Once Per Session: §aYes
+cinematica.cinematic.oncepersession.off = Only Once Per Session: §cNo
+cinematica.cinematic.oncepersession.btn.desc = If this is enabled, the cinematic%n%will only trigger once per%n%game session.%n%%n%Restarting the game makes%n%it trigger again.
 cinematica.cinematic.setdelay = Set Trigger Delay (Sec)
 cinematica.cinematic.setdelay.btn.desc = Time in seconds before the%n%cinematic starts, after it%n%got triggered.
 cinematica.cinematic.stopworldmusic.on = Stop World Music: §aYes
@@ -127,25 +132,33 @@ cinematica.condition.entity.comesinrange = Entity Comes In Range
 cinematica.condition.entity.comesinrange.desc = Gets triggered when an entity%n%comes in range of the player.%n%%n%§cThis condition is experimental!%n%§cThe client could start lagging%n%§cwhen using too many instances%n%§cof this condition in cinematics.
 cinematica.condition.entity.isinrange = Entity Is In Range
 cinematica.condition.entity.isinrange.desc = Gets triggered while an entity%n%is in range of the player.%n%%n%§cThis condition is experimental!%n%§cThe client could start lagging%n%§cwhen using too many instances%n%§cof this condition in cinematics.
+cinematica.condition.entity.entityrightclick = Player Right-Clicked Entity
+cinematica.condition.entity.entityrightclick.desc = Gets triggered when the player%n%right-clicks an entity.
 cinematica.condition.entity.spot = Player Spots Entity In Range
 cinematica.condition.entity.spot.desc = Gets triggered when the player%n%spots an entity in range.%n%%n%§cThis condition is experimental!%n%§cThe client could start lagging%n%§cwhen using too many instances%n%§cof this condition in cinematics.
 cinematica.condition.entity.watch = Player Watches Entity In Range
 cinematica.condition.entity.watch.desc = Gets triggered while the player%n%watches an entity in range.%n%%n%§cThis condition is experimental!%n%§cThe client could start lagging%n%§cwhen using too many instances%n%§cof this condition in cinematics.%n%%n%§7§oStop stalking helpless entities!
-cinematica.condition.entity.rangeselection.conditionmeta.type = Entity Type [Blank = Any Type]
-cinematica.condition.entity.rangeselection.conditionmeta.name = Entity Name [Blank = Any Name]
+cinematica.condition.entity.selection.conditionmeta.type = Entity Type [Blank = Any Type]
+cinematica.condition.entity.selection.conditionmeta.name = Entity Name [Blank = Any Name]
 cinematica.condition.entity.rangeselection.conditionmeta.range = Range Around Player [Radius]
 cinematica.condition.entity.spotselection.conditionmeta.fov_offset = FOV Offset [Field Of View Offset]
 
-cinematica.condition.addtoinventory = Item Added To Player Inventory
-cinematica.condition.addtoinventory.desc = Gets triggered when an item%n%gets added to the player inventory.%n%%n%§cThis condition is experimental!%n%§cIt can also trigger when%n%§cmoving items in the inventory.%n%§cIf you want to use this,%n%§cit's recommended to enable the%n%§cone-time-option for the%n%§cparent cinematic.
-cinematica.condition.addtoinventory.conditionmeta.type = Item Type [Blank = Any Type]
-cinematica.condition.addtoinventory.conditionmeta.name = Item Name [Blank = Any Name]
-cinematica.condition.addtoinventory.conditionmeta.lore = Item Lore [Blank = Any Lore]
-cinematica.condition.addtoinventory.conditionmeta.lore.checktype.equals = Lore Check Type: §6Equals
-cinematica.condition.addtoinventory.conditionmeta.lore.checktype.starts-with = Lore Check Type: §6Starts-With
-cinematica.condition.addtoinventory.conditionmeta.lore.checktype.ends-with = Lore Check Type: §6Ends-With
-cinematica.condition.addtoinventory.conditionmeta.lore.checktype.contains = Lore Check Type: §6Contains
-cinematica.condition.addtoinventory.conditionmeta.count = Item Count [Blank = Any Count]
+cinematica.condition.item.addtoinventory = Item Added To Player Inventory
+cinematica.condition.item.addtoinventory.desc = Gets triggered when an item%n%gets added to the player inventory.%n%%n%§cThis condition is experimental!%n%§cIt can also trigger when%n%§cmoving items in the inventory.%n%§cIf you want to use this,%n%§cit's recommended to enable the%n%§cone-time-option for the%n%§cparent cinematic.
+cinematica.condition.item.foodeaten = Player Food Eaten
+cinematica.condition.item.foodeaten.desc = Gets triggered when the player%n%consumed a food item.
+cinematica.condition.item.rightclickitem = Player Right-Clicked Item
+cinematica.condition.item.rightclickitem.desc = Gets triggered when the player%n%right-clicks an item in hand.
+cinematica.condition.item.placeblockitem = Player Placed Block
+cinematica.condition.item.placeblockitem.desc = Gets triggered when the player%n%placed a block.
+cinematica.condition.item.conditionmeta.type = Item Type [Blank = Any Type]
+cinematica.condition.item.conditionmeta.name = Item Name [Blank = Any Name]
+cinematica.condition.item.conditionmeta.lore = Item Lore [Blank = Any Lore]
+cinematica.condition.item.conditionmeta.lore.checktype.equals = Lore Check Type: §6Equals
+cinematica.condition.item.conditionmeta.lore.checktype.starts-with = Lore Check Type: §6Starts-With
+cinematica.condition.item.conditionmeta.lore.checktype.ends-with = Lore Check Type: §6Ends-With
+cinematica.condition.item.conditionmeta.lore.checktype.contains = Lore Check Type: §6Contains
+cinematica.condition.item.conditionmeta.count = Item Count [Blank = Any Count]
 
 cinematica.condition.biome.conditionmeta.biome = Biome Type
 cinematica.condition.biome.conditionmeta.biome.current = §7Current Biome Type: {}

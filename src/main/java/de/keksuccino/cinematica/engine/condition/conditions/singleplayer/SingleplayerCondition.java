@@ -1,6 +1,5 @@
 package de.keksuccino.cinematica.engine.condition.conditions.singleplayer;
 
-import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.engine.condition.ConditionFactory;
 import de.keksuccino.konkrete.properties.PropertiesSection;
@@ -23,8 +22,6 @@ public class SingleplayerCondition extends Condition {
             String curSP = conditionContext.getEntryValue("singleplayer");
 
             if ((curSP != null) && curSP.equals("true")) {
-                //TODO remove debug
-                Cinematica.LOGGER.info("############## CONDITIONS MET FOR SINGLEPLAYER TRIGGER!");
                 return true;
             }
 

@@ -1,6 +1,5 @@
 package de.keksuccino.cinematica.engine.condition.conditions.area.isarea;
 
-import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.engine.condition.ConditionFactory;
 import de.keksuccino.konkrete.math.MathUtils;
@@ -43,8 +42,6 @@ public class IsAreaCondition extends Condition {
             boolean isZ = (zPlayer >= zFrom) && (zPlayer <= zTo);
 
             if (isX && isY && isZ) {
-                //TODO remove debug
-                Cinematica.LOGGER.info("############## CONDITIONS MET FOR IS AREA TRIGGER!");
                 return true;
             }
 

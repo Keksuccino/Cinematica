@@ -218,8 +218,6 @@ public class EventHandler {
                 c.stop();
                 c.restart();
             }
-            //TODO remove debug
-            Cinematica.LOGGER.info("####################### WORLD CHANGE: STOPPING AUDIOS!");
             AudioCinematicHandler.clearUnfinishedAudioCache();
         }
         this.lastActiveWorld = Minecraft.getInstance().world;
@@ -228,29 +226,40 @@ public class EventHandler {
 
     @SubscribeEvent
     public void onEntityDied(EntityDiedEvent e) {
-        if (Cinematica.config.getOrDefault("print_died_entities", false)) {
-            if ((Minecraft.getInstance().world != null) && (Minecraft.getInstance().player != null)) {
-                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e-----------------------"), UUID.randomUUID());
-                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: §lENTITY DIED:"), UUID.randomUUID());
-                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: ID/TYPE: " + e.getEntity().getType().getRegistryName().toString()), UUID.randomUUID());
-                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: NAME: " + StringUtils.convertFormatCodes(e.getEntity().getName().getString(), "§", "&")), UUID.randomUUID());
-                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e-----------------------"), UUID.randomUUID());
+        try {
+            if (Cinematica.config.getOrDefault("print_died_entities", false)) {
+                if ((Minecraft.getInstance().world != null) && (Minecraft.getInstance().player != null)) {
+                    Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e-----------------------"), UUID.randomUUID());
+                    Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: §lENTITY DIED:"), UUID.randomUUID());
+                    Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: ID/TYPE: " + e.getEntity().getType().getRegistryName().toString()), UUID.randomUUID());
+                    Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: NAME: " + StringUtils.convertFormatCodes(e.getEntity().getName().getString(), "§", "&")), UUID.randomUUID());
+                    Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e-----------------------"), UUID.randomUUID());
+                }
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
     @SubscribeEvent
     public void onItemAddedToInventory(AddItemToPlayerInventoryEvent e) {
-        if (Cinematica.config.getOrDefault("print_added_items", false)) {
-            if ((Minecraft.getInstance().world != null) && (Minecraft.getInstance().player != null)) {
-                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e-----------------------"), UUID.randomUUID());
-                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: §lITEM ADDED TO INVENTORY:"), UUID.randomUUID());
-                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: ITEM TYPE: " + e.getStack().getItem().getRegistryName().toString()), UUID.randomUUID());
-                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: ITEM NAME: " + StringUtils.convertFormatCodes(e.getStack().getDisplayName().getString(), "§", "&")), UUID.randomUUID());
-                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: ITEM COUNT: " + e.getStack().getCount()), UUID.randomUUID());
-                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: ITEM LORE: " + StringUtils.convertFormatCodes(FormattingUtils.deserializeItemLoreToString(e.getStack()), "§", "&")), UUID.randomUUID());
-                Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e-----------------------"), UUID.randomUUID());
+        try {
+            if (Cinematica.config.getOrDefault("print_added_items", false)) {
+                if ((Minecraft.getInstance().world != null) && (Minecraft.getInstance().player != null)) {
+                    Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e-----------------------"), UUID.randomUUID());
+                    Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: §lITEM ADDED TO INVENTORY:"), UUID.randomUUID());
+                    Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: ITEM TYPE: " + e.getStack().getItem().getRegistryName().toString()), UUID.randomUUID());
+                    Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: ITEM NAME: " + StringUtils.convertFormatCodes(e.getStack().getDisplayName().getString(), "§", "&")), UUID.randomUUID());
+                    Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: ITEM COUNT: " + e.getStack().getCount()), UUID.randomUUID());
+                    String lore = FormattingUtils.deserializeItemLoreToString(e.getStack());
+                    if (lore != null) {
+                        Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e[CINEMATICA] DEBUG: ITEM LORE: " + StringUtils.convertFormatCodes(lore, "§", "&")), UUID.randomUUID());
+                    }
+                    Minecraft.getInstance().player.sendMessage(new StringTextComponent("§e-----------------------"), UUID.randomUUID());
+                }
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

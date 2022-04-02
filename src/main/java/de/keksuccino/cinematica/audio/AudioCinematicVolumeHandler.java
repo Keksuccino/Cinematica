@@ -12,7 +12,7 @@ import java.util.List;
 
 public class AudioCinematicVolumeHandler {
 
-    protected static final File PROPS_FILE = new File(Cinematica.CINEMATICA_TEMP_DIR.getPath() + "/audio_volume.properties");
+    protected static final File PROPS_FILE = new File(Cinematica.CINEMATICA_INSTANCE_DATA_DIR.getPath() + "/audio_volume.properties");
 
     protected static int volume = 100;
 

@@ -3,7 +3,7 @@ package de.keksuccino.cinematica.engine.condition.conditions.entity.entityspot;
 import de.keksuccino.cinematica.engine.cinematic.Cinematic;
 import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.engine.condition.ConditionFactory;
-import de.keksuccino.cinematica.engine.condition.conditions.entity.EntitySpotConditionScreen;
+import de.keksuccino.cinematica.engine.condition.conditions.entity.EntitySpottingConditionScreen;
 import de.keksuccino.konkrete.gui.content.AdvancedButton;
 import de.keksuccino.konkrete.input.StringUtils;
 import de.keksuccino.konkrete.localization.Locals;
@@ -34,7 +34,7 @@ public class EntitySpotConditionFactory extends ConditionFactory {
 
     @Override
     public void onAddConditionButtonClick(AdvancedButton parentBtn, Screen parentScreen, Cinematic cinematicToAddTheConditionTo) {
-        Minecraft.getInstance().displayGuiScreen(new EntitySpotConditionScreen(parentScreen, null, (call) -> {
+        Minecraft.getInstance().displayGuiScreen(new EntitySpottingConditionScreen(parentScreen, null, (call) -> {
             if (call != null) {
                 cinematicToAddTheConditionTo.addCondition(new EntitySpotCondition(null, this, call));
             }
@@ -43,7 +43,7 @@ public class EntitySpotConditionFactory extends ConditionFactory {
 
     @Override
     public void onEditConditionButtonClick(AdvancedButton parentBtn, Screen parentScreen, Condition conditionToEdit, Cinematic parentOfCondition) {
-        Minecraft.getInstance().displayGuiScreen(new EntitySpotConditionScreen(parentScreen, conditionToEdit.conditionMeta, (call) -> {
+        Minecraft.getInstance().displayGuiScreen(new EntitySpottingConditionScreen(parentScreen, conditionToEdit.conditionMeta, (call) -> {
             if (call != null) {
                 conditionToEdit.conditionMeta = call;
                 parentOfCondition.saveChanges();

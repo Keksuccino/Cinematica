@@ -188,14 +188,20 @@ public class SelectCinematicScreen extends Screen {
                 fill(matrix, this.x, this.y, this.x + this.getWidth(), this.y + this.getHeight(), ENTRY_BACKGROUND_COLOR.brighter().brighter().getRGB());
             }
 
-            String sourceString = this.cinematic.sourcePath;
-            if (font.getStringWidth(sourceString) > this.getWidth() - 30) {
-                sourceString = new StringBuilder(sourceString).reverse().toString();
-                sourceString = font.trimStringToWidth(sourceString, this.getWidth() - 30);
-                sourceString = new StringBuilder(sourceString).reverse().toString();
-                sourceString = ".." + sourceString;
+            String labelString;
+            if ((this.cinematic.name != null) && !this.cinematic.name.replace(" ", "").equals("")) {
+                labelString = this.cinematic.name;
+            } else {
+                String sourceString = this.cinematic.sourcePath;
+                if (font.getStringWidth(sourceString) > this.getWidth() - 30) {
+                    sourceString = new StringBuilder(sourceString).reverse().toString();
+                    sourceString = font.trimStringToWidth(sourceString, this.getWidth() - 30);
+                    sourceString = new StringBuilder(sourceString).reverse().toString();
+                    sourceString = ".." + sourceString;
+                }
+                labelString = sourceString;
             }
-            drawCenteredString(matrix, font, sourceString, center, this.y + 10, -1);
+            drawCenteredString(matrix, font, labelString, center, this.y + 10, -1);
 
             this.handleSelection();
 

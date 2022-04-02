@@ -7,6 +7,7 @@ import de.keksuccino.cinematica.ui.UIBase;
 import de.keksuccino.cinematica.ui.popup.ChooseFilePopup;
 import de.keksuccino.cinematica.ui.popup.CinematicaTextInputPopup;
 import de.keksuccino.konkrete.gui.content.AdvancedButton;
+import de.keksuccino.konkrete.gui.content.AdvancedTextField;
 import de.keksuccino.konkrete.gui.content.scrollarea.ScrollAreaEntry;
 import de.keksuccino.konkrete.gui.screens.popup.PopupHandler;
 import de.keksuccino.konkrete.input.CharacterFilter;
@@ -30,11 +31,14 @@ public class EditCinematicScreen extends ScrollableScreen {
 
     protected boolean isNewCinematic = false;
 
+    protected AdvancedTextField nameTextField;
+
     protected AdvancedButton chooseSourceButton;
     protected AdvancedButton manageConditionsButton;
     protected AdvancedButton allowSkipButton;
     protected AdvancedButton setDelayButton;
     protected AdvancedButton oneTimeCinematicButton;
+    protected AdvancedButton oncePerSessionButton;
     protected AdvancedButton fadeInButton;
     protected AdvancedButton fadeOutButton;
     protected AdvancedButton stopWorldMusicButton;
@@ -60,6 +64,19 @@ public class EditCinematicScreen extends ScrollableScreen {
             this.cinematic = new Cinematic(null, type, null);
         }
         this.callback = callback;
+
+        this.nameTextField = new AdvancedTextField(Minecraft.getInstance().fontRenderer, 0, 0, 200, 20, true, null) {
+            @Override
+            public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+                super.render(matrixStack, mouseX, mouseY, partialTicks);
+                cinematic.name = this.getText();
+            }
+        };
+        this.nameTextField.setMaxStringLength(100000);
+        if (this.cinematic.name != null) {
+            this.nameTextField.setText(this.cinematic.name);
+        }
+
     }
 
     @Override
@@ -95,6 +112,15 @@ public class EditCinematicScreen extends ScrollableScreen {
         });
         this.copyIdentifierButton.setDescription(StringUtils.splitLines(Locals.localize("cinematica.cinematic.copy_identifier.desc"), "%n%"));
         this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.copyIdentifierButton));
+        //--------------------------------------
+
+        // NAME --------------------------------
+        TextEntry nameLabelEntry = new TextEntry(this.scrollArea, Locals.localize("cinematica.cinematic.name"), true);
+        nameLabelEntry.setDescription(StringUtils.splitLines(Locals.localize("cinematica.cinematic.name.desc"), "%n%"));
+        this.scrollArea.addEntry(nameLabelEntry);
+        TextFieldEntry nameFieldEntry = new TextFieldEntry(this.scrollArea, this.nameTextField);
+        nameFieldEntry.setDescription(StringUtils.splitLines(Locals.localize("cinematica.cinematic.name.desc"), "%n%"));
+        this.scrollArea.addEntry(nameFieldEntry);
         //--------------------------------------
 
         // CHOOSE SOURCE -----------------------
@@ -183,6 +209,28 @@ public class EditCinematicScreen extends ScrollableScreen {
         };
         this.oneTimeCinematicButton.setDescription(StringUtils.splitLines(Locals.localize("cinematica.cinematic.onetimetrigger.btn.desc"), "%n%"));
         this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.oneTimeCinematicButton));
+        //-------------------------------------
+
+        // TOGGLE ONCE-PER-SESSION-CINEMATIC --
+        this.oncePerSessionButton = new AdvancedButton(0, 0, 200, 20, "", true, (press) -> {
+            if (this.cinematic.oncePerSessionCinematic) {
+                this.cinematic.oncePerSessionCinematic = false;
+            } else {
+                this.cinematic.oncePerSessionCinematic = true;
+            }
+        }) {
+            @Override
+            public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+                if (cinematic.oncePerSessionCinematic) {
+                    this.setMessage(Locals.localize("cinematica.cinematic.oncepersession.on"));
+                } else {
+                    this.setMessage(Locals.localize("cinematica.cinematic.oncepersession.off"));
+                }
+                super.render(matrixStack, mouseX, mouseY, partialTicks);
+            }
+        };
+        this.oncePerSessionButton.setDescription(StringUtils.splitLines(Locals.localize("cinematica.cinematic.oncepersession.btn.desc"), "%n%"));
+        this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.oncePerSessionButton));
         //-------------------------------------
 
         // TOGGLE ALLOW SKIP ------------------

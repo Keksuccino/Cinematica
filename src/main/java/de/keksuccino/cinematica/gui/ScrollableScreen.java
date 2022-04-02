@@ -91,6 +91,15 @@ public class ScrollableScreen extends Screen {
 
         super.render(matrix, mouseX, mouseY, partialTicks);
 
+        for (ScrollAreaEntry e : this.scrollArea.getEntries()) {
+            if (e instanceof ScrollAreaEntryBase) {
+                if (e.isHovered() && (((ScrollAreaEntryBase) e).description != null)) {
+                    renderDescription(matrix, ((ScrollAreaEntryBase) e).description, MouseInput.getMouseX(), MouseInput.getMouseY());
+                    break;
+                }
+            }
+        }
+
     }
 
     protected static void renderDescription(MatrixStack matrix, List<String> desc, int mouseX, int mouseY) {
@@ -155,10 +164,6 @@ public class ScrollableScreen extends Screen {
             c.matrix = matrix;
 
             this.renderBody.accept(c);
-
-            if (this.isHovered() && (this.description != null)) {
-                renderDescription(matrix, this.description, MouseInput.getMouseX(), MouseInput.getMouseY());
-            }
 
         }
 

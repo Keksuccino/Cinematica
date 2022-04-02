@@ -1,4 +1,4 @@
-package de.keksuccino.cinematica.engine.condition.conditions.addtoinventory;
+package de.keksuccino.cinematica.engine.condition.conditions.item.foodeaten;
 
 import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.engine.condition.ConditionFactory;
@@ -8,9 +8,9 @@ import de.keksuccino.konkrete.properties.PropertiesSection;
 
 import javax.annotation.Nullable;
 
-public class AddItemToInventoryCondition extends Condition {
+public class FoodEatenCondition extends Condition {
 
-    public AddItemToInventoryCondition(@Nullable String identifier, ConditionFactory parent, PropertiesSection conditionMeta) {
+    public FoodEatenCondition(@Nullable String identifier, ConditionFactory parent, PropertiesSection conditionMeta) {
         super(identifier, parent, conditionMeta);
     }
 

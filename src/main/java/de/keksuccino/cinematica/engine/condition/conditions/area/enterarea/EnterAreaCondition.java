@@ -1,6 +1,5 @@
 package de.keksuccino.cinematica.engine.condition.conditions.area.enterarea;
 
-import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.engine.condition.ConditionFactory;
 import de.keksuccino.konkrete.math.MathUtils;
@@ -47,8 +46,6 @@ public class EnterAreaCondition extends Condition {
             if (isX && isY && isZ) {
                 if (!this.gotTriggered) {
                     this.gotTriggered = true;
-                    //TODO remove debug
-                    Cinematica.LOGGER.info("############## CONDITIONS MET FOR ENTER AREA TRIGGER!");
                     return true;
                 }
             } else {

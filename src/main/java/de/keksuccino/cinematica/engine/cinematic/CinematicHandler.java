@@ -23,7 +23,7 @@ public class CinematicHandler {
 
     protected static final File CINEMATICS_DIR = new File(Cinematica.MOD_DIRECTORY.getPath() + "/cinematics");
     protected static final File CINEMATICS_FILE = new File(CINEMATICS_DIR.getPath() + "/cinematics.properties");
-    public static final File ONE_TIME_CINEMATICS_FILE = new File(Cinematica.CINEMATICA_TEMP_DIR.getPath() + "/one-time-cinematics.properties");
+    public static final File ONE_TIME_CINEMATICS_FILE = new File(Cinematica.CINEMATICA_INSTANCE_DATA_DIR.getPath() + "/one-time-cinematics.properties");
 
     protected static List<Cinematic> cinematics = new ArrayList<>();
     protected static Map<Cinematic, Long> triggeredCinematics = new HashMap<>();
@@ -241,6 +241,9 @@ public class CinematicHandler {
     }
 
     public static void clearTriggeredOneTimeCinematics() {
+        for (Cinematic c : cinematics) {
+            c.oncePerSessionTriggered = false;
+        }
         triggeredOneTimeCinematics.clear();
         saveOneTimeCinematics();
     }
@@ -308,9 +311,6 @@ public class CinematicHandler {
     protected static void loadCinematics() {
         try {
 
-            //TODO remove debug
-            Cinematica.LOGGER.info("#################### LOADING CINEMATICS");
-
             if (!CINEMATICS_FILE.isFile()) {
                 CINEMATICS_FILE.createNewFile();
                 PropertiesSerializer.writeProperties(new PropertiesSet("cinematica-cinematics"), CINEMATICS_FILE.getPath());
@@ -323,8 +323,7 @@ public class CinematicHandler {
                 for (PropertiesSection sec : set.getPropertiesOfType("cinematic-object")) {
                     Cinematic c = Cinematic.buildCinematicFromPropertiesSection(sec);
                     if (c != null) {
-                        //TODO remove debug
-                        Cinematica.LOGGER.info("#################### LOADING CINEMATICS: ADDING: " + c.sourcePath + " | " + c.getIdentifier());
+                        Cinematica.LOGGER.info("[CINEMATICA] LOADING CINEMATIC: SOURCE: " + c.sourcePath + " | ID: " + c.getIdentifier() + " | NAME: " + c.name);
                         cinematics.add(c);
                     }
                 }
@@ -338,9 +337,6 @@ public class CinematicHandler {
     public static void saveCinematics() {
         if (isInitialized) {
             try {
-
-                //TODO remove debug
-                Cinematica.LOGGER.info("#################### SAVING CINEMATICS");
 
                 if (!CINEMATICS_FILE.isFile()) {
                     CINEMATICS_FILE.createNewFile();
@@ -375,6 +371,13 @@ public class CinematicHandler {
                             return;
                         } else {
                             addToTriggeredOneTimeCinematics(c);
+                        }
+                    }
+                    if (c.oncePerSessionCinematic) {
+                        if (c.oncePerSessionTriggered) {
+                            return;
+                        } else {
+                            c.oncePerSessionTriggered = true;
                         }
                     }
                 }

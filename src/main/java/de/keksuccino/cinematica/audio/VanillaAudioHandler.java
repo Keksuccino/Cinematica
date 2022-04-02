@@ -40,21 +40,18 @@ public class VanillaAudioHandler {
             suppressWorldMusic = suppress;
             if (suppress) {
                 if (Minecraft.getInstance().getMusicTicker() != null) {
-                    //TODO remove debug
-                    Cinematica.LOGGER.info("############# SUPPRESS WORLD MUSIC!");
+//                    Cinematica.LOGGER.info("############# SUPPRESS WORLD MUSIC!");
                     Minecraft.getInstance().getMusicTicker().stop();
                 }
             } else {
                 if (Minecraft.getInstance().getMusicTicker() != null) {
-                    //TODO remove debug
-                    Cinematica.LOGGER.info("############# UN-SUPPRESS WORLD MUSIC!");
+//                    Cinematica.LOGGER.info("############# UN-SUPPRESS WORLD MUSIC!");
                     Minecraft.getInstance().getMusicTicker().stop();
                     setTimeUntilNextBackgroundMusic(50);
                 }
             }
         } else if (!suppress) {
-            //TODO remove debug
-            Cinematica.LOGGER.info("############# TRIED TO UN-SUPPRESS WORLD MUSIC WHILE FADING!");
+//            Cinematica.LOGGER.info("############# TRIED TO UN-SUPPRESS WORLD MUSIC WHILE FADING!");
             unsuppressedWhileFading = true;
         }
     }
@@ -152,13 +149,11 @@ public class VanillaAudioHandler {
                         fadeOutVolume = 0.0F;
                     }
                     Minecraft.getInstance().gameSettings.setSoundLevel(SoundCategory.MUSIC, fadeOutVolume);
-                    //TODO remove debug
-                    Cinematica.LOGGER.info("################## SET VOLUME TO: " + fadeOutVolume);
+//                    Cinematica.LOGGER.info("################## SET VOLUME TO: " + fadeOutVolume);
                     lastFadeOutTick = now;
                 }
             } else {
-                //TODO remove debug
-                Cinematica.LOGGER.info("################## FADED-OUT WORLD MUSIC!");
+//                Cinematica.LOGGER.info("################## FADED-OUT WORLD MUSIC!");
                 setSuppressWorldMusic(true, true);
                 if (!postFadingTaskList.isEmpty()) {
                     for (Runnable r : postFadingTaskList) {
@@ -166,8 +161,7 @@ public class VanillaAudioHandler {
                     }
                 }
                 Minecraft.getInstance().gameSettings.setSoundLevel(SoundCategory.MUSIC, cachedFadeOutMusicVolume);
-                //TODO remove debug
-                Cinematica.LOGGER.info("################## ORIGINAL MUSIC VOLUME RESTORED TO: " + cachedFadeOutMusicVolume);
+//                Cinematica.LOGGER.info("################## ORIGINAL MUSIC VOLUME RESTORED TO: " + cachedFadeOutMusicVolume);
                 doFadeOut = false;
             }
 

@@ -1,6 +1,5 @@
 package de.keksuccino.cinematica.engine.condition.conditions.dimension.enterdimension;
 
-import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.engine.condition.ConditionFactory;
 import de.keksuccino.konkrete.properties.PropertiesSection;
@@ -33,8 +32,6 @@ public class EnterDimensionCondition extends Condition {
         if (isDimension) {
             if (!this.gotTriggered) {
                 this.gotTriggered = true;
-                //TODO remove debug
-                Cinematica.LOGGER.info("############## CONDITIONS MET FOR ENTER DIMENSION TRIGGER!");
                 return true;
             }
         } else {

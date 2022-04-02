@@ -6,7 +6,9 @@
     "client.MixinSoundHandler",
     "client.MixinClientWorld",
     "client.MixinPlayerInventory",
-    "client.MixinContainer"
+    "client.MixinContainer",
+    "client.MixinPlayerEntity",
+    "client.MixinItemStack"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,6 +1,5 @@
 package de.keksuccino.cinematica.engine.condition.conditions.multiplayer;
 
-import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.engine.condition.ConditionFactory;
 import de.keksuccino.konkrete.properties.PropertiesSection;
@@ -23,8 +22,6 @@ public class MultiplayerCondition extends Condition {
             String curIp = conditionContext.getEntryValue("multiplayer");
 
             if ((curIp != null) && curIp.equals("true")) {
-                //TODO remove debug
-                Cinematica.LOGGER.info("############## CONDITIONS MET FOR MULTIPLAYER TRIGGER!");
                 return true;
             }
 

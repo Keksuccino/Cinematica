@@ -1,4 +1,4 @@
-package de.keksuccino.cinematica.engine.condition.conditions.entity.killentity;
+package de.keksuccino.cinematica.engine.condition.conditions.entity.entityrightclick;
 
 import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.engine.condition.ConditionFactory;
@@ -7,9 +7,9 @@ import de.keksuccino.konkrete.properties.PropertiesSection;
 
 import javax.annotation.Nullable;
 
-public class KillEntityCondition extends Condition {
+public class EntityRightClickCondition extends Condition {
 
-    public KillEntityCondition(@Nullable String identifier, ConditionFactory parent, PropertiesSection conditionMeta) {
+    public EntityRightClickCondition(@Nullable String identifier, ConditionFactory parent, PropertiesSection conditionMeta) {
         super(identifier, parent, conditionMeta);
     }
 

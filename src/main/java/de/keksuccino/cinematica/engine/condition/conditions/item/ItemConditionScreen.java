@@ -1,4 +1,4 @@
-package de.keksuccino.cinematica.engine.condition.conditions.addtoinventory;
+package de.keksuccino.cinematica.engine.condition.conditions.item;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.keksuccino.cinematica.gui.ScrollableScreen;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class AddToInventoryConditionScreen extends ScrollableScreen {
+public class ItemConditionScreen extends ScrollableScreen {
 
     protected Consumer<PropertiesSection> callback;
 
@@ -37,7 +37,7 @@ public class AddToInventoryConditionScreen extends ScrollableScreen {
     protected AdvancedButton cancelButton;
     protected AdvancedButton doneButton;
 
-    public AddToInventoryConditionScreen(Screen parent, @Nullable PropertiesSection conditionMeta, Consumer<PropertiesSection> callback) {
+    public ItemConditionScreen(Screen parent, @Nullable PropertiesSection conditionMeta, Consumer<PropertiesSection> callback) {
 
         super(parent, Locals.localize("cinematica.condition.configure"));
         this.callback = callback;
@@ -70,13 +70,13 @@ public class AddToInventoryConditionScreen extends ScrollableScreen {
             @Override
             public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
                 if (loreCheckType.equals("equals")) {
-                    this.setMessage(Locals.localize("cinematica.condition.addtoinventory.conditionmeta.lore.checktype.equals"));
+                    this.setMessage(Locals.localize("cinematica.condition.item.conditionmeta.lore.checktype.equals"));
                 } else if (loreCheckType.equals("starts-with")) {
-                    this.setMessage(Locals.localize("cinematica.condition.addtoinventory.conditionmeta.lore.checktype.starts-with"));
+                    this.setMessage(Locals.localize("cinematica.condition.item.conditionmeta.lore.checktype.starts-with"));
                 } else if (loreCheckType.equals("ends-with")) {
-                    this.setMessage(Locals.localize("cinematica.condition.addtoinventory.conditionmeta.lore.checktype.ends-with"));
+                    this.setMessage(Locals.localize("cinematica.condition.item.conditionmeta.lore.checktype.ends-with"));
                 } else if (loreCheckType.equals("contains")) {
-                    this.setMessage(Locals.localize("cinematica.condition.addtoinventory.conditionmeta.lore.checktype.contains"));
+                    this.setMessage(Locals.localize("cinematica.condition.item.conditionmeta.lore.checktype.contains"));
                 }
                 super.render(matrixStack, mouseX, mouseY, partialTicks);
             }
@@ -141,23 +141,23 @@ public class AddToInventoryConditionScreen extends ScrollableScreen {
         }
 
         // TYPE -------------------------------
-        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.addtoinventory.conditionmeta.type"), true));
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.item.conditionmeta.type"), true));
         this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.typeTextField));
         //-------------------------------------
 
         // NAME -------------------------------
-        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.addtoinventory.conditionmeta.name"), true));
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.item.conditionmeta.name"), true));
         this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.nameTextField));
         //-------------------------------------
 
         // LORE -------------------------------
-        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.addtoinventory.conditionmeta.lore"), true));
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.item.conditionmeta.lore"), true));
         this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.loreTextField));
         this.scrollArea.addEntry(new ButtonEntry(this.scrollArea, this.loreCheckTypeButton));
         //-------------------------------------
 
         // COUNT ------------------------------
-        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.addtoinventory.conditionmeta.count"), true));
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.item.conditionmeta.count"), true));
         this.scrollArea.addEntry(new TextFieldEntry(this.scrollArea, this.countTextField));
         //-------------------------------------
 

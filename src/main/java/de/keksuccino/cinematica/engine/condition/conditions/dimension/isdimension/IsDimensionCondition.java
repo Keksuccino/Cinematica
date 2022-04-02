@@ -1,6 +1,5 @@
 package de.keksuccino.cinematica.engine.condition.conditions.dimension.isdimension;
 
-import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.engine.condition.ConditionFactory;
 import de.keksuccino.konkrete.properties.PropertiesSection;
@@ -26,11 +25,6 @@ public class IsDimensionCondition extends Condition {
             isDimension = true;
         } else if ((curDim != null) && curDim.equals(conDim)) {
             isDimension = true;
-        }
-
-        //TODO remove debug
-        if (isDimension) {
-            Cinematica.LOGGER.info("############## CONDITIONS MET FOR IS DIMENSION TRIGGER!");
         }
 
         return isDimension;
