@@ -87,7 +87,7 @@ public class AudioCinematicVolumeHandler {
         volume = vol;
         writeToFile();
         for (AudioClip c : AudioCinematicHandler.getCachedAudios()) {
-            c.setBaseVolume(vol);
+            c.setVolume(vol);
         }
     }
 

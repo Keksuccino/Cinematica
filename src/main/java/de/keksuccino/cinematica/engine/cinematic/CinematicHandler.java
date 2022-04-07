@@ -15,11 +15,15 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.*;
 
 public class CinematicHandler {
+
+    private static final Logger LOGGER = LogManager.getLogger("cinematica/CinematicHandler");
 
     protected static final File CINEMATICS_DIR = new File(Cinematica.MOD_DIRECTORY.getPath() + "/cinematics");
     protected static final File CINEMATICS_FILE = new File(CINEMATICS_DIR.getPath() + "/cinematics.properties");
@@ -86,7 +90,6 @@ public class CinematicHandler {
 
                 VideoRenderer r = VideoHandler.getRenderer(currentCutscene.sourcePath);
                 if (r != null) {
-                    AudioCinematicHandler.stopAll();
                     CutScene scene = new CutScene(r, currentCutscene.fadeInCutscene, currentCutscene.fadeOutCutscene);
                     scene.allowSkip = currentCutscene.allowCutsceneSkip;
                     Minecraft.getInstance().displayGuiScreen(scene);
@@ -131,19 +134,10 @@ public class CinematicHandler {
                                     activeAudioCinematicsThatStopWorldMusic.put(c, con);
                                 }
                             }
-                            if (!c.isAudioReady()) {
-                                c.tryPlayWhenReady();
-                            } else {
-                                if (!c.isPlaying()) {
-                                    c.stop();
-                                    c.restart();
-                                    c.play();
-                                } else {
-                                    c.restart();
-                                }
-                            }
+                            c.stop();
+                            c.play();
                         } else {
-                            Cinematica.LOGGER.error("[CINEMATICA] ERROR: Unable to start audio! File not found: " + m.getKey().sourcePath);
+                            LOGGER.error("ERROR: Unable to start audio! File not found: " + m.getKey().sourcePath);
                         }
                     }
                 }
@@ -167,17 +161,17 @@ public class CinematicHandler {
             }
             for (Map.Entry<AudioClip, WorldMusicSuppressContext> m : clips.entrySet()) {
                 if (!m.getValue().startedPlaying) {
-                    if (m.getKey().isAudioReady() && m.getKey().isPlaying()) {
+                    if (m.getKey().playing()) {
                         m.getValue().startedPlaying = true;
                         VanillaAudioHandler.fadeOutAndSuppressWorldMusic();
                     }
                     long timeNow = System.currentTimeMillis();
                     if ((m.getValue().startTime + 10000) < timeNow) {
-                        Cinematica.LOGGER.error("[CINEMATICA] ERROR: Unable to handle world music for playing audio cinematic!");
+                        LOGGER.error("ERROR: Unable to handle world music for audio cinematic!");
                         activeAudioCinematicsThatStopWorldMusic.remove(m.getKey());
                     }
                 } else {
-                    if (!m.getKey().isPlaying() && ((Minecraft.getInstance().currentScreen == null) && (lastScreen == null))) {
+                    if (!m.getKey().playing() && ((Minecraft.getInstance().currentScreen == null) && (lastScreen == null))) {
                         activeAudioCinematicsThatStopWorldMusic.remove(m.getKey());
                     }
                 }
@@ -323,7 +317,7 @@ public class CinematicHandler {
                 for (PropertiesSection sec : set.getPropertiesOfType("cinematic-object")) {
                     Cinematic c = Cinematic.buildCinematicFromPropertiesSection(sec);
                     if (c != null) {
-                        Cinematica.LOGGER.info("[CINEMATICA] LOADING CINEMATIC: SOURCE: " + c.sourcePath + " | ID: " + c.getIdentifier() + " | NAME: " + c.name);
+                        LOGGER.info("LOADING CINEMATIC: SOURCE: " + c.sourcePath + " | ID: " + c.getIdentifier() + " | NAME: " + c.name);
                         cinematics.add(c);
                     }
                 }
@@ -355,9 +349,9 @@ public class CinematicHandler {
                 e.printStackTrace();
             }
         } else {
-            Cinematica.LOGGER.warn("[CINEMATICA] WARNING: Tried to save cinematics before initializing the CinematicHandler!");
+            LOGGER.warn("WARNING: Tried to save cinematics before initializing the CinematicHandler!");
             for (StackTraceElement e : new Throwable().getStackTrace()) {
-                Cinematica.LOGGER.warn("[CINEMATICA] WARNING: " + e.toString());
+                LOGGER.warn("WARNING: " + e.toString());
             }
         }
     }

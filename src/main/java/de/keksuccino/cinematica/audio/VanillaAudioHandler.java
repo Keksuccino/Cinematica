@@ -8,6 +8,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 public class VanillaAudioHandler {
+
+    private static final Logger LOGGER = LogManager.getLogger("cinematica/VanillaAudioHandler");
 
     protected static volatile boolean suppressWorldMusic = false;
 
@@ -93,7 +97,7 @@ public class VanillaAudioHandler {
                     }
                 }
             } else {
-                Cinematica.LOGGER.error("[CINEMATICA] ERROR: VanillaAudioHandler: Unable to get currently playing sounds!");
+                LOGGER.error("ERROR: Unable to get currently playing sounds!");
                 Minecraft.getInstance().getSoundHandler().pause();
             }
         } catch (Exception e) {

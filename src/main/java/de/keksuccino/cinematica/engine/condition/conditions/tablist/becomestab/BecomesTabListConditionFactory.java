@@ -1,6 +1,5 @@
 package de.keksuccino.cinematica.engine.condition.conditions.tablist.becomestab;
 
-import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.cinematica.engine.cinematic.Cinematic;
 import de.keksuccino.cinematica.engine.condition.Condition;
 import de.keksuccino.cinematica.engine.condition.ConditionFactory;
@@ -13,8 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.overlay.PlayerTabOverlayGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
@@ -25,7 +22,6 @@ public class BecomesTabListConditionFactory extends ConditionFactory {
 
     public BecomesTabListConditionFactory() {
         super("cinematica_condition_becomes_tab_list");
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override

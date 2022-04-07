@@ -131,7 +131,7 @@ public class EditCinematicScreen extends ScrollableScreen {
         this.chooseSourceButton = new AdvancedButton(0, 0, 200, 20, chooseSourceLabel, true, (press) -> {
             String[] fileTypes = null;
             if (this.type == CinematicType.AUDIO) {
-                fileTypes = new String[]{"wav", "mp3"};
+                fileTypes = new String[]{"ogg"};
             }
             if (this.type == CinematicType.CUTSCENE) {
                 fileTypes = new String[]{"mp4"};

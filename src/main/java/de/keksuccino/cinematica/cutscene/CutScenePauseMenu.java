@@ -25,6 +25,8 @@ public class CutScenePauseMenu extends Screen {
     @Override
     protected void init() {
 
+        this.parent.init(Minecraft.getInstance(), this.width, this.height);
+
         //Back to Game
         this.addButton(new Button(this.width / 2 - 102, this.height / 4 + 24 + 16, 204, 20, new TranslationTextComponent("menu.returnToGame"), (press) -> {
             this.parent.isPaused = false;

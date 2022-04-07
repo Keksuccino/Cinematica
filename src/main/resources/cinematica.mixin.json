@@ -8,7 +8,9 @@
     "client.MixinPlayerInventory",
     "client.MixinContainer",
     "client.MixinPlayerEntity",
-    "client.MixinItemStack"
+    "client.MixinItemStack",
+    "client.MixinClientPlayNetHandler",
+    "client.MixinClientPlayerEntity"
   ],
   "injectors": {
     "defaultRequire": 1

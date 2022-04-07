@@ -218,9 +218,11 @@ public class SelectConditionScreen extends Screen {
         protected void handleSelection() {
 
             if (!PopupHandler.isPopupActive() && !this.parentScreen.backButton.isHovered()) {
-                if (this.isHovered() && MouseInput.isLeftMouseDown() && !this.isMouseDown) {
-                    if (this.parentScreen.callback != null) {
-                        this.parentScreen.callback.accept(this.condition);
+                if (MouseInput.isLeftMouseDown() && !this.isMouseDown) {
+                    if (this.isHovered()) {
+                        if (this.parentScreen.callback != null) {
+                            this.parentScreen.callback.accept(this.condition);
+                        }
                     }
                     this.isMouseDown = true;
                 }

@@ -1,11 +1,14 @@
 package de.keksuccino.cinematica.engine.condition;
 
-import de.keksuccino.cinematica.Cinematica;
 import de.keksuccino.konkrete.input.CharacterFilter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 public class ConditionFactoryRegistry {
+
+    private static final Logger LOGGER = LogManager.getLogger("cinematica/ConditionFactoryRegistry");
 
     protected static Map<String, ConditionFactory> factories = new LinkedHashMap<>();
 
@@ -19,16 +22,16 @@ public class ConditionFactoryRegistry {
         if (trigger.getIdentifier() != null) {
             if (isValidFactoryIdentifier(trigger.getIdentifier())) {
                 if (factories.containsKey(trigger.getIdentifier())) {
-                    Cinematica.LOGGER.warn("[CINEMATICA] WARNING: There is already a factory registered with this identifier: " + trigger.getIdentifier());
-                    Cinematica.LOGGER.warn("[CINEMATICA] WARNING: Overriding registered factory with new one!");
+                    LOGGER.warn("WARNING: There is already a factory registered with this identifier: " + trigger.getIdentifier());
+                    LOGGER.warn("WARNING: Overriding registered factory with new one!");
                 }
                 factories.put(trigger.getIdentifier(), trigger);
             } else {
-                Cinematica.LOGGER.error("[CINEMATICA] ERROR: Unable to register factory: " + trigger.getIdentifier());
-                Cinematica.LOGGER.error("[CINEMATICA] ERROR: Factory uses unallowed characters in its identifier! Only basic chars (a-z, 0-9, -_) are supported!");
+                LOGGER.error("ERROR: Unable to register factory: " + trigger.getIdentifier());
+                LOGGER.error("ERROR: Factory uses unallowed characters in its identifier! Only basic chars (a-z, 0-9, -_) are supported!");
             }
         } else {
-            Cinematica.LOGGER.error("[CINEMATICA] ERROR: Unable to register trigger with NULLED identifier!");
+            LOGGER.error("ERROR: Unable to register trigger with NULLED identifier!");
         }
     }
 

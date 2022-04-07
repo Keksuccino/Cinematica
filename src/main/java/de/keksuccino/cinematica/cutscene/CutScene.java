@@ -6,11 +6,14 @@ import de.keksuccino.cinematica.audio.AudioCinematicHandler;
 import de.keksuccino.cinematica.video.VideoRenderer;
 import de.keksuccino.konkrete.input.KeyboardHandler;
 import de.keksuccino.konkrete.localization.Locals;
+import de.keksuccino.konkrete.rendering.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
@@ -19,15 +22,17 @@ import java.awt.*;
 
 public class CutScene extends Screen {
 
+    private static ResourceLocation BLACK_TEXTURE = null;
+
     protected VideoRenderer renderer;
 
-    public int fadeTimeMultiplier = 2;
-    protected int fadeTick = 0;
     protected int fadeTicks = 20;
     protected boolean fadeIn;
     protected int fadeInTicker = fadeTicks;
     protected boolean fadeOut;
-    protected int fadeOutTicker = 1;
+    protected int fadeOutTicker = 0;
+    protected float fadeInAlpha = 0.0F;
+    protected float fadeOutAlpha = 1.0F;
 
     public boolean startedPlaying = false;
     public boolean isFinished = false;
@@ -49,8 +54,6 @@ public class CutScene extends Screen {
     public CutScene(VideoRenderer renderer, boolean fadeIn, boolean fadeOut) {
 
         super(new StringTextComponent(""));
-
-        AudioCinematicHandler.stopAll();
 
         CutSceneHandler.activeCutScene = this;
 
@@ -98,59 +101,11 @@ public class CutScene extends Screen {
 
         try {
 
-            AudioCinematicHandler.stopAll();
-
             this.renderSceneBackground();
 
-            //Handle fade-in
-            if (this.fadeIn) {
-                int alpha = 255 / this.fadeInTicker;
-                Color c = new Color(0, 0, 0, alpha);
+            this.renderFade(matrixStack);
 
-                RenderSystem.enableBlend();
-                AbstractGui.fill(matrixStack, 0, 0, this.width, this.height, c.getRGB());
-
-                if (this.fadeInTicker <= 1) {
-                    this.fadeIn = false;
-                    this.fadeTick = 0;
-                }
-                if (!this.isPaused) {
-                    if (this.fadeTick <= 0) {
-                        this.fadeInTicker--;
-                        this.fadeTick = this.fadeTimeMultiplier;
-                    } else {
-                        this.fadeTick--;
-                    }
-                }
-            }
-
-            //Handle fade-out + close screen when finished
-            if (this.isFinished) {
-                if (this.fadeOut) {
-                    int alpha = 255 / this.fadeOutTicker;
-                    Color c = new Color(0, 0, 0, alpha);
-
-                    RenderSystem.enableBlend();
-                    fill(matrixStack, 0, 0, this.width, this.height, c.getRGB());
-
-                    if (this.fadeOutTicker >= this.fadeTicks) {
-                        this.fadeTick = 0;
-                        this.closeCutScene();
-                    }
-                    if (!this.isPaused) {
-                        if (this.fadeTick <= 0) {
-                            this.fadeOutTicker++;
-                            this.fadeTick = this.fadeTimeMultiplier;
-                        } else {
-                            this.fadeTick--;
-                        }
-                    }
-                } else {
-                    this.closeCutScene();
-                }
-            }
-
-            this.renderScene(matrixStack);
+            this.renderScene(matrixStack, 1.0F);
 
             if (!this.isPaused) {
                 CutSceneHandler.hideCursor();
@@ -163,7 +118,61 @@ public class CutScene extends Screen {
 
     }
 
-    protected void renderScene(MatrixStack matrixStack) {
+    protected void renderFade(MatrixStack matrix) {
+
+        //Handle fade-in
+        if (this.fadeIn) {
+
+            float f = 1.0F / this.fadeTicks;
+            this.fadeInAlpha += f;
+            if (this.fadeInAlpha > 1.0F) {
+                this.fadeInAlpha = 1.0F;
+            }
+
+            Minecraft.getInstance().textureManager.bindTexture(getBlackTextureLocation());
+            RenderSystem.enableBlend();
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.fadeInAlpha);
+            blit(matrix, 0, 0, 0.0F, 0.0F, this.width, this.height, this.width, this.height);
+
+            if (this.fadeInTicker <= 0) {
+                this.fadeIn = false;
+            }
+            if (!this.isPaused) {
+                this.fadeInTicker--;
+            }
+
+        }
+
+        //Handle fade-out + close screen when finished
+        if (this.isFinished) {
+            if (this.fadeOut) {
+
+                float f = 1.0F / fadeTicks;
+                this.fadeOutAlpha -= f;
+                if (this.fadeOutAlpha < 0.0F) {
+                    this.fadeOutAlpha = 0.0F;
+                }
+
+                Minecraft.getInstance().textureManager.bindTexture(getBlackTextureLocation());
+                RenderSystem.enableBlend();
+                RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.fadeOutAlpha);
+                blit(matrix, 0, 0, 0.0F, 0.0F, this.width, this.height, this.width, this.height);
+
+                if (this.fadeOutTicker >= this.fadeTicks) {
+                    this.closeCutScene();
+                }
+                if (!this.isPaused) {
+                    this.fadeOutTicker++;
+                }
+
+            } else {
+                this.closeCutScene();
+            }
+        }
+
+    }
+
+    protected void renderScene(MatrixStack matrixStack, float alpha) {
 
         int xCenter = this.width / 2;
 
@@ -183,9 +192,9 @@ public class CutScene extends Screen {
                             double ratio = (double) w / (double) h;
                             int wFinal = (int)(this.height * ratio);
                             if (wFinal < this.width) {
-                                this.renderLastFrame(matrixStack, 0, 0, this.width, this.height, 1.0F);
+                                this.renderLastFrame(matrixStack, 0, 0, this.width, this.height, alpha);
                             } else {
-                                this.renderLastFrame(matrixStack, xCenter - (wFinal / 2), 0, wFinal, this.height, 1.0F);
+                                this.renderLastFrame(matrixStack, xCenter - (wFinal / 2), 0, wFinal, this.height, alpha);
                             }
                         }
                         RenderSystem.enableBlend();
@@ -218,6 +227,7 @@ public class CutScene extends Screen {
 
                     } else if (this.startedPlaying) {
                         this.isFinished = true;
+                        this.renderFade(matrixStack);
                     }
                 }
 
@@ -300,6 +310,20 @@ public class CutScene extends Screen {
             CutSceneHandler.activeCutScene = null;
         }
         this.enterPressedOnce = false;
+    }
+
+    private static ResourceLocation getBlackTextureLocation() {
+        if (BLACK_TEXTURE != null) {
+            return BLACK_TEXTURE;
+        }
+        if (Minecraft.getInstance().getTextureManager() == null) {
+            return null;
+        }
+        NativeImage i = new NativeImage(1, 1, true);
+        i.setPixelRGBA(0, 0, Color.BLACK.getRGB());
+        ResourceLocation r = Minecraft.getInstance().getTextureManager().getDynamicTextureLocation("blackback", new DynamicTexture(i));
+        BLACK_TEXTURE = r;
+        return r;
     }
 
 }

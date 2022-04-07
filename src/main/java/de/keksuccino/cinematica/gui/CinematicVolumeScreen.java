@@ -36,7 +36,7 @@ public class CinematicVolumeScreen extends SettingsScreen {
             AudioCinematicVolumeHandler.setVolume(call);
         }));
 
-        this.addButton(new Button(xCenter - 100, this.height / 6 + 168, 200, 20, DialogTexts.GUI_DONE, (p_213104_1_) -> {
+        this.addButton(new Button(xCenter - 100, this.height - 35, 200, 20, DialogTexts.GUI_DONE, (press) -> {
             this.minecraft.displayGuiScreen(this.parentScreen);
         }));
 

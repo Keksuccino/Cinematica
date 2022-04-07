@@ -31,21 +31,16 @@ import org.apache.logging.log4j.Logger;
 
 //TODO block mine/harvest condition
 
-//TODO chat message condition (checks for content in chat message; same check types as for item lore)
-
-//TODO kill entity condition verbessern + re-implementieren
+//TODO improve kill entity condition + re-implement it
 
 //TODO player got achievement condition
-
-
-//TODO eventuell volume handling in Auudio zurück zu alter logik
 
 @Mod("cinematica")
 public class Cinematica {
 
 	public static final String VERSION = "1.0.0";
 
-	public static final Logger LOGGER = LogManager.getLogger("cinematica");
+	private static final Logger LOGGER = LogManager.getLogger("cinematica/Cinematica");
 
 	public static final File MOD_DIRECTORY = new File("config/cinematica");
 	public static final File CINEMATICA_INSTANCE_DATA_DIR = new File("cinematica_instance_data");
@@ -88,7 +83,7 @@ public class Cinematica {
 //				MinecraftForge.EVENT_BUS.register(new Test());
 
 	    	} else {
-	    		System.out.println("## WARNING ## 'Cinematica' is a client mod and has no effect when loaded on a server!");
+	    		LOGGER.warn("WARNING: Cinematica is a client mod and has no effect when loaded on a server!");
 	    	}
 
 		} catch (Exception e) {

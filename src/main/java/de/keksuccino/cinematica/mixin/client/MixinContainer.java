@@ -4,20 +4,27 @@ import de.keksuccino.cinematica.events.AddItemToPlayerInventoryEvent;
 import de.keksuccino.cinematica.mixinhandling.CachedInventorySlot;
 import de.keksuccino.cinematica.mixinhandling.MixinCache;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraftforge.common.MinecraftForge;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Mixin(Container.class)
 public class MixinContainer {
+
+    private static final Logger MIXIN_LOGGER = LogManager.getLogger("cinematica/mixin/MixinContainer");
 
     private Map<Integer, CachedInventorySlot> cachedSlots = new HashMap<>();
 
@@ -38,6 +45,16 @@ public class MixinContainer {
                     }
                 }
                 cachedSlots.put(slotID, new CachedInventorySlot(slotID, stack, stack.getCount()));
+            }
+        }
+    }
+
+    @Inject(at = @At("HEAD"), method = "slotClick")
+    private void onSlotClick(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player, CallbackInfoReturnable<ItemStack> info) {
+        if (clickTypeIn == ClickType.THROW) {
+            MIXIN_LOGGER.info("############## DROP ITEM SLOT CLICK 1: " + player.getClass().getName());
+            if ((Minecraft.getInstance().player != null) && (Minecraft.getInstance().player.getUniqueID().toString().equals(player.getUniqueID().toString()))) {
+                MIXIN_LOGGER.info("############## DROP ITEM SLOT CLICK 2: " + player.getClass().getName());
             }
         }
     }

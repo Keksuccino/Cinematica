@@ -7,6 +7,7 @@ import de.keksuccino.cinematica.engine.condition.conditions.biome.enterbiome.Ent
 import de.keksuccino.cinematica.engine.condition.conditions.biome.isbiome.IsBiomeConditionFactory;
 import de.keksuccino.cinematica.engine.condition.conditions.block.standblock.StandBlockConditionFactory;
 import de.keksuccino.cinematica.engine.condition.conditions.block.stepblock.StepBlockConditionFactory;
+import de.keksuccino.cinematica.engine.condition.conditions.chat.receivechat.ReceiveChatConditionFactory;
 import de.keksuccino.cinematica.engine.condition.conditions.dimension.enterdimension.EnterDimensionConditionFactory;
 import de.keksuccino.cinematica.engine.condition.conditions.dimension.isdimension.IsDimensionConditionFactory;
 import de.keksuccino.cinematica.engine.condition.conditions.entity.entitycomesinrange.EntityComesInRangeConditionFactory;
@@ -16,6 +17,7 @@ import de.keksuccino.cinematica.engine.condition.conditions.entity.entityrightcl
 import de.keksuccino.cinematica.engine.condition.conditions.entity.entityspot.EntitySpotConditionFactory;
 import de.keksuccino.cinematica.engine.condition.conditions.entity.entitywatch.EntityWatchConditionFactory;
 import de.keksuccino.cinematica.engine.condition.conditions.ip.joinip.JoinServerIpConditionFactory;
+import de.keksuccino.cinematica.engine.condition.conditions.item.dropitem.DropItemConditionFactory;
 import de.keksuccino.cinematica.engine.condition.conditions.item.foodeaten.FoodEatenConditionFactory;
 import de.keksuccino.cinematica.engine.condition.conditions.item.placeblock.PlaceBlockConditionFactory;
 import de.keksuccino.cinematica.engine.condition.conditions.item.rightclickitem.RightClickItemConditionFactory;
@@ -63,8 +65,11 @@ public class ConditionFactories {
         ConditionFactoryRegistry.registerFactory(new EntityRightClickConditionFactory());
 
         ConditionFactoryRegistry.registerFactory(new AddItemToInventoryConditionFactory());
+        ConditionFactoryRegistry.registerFactory(new DropItemConditionFactory());
         ConditionFactoryRegistry.registerFactory(new FoodEatenConditionFactory());
         ConditionFactoryRegistry.registerFactory(new RightClickItemConditionFactory());
+
+        ConditionFactoryRegistry.registerFactory(new ReceiveChatConditionFactory());
 
     }
 

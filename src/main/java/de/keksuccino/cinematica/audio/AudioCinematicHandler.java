@@ -1,6 +1,5 @@
 package de.keksuccino.cinematica.audio;
 
-import de.keksuccino.auudio.audio.AudioChannel;
 import de.keksuccino.auudio.audio.AudioClip;
 
 import javax.annotation.Nullable;
@@ -19,12 +18,20 @@ public class AudioCinematicHandler {
     @Nullable
     public static AudioClip getAudio(String source) {
         File f = new File(source);
-        if (f.isFile() && (f.getPath().toLowerCase().endsWith(".mp3") || f.getPath().toLowerCase().endsWith(".wav"))) {
+        if (f.isFile() && (f.getPath().toLowerCase().endsWith(".ogg"))) {
             if (!audios.containsKey(source)) {
-                AudioClip c = new AudioClip(source, AudioClip.AudioSource.LOCAL);
-                c.setAudioChannel(AudioChannel.MASTER);
-                audios.put(source, c);
-                AudioCinematicVolumeHandler.updateVolume();
+                AudioClip c = null;
+                try {
+                    c = AudioClip.buildExternalClip(source, AudioClip.SoundType.EXTERNAL_LOCAL);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (c != null) {
+                    audios.put(source, c);
+                    AudioCinematicVolumeHandler.updateVolume();
+                } else {
+                    return null;
+                }
             }
             return audios.get(source);
         }
@@ -46,7 +53,7 @@ public class AudioCinematicHandler {
 
     public static void pauseAll() {
         for (AudioClip c : audios.values()) {
-            if (c.isPlaying()) {
+            if (c.playing()) {
                 if (!unfinishedAudioCache.contains(c)) {
                     unfinishedAudioCache.add(c);
                     c.pause();
@@ -62,18 +69,10 @@ public class AudioCinematicHandler {
         unfinishedAudioCache.clear();
     }
 
-    public static void restartAll() {
-        for (AudioClip c : audios.values()) {
-            c.restart();
-        }
-    }
-
     public static void resumeUnfinishedAudios() {
         for (AudioClip c : unfinishedAudioCache) {
             try {
-                if (c.isAudioReady()) {
-                    c.play();
-                }
+                c.play();
             } catch (Exception e) {
                 e.printStackTrace();
             }

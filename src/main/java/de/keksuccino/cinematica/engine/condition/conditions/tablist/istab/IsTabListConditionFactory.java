@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.overlay.PlayerTabOverlayGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
@@ -23,7 +22,6 @@ public class IsTabListConditionFactory extends ConditionFactory {
 
     public IsTabListConditionFactory() {
         super("cinematica_condition_is_tab_list");
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override

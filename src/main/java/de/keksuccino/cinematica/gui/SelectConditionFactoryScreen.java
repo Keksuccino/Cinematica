@@ -213,9 +213,11 @@ public class SelectConditionFactoryScreen extends Screen {
         protected void handleSelection() {
 
             if (!PopupHandler.isPopupActive() && !this.parentScreen.backButton.isHovered()) {
-                if (this.isHovered() && MouseInput.isLeftMouseDown() && !this.isMouseDown) {
-                    if (this.parentScreen.callback != null) {
-                        this.parentScreen.callback.accept(this.factory);
+                if (MouseInput.isLeftMouseDown() && !this.isMouseDown) {
+                    if (this.isHovered()) {
+                        if (this.parentScreen.callback != null) {
+                            this.parentScreen.callback.accept(this.factory);
+                        }
                     }
                     this.isMouseDown = true;
                 }

@@ -145,6 +145,8 @@ cinematica.condition.entity.spotselection.conditionmeta.fov_offset = FOV Offset 
 
 cinematica.condition.item.addtoinventory = Item Added To Player Inventory
 cinematica.condition.item.addtoinventory.desc = Gets triggered when an item%n%gets added to the player inventory.%n%%n%§cThis condition is experimental!%n%§cIt can also trigger when%n%§cmoving items in the inventory.%n%§cIf you want to use this,%n%§cit's recommended to enable the%n%§cone-time-option for the%n%§cparent cinematic.
+cinematica.condition.item.dropitem = Player Dropped Item
+cinematica.condition.item.dropitem.desc = Gets triggered when the player%n%drops an item.
 cinematica.condition.item.foodeaten = Player Food Eaten
 cinematica.condition.item.foodeaten.desc = Gets triggered when the player%n%consumed a food item.
 cinematica.condition.item.rightclickitem = Player Right-Clicked Item
@@ -185,6 +187,14 @@ cinematica.condition.tablist.conditionmeta.content.checktype.ends-with = Content
 cinematica.condition.tablist.conditionmeta.content.checktype.contains = Content Check Type: §6Contains
 cinematica.condition.tablist.conditionmeta.line.header = Check For Line: §6Header
 cinematica.condition.tablist.conditionmeta.line.footer = Check For Line: §6Footer
+
+cinematica.condition.chat.receivechat = Chat Message Received
+cinematica.condition.chat.receivechat.desc = Gets triggered when the client%n%receives a specific chat message.
+cinematica.condition.chat.conditionmeta.content = Message Content [Blank = Any Content]
+cinematica.condition.chat.conditionmeta.content.checktype.equals = Content Check Type: §6Equals
+cinematica.condition.chat.conditionmeta.content.checktype.starts-with = Content Check Type: §6Starts-With
+cinematica.condition.chat.conditionmeta.content.checktype.ends-with = Content Check Type: §6Ends-With
+cinematica.condition.chat.conditionmeta.content.checktype.contains = Content Check Type: §6Contains
 
 cinematica.command.cinematic.error = §cThere was an error while trying to trigger the cinematic.
 cinematica.command.cinematic.invalid = §cCinematic not found! Wrong identifier?

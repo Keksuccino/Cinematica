@@ -50,7 +50,6 @@ public class EventHandler {
     protected float lastMcMasterVolume = Minecraft.getInstance().gameSettings.getSoundLevel(SoundCategory.MASTER);
     protected boolean resumeWorldSounds = false;
     protected World lastActiveWorld = null;
-    protected boolean stoppedCinematicAudiosInMenu = false;
 
     protected Screen lastPauseScreen = null;
 
@@ -79,6 +78,11 @@ public class EventHandler {
             this.cinematicaControlsMenu.addContent(resetTriggeredOneTimeCinematicsButton);
 
             this.cinematicaControlsMenu.addSeparator();
+
+            AdvancedButton volumeButton = new AdvancedButton(0, 0, 0, 0, Locals.localize("cinematica.audiochannel"), true, (press) -> {
+                Minecraft.getInstance().displayGuiScreen(new CinematicVolumeScreen(Minecraft.getInstance().currentScreen));
+            });
+            this.cinematicaControlsMenu.addContent(volumeButton);
 
             AdvancedButton settingsButton = new AdvancedButton(0, 0, 0, 0, Locals.localize("cinematica.config"), true, (press) -> {
                 Minecraft.getInstance().displayGuiScreen(new CinematicaConfigScreen(Minecraft.getInstance().currentScreen));
@@ -171,19 +175,10 @@ public class EventHandler {
     public void onClientTick(TickEvent.ClientTickEvent e) {
 
         if (Minecraft.getInstance().currentScreen == null) {
-            if (this.stoppedCinematicAudiosInMenu) {
-                AudioCinematicHandler.resumeUnfinishedAudios();
-                this.stoppedCinematicAudiosInMenu = false;
-            }
             if (this.cinematicaControlsMenu != null) {
                 this.cinematicaControlsMenu.closeMenu();
             }
             MouseInput.unblockVanillaInput("cinematica_controls_context_menu");
-        } else {
-            if (!this.stoppedCinematicAudiosInMenu) {
-                AudioCinematicHandler.pauseAll();
-                this.stoppedCinematicAudiosInMenu = true;
-            }
         }
 
         //Update cutscene volume on master volume change
@@ -192,20 +187,21 @@ public class EventHandler {
         }
         this.lastMcMasterVolume = Minecraft.getInstance().gameSettings.getSoundLevel(SoundCategory.MASTER);
 
-        //Pause world sounds in cutscenes
+        //Stop world sounds in cutscenes
         if (Minecraft.getInstance().world != null) {
             if (Minecraft.getInstance().currentScreen != null) {
                 if (Minecraft.getInstance().currentScreen.getClass().getName().startsWith("de.keksuccino.cinematica.cutscene.")) {
                     if (!this.resumeWorldSounds) {
+                        //TODO make audio cinematics fade out with world music
+                        AudioCinematicHandler.stopAll();
                         VanillaAudioHandler.fadeOutAndSuppressWorldMusic(() -> {
-                            Minecraft.getInstance().getSoundHandler().pause();
+                            Minecraft.getInstance().getSoundHandler().stop();
                         });
                         this.resumeWorldSounds = true;
                     }
                 }
             } else {
                 if (this.resumeWorldSounds) {
-                    Minecraft.getInstance().getSoundHandler().resume();
                     VanillaAudioHandler.setSuppressWorldMusic(false);
                     this.resumeWorldSounds = false;
                 }
@@ -216,7 +212,6 @@ public class EventHandler {
         if (this.lastActiveWorld != Minecraft.getInstance().world) {
             for (AudioClip c : AudioCinematicHandler.getCachedAudios()) {
                 c.stop();
-                c.restart();
             }
             AudioCinematicHandler.clearUnfinishedAudioCache();
         }
