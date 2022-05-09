@@ -1,0 +1,200 @@
+
+cinematica.choosefile.enterorchoose = §lEnter Path Or Choose File
+cinematica.choosefile.choose = Choose File
+
+cinematica.cutscene.skip = Skip Cutscene
+cinematica.cutscene.confirmskip = Press §lENTER §ragain to skip this cutscene.
+
+cinematica.controls.managecinematics = Manage Cinematics
+cinematica.controls.resetonetimecinematics = Reset One-Time-Cinematics
+cinematica.controls.resetonetimecinematics.confirm = §c§lAre you sure?%n%%n%Do you really want to §creset §rall%n%triggered one-time-cinematics, so they can get triggered again?%n% %n% %n% %n%
+
+cinematica.ui.back = Back
+cinematica.ui.select = Select
+cinematica.ui.cancel = Cancel
+cinematica.ui.done = Done
+
+cinematica.audiochannel = Cinematic Volumes
+cinematica.audiochannel.cutscenes = Cutscenes
+cinematica.audiochannel.audios = Audios
+
+cinematica.cinematic.add = Add Cinematic
+cinematica.cinematic.remove = Remove Cinematic
+cinematica.cinematic.remove.confirm = §c§lAre you sure?%n%%n%Do you really want to §cdelete §rthis cinematic?%n% %n% %n% %n%
+cinematica.cinematic.edit = Edit Cinematics
+cinematica.cinematic.add_or_edit = Add/Edit Cinematic
+cinematica.cinematic.choose = Choose Cinematic
+
+cinematica.cinematic.type.cutscene = Cutscene
+cinematica.cinematic.type.audio = Audio
+cinematica.cinematic.type.selecttype = Select Cinematic Type
+
+cinematica.cinematic.choosesource.video = Choose Video Source
+cinematica.cinematic.choosesource.audio = Choose Audio Source
+
+cinematica.cinematic.copy_identifier = Copy Cinematic Identifier
+cinematica.cinematic.copy_identifier.desc = §cLeft-click to copy the%n%§ccinematic identifier%n%§cto your clipboard.
+cinematica.cinematic.save = Save
+cinematica.cinematic.allowskip.on = Allow Skip: §aYes
+cinematica.cinematic.allowskip.off = Allow Skip: §cNo
+cinematica.cinematic.source.nosource = §lNo Source Selected.
+cinematica.cinematic.source = §lSource: {}
+cinematica.cinematic.name = Name [Optional]
+cinematica.cinematic.name.desc = Name this cinematic to be able%n%to identify it better.
+cinematica.cinematic.onetimetrigger.on = Trigger Only Once: §aYes
+cinematica.cinematic.onetimetrigger.off = Trigger Only Once: §cNo
+cinematica.cinematic.onetimetrigger.btn.desc = If this is enabled, the cinematic%n%will only trigger once and then%n%never again, even after%n%restarting the game!
+cinematica.cinematic.oncepersession.on = Only Once Per Session: §aYes
+cinematica.cinematic.oncepersession.off = Only Once Per Session: §cNo
+cinematica.cinematic.oncepersession.btn.desc = If this is enabled, the cinematic%n%will only trigger once per%n%game session.%n%%n%Restarting the game makes%n%it trigger again.
+cinematica.cinematic.setdelay = Set Trigger Delay (Sec)
+cinematica.cinematic.setdelay.btn.desc = Time in seconds before the%n%cinematic starts, after it%n%got triggered.
+cinematica.cinematic.stopworldmusic.on = Stop World Music: §aYes
+cinematica.cinematic.stopworldmusic.off = Stop World Music: §cNo
+cinematica.cinematic.stopworldmusic.btn.desc = If the world music should stop%n%while the audio is playing.
+cinematica.cinematic.fadein.on = Fade-In: §aYes
+cinematica.cinematic.fadein.off = Fade-In: §cNo
+cinematica.cinematic.fadein.btn.desc = If the cutscene should fade-in.
+cinematica.cinematic.fadeout.on = Fade-Out: §aYes
+cinematica.cinematic.fadeout.off = Fade-Out: §cNo
+cinematica.cinematic.fadeout.btn.desc = If the cutscene should fade-out.
+
+cinematica.config = Cinematica Settings
+
+cinematica.config.categories.ui = UI
+cinematica.config.categories.general = General
+cinematica.config.categories.debug = Debug
+
+cinematica.config.enable_keybinds = Enable Keybinds
+cinematica.config.enable_keybinds.desc = If mod keybinds should be%n%enabled or not.%n%%n%You need to restart the game%n%after changing this option.%n%%n%§cKeep in mind that you will%n%§cneed to manually re-enable%n%§cthe pause menu button%n%§cin the config, if you%n%§cdisable both the button and%n%§cthis option.
+
+cinematica.config.add_slider_to_sound_controls = Add Sound Controls Sliders
+cinematica.config.add_slider_to_sound_controls.desc = If the sliders to control the%n%cinematics sound channels%n%should get added to the%n%sound controls screen.
+cinematica.config.uiscale = UI Scale
+cinematica.config.uiscale.desc = The scale of context menus%n%and other UI elements.
+cinematica.config.show_controls_in_pause_screen = Show Button In Pause Menu
+cinematica.config.show_controls_in_pause_screen.desc = If the button in the pause menu%n%should be visible or not.%n%%n%This can also be toggled by%n%pressing CTRL + ALT + C.%n%Keybind can be changed%n%in the controls settings.
+
+cinematica.config.print_died_entities = Observe Entity Deaths
+cinematica.config.print_died_entities.desc = If information about died entities%n%should get printed to the chat.
+cinematica.config.print_added_items = Observe Added Items
+cinematica.config.print_added_items.desc = If information about items%n%that get added to the%n%player inventory should%n%get printed to the chat.
+
+cinematica.condition.add = Add Condition
+cinematica.condition.remove = Remove Condition
+cinematica.condition.remove.confirm = §c§lAre you sure?%n%%n%Do you really want to §cremove §rthis condition?%n% %n% %n% %n%
+cinematica.condition.edit = Edit Condition
+cinematica.condition.edit.not_editable.desc = §cThis condition is not editable!
+cinematica.condition.factory.select = Select Condition
+cinematica.condition.manage = Manage Conditions
+cinematica.condition.choose = Choose Condition
+cinematica.condition.configure = Configure Condition
+
+cinematica.condition.area.conditionmeta.from = §lFrom Coordinates
+cinematica.condition.area.conditionmeta.to = §lTo Coordinates
+cinematica.condition.area.enterarea = Player Enters Area
+cinematica.condition.area.enterarea.desc = Gets triggered when the player%n%enters a specific area in the world.
+cinematica.condition.area.isarea = Player Is In Area
+cinematica.condition.area.isarea.desc = Gets triggered while the player%n%is in a specific area in the world.
+
+cinematica.condition.dimension.conditionmeta.dimension = §lTarget Dimension ID [Blank = All Dimensions]
+cinematica.condition.dimension.conditionmeta.dimension.current = §7Current Player Dimension: {}
+cinematica.condition.dimension.enterdimension = Player Enters Dimension
+cinematica.condition.dimension.enterdimension.desc = Gets triggered when the player%n%enters a specific dimension.
+cinematica.condition.dimension.isdimension = Player Is In Dimension
+cinematica.condition.dimension.isdimension.desc = Gets triggered while the player%n%is in a specific dimension.
+
+cinematica.condition.killentity = Player Kills Entity
+cinematica.condition.killentity.desc = Gets triggered when the player%n%kills an entity.
+cinematica.condition.killentity.conditionmeta.type = Entity Type [Blank = Any Type]
+cinematica.condition.killentity.conditionmeta.type.lastkilled = §7Last Killed Entity Type: {}
+cinematica.condition.killentity.conditionmeta.name = Entity Name [Blank = Any Name]
+cinematica.condition.killentity.conditionmeta.name.lastkilled = §7Last Killed Entity Name: {}
+
+cinematica.condition.ip.conditionmeta.ip = Server IP
+cinematica.condition.ip.conditionmeta.ip.current = §7Current Server IP: {}
+cinematica.condition.ip.isip = Is Server IP
+cinematica.condition.ip.isip.desc = Gets triggered while connected%n%to a specific server IP.
+cinematica.condition.ip.joinip = Join Server IP
+cinematica.condition.ip.joinip.desc = Gets triggered when connecting%n%to a specific server IP.
+
+cinematica.condition.multiplayer = Is Multiplayer
+cinematica.condition.multiplayer.desc = Gets triggered while%n%playing Multiplayer.
+cinematica.condition.multiplayer.added = §a§lCondition Added!%n%%n%Condition successfully added to the cinematic.%n% %n% %n% %n%
+
+cinematica.condition.singleplayer = Is Singleplayer
+cinematica.condition.singleplayer.desc = Gets triggered while%n%playing Singleplayer.
+cinematica.condition.singleplayer.added = §a§lCondition Added!%n%%n%Condition successfully added to the cinematic.%n% %n% %n% %n%
+
+cinematica.condition.entity.entitydied = Entity Dies In Range
+cinematica.condition.entity.entitydied.desc = Gets triggered when an entity%n%dies in a specific range%n%around the player.
+cinematica.condition.entity.comesinrange = Entity Comes In Range
+cinematica.condition.entity.comesinrange.desc = Gets triggered when an entity%n%comes in range of the player.%n%%n%§cThis condition is experimental!%n%§cThe client could start lagging%n%§cwhen using too many instances%n%§cof this condition in cinematics.
+cinematica.condition.entity.isinrange = Entity Is In Range
+cinematica.condition.entity.isinrange.desc = Gets triggered while an entity%n%is in range of the player.%n%%n%§cThis condition is experimental!%n%§cThe client could start lagging%n%§cwhen using too many instances%n%§cof this condition in cinematics.
+cinematica.condition.entity.entityrightclick = Player Right-Clicked Entity
+cinematica.condition.entity.entityrightclick.desc = Gets triggered when the player%n%right-clicks an entity.
+cinematica.condition.entity.spot = Player Spots Entity In Range
+cinematica.condition.entity.spot.desc = Gets triggered when the player%n%spots an entity in range.%n%%n%§cThis condition is experimental!%n%§cThe client could start lagging%n%§cwhen using too many instances%n%§cof this condition in cinematics.
+cinematica.condition.entity.watch = Player Watches Entity In Range
+cinematica.condition.entity.watch.desc = Gets triggered while the player%n%watches an entity in range.%n%%n%§cThis condition is experimental!%n%§cThe client could start lagging%n%§cwhen using too many instances%n%§cof this condition in cinematics.%n%%n%§7§oStop stalking helpless entities!
+cinematica.condition.entity.selection.conditionmeta.type = Entity Type [Blank = Any Type]
+cinematica.condition.entity.selection.conditionmeta.name = Entity Name [Blank = Any Name]
+cinematica.condition.entity.rangeselection.conditionmeta.range = Range Around Player [Radius]
+cinematica.condition.entity.spotselection.conditionmeta.fov_offset = FOV Offset [Field Of View Offset]
+
+cinematica.condition.item.addtoinventory = Item Added To Player Inventory
+cinematica.condition.item.addtoinventory.desc = Gets triggered when an item%n%gets added to the player inventory.%n%%n%§cThis condition is experimental!%n%§cIt can also trigger when%n%§cmoving items in the inventory.%n%§cIf you want to use this,%n%§cit's recommended to enable the%n%§cone-time-option for the%n%§cparent cinematic.
+cinematica.condition.item.dropitem = Player Dropped Item
+cinematica.condition.item.dropitem.desc = Gets triggered when the player%n%drops an item.
+cinematica.condition.item.foodeaten = Player Food Eaten
+cinematica.condition.item.foodeaten.desc = Gets triggered when the player%n%consumed a food item.
+cinematica.condition.item.rightclickitem = Player Right-Clicked Item
+cinematica.condition.item.rightclickitem.desc = Gets triggered when the player%n%right-clicks an item in hand.
+cinematica.condition.item.placeblockitem = Player Placed Block
+cinematica.condition.item.placeblockitem.desc = Gets triggered when the player%n%placed a block.
+cinematica.condition.item.conditionmeta.type = Item Type [Blank = Any Type]
+cinematica.condition.item.conditionmeta.name = Item Name [Blank = Any Name]
+cinematica.condition.item.conditionmeta.lore = Item Lore [Blank = Any Lore]
+cinematica.condition.item.conditionmeta.lore.checktype.equals = Lore Check Type: §6Equals
+cinematica.condition.item.conditionmeta.lore.checktype.starts-with = Lore Check Type: §6Starts-With
+cinematica.condition.item.conditionmeta.lore.checktype.ends-with = Lore Check Type: §6Ends-With
+cinematica.condition.item.conditionmeta.lore.checktype.contains = Lore Check Type: §6Contains
+cinematica.condition.item.conditionmeta.count = Item Count [Blank = Any Count]
+
+cinematica.condition.biome.conditionmeta.biome = Biome Type
+cinematica.condition.biome.conditionmeta.biome.current = §7Current Biome Type: {}
+cinematica.condition.biome.enterbiome = Player Enters Biome
+cinematica.condition.biome.enterbiome.desc = Gets triggered when the player%n%enters a specific biome.
+cinematica.condition.biome.isbiome = Player Is In Biome
+cinematica.condition.biome.isbiome.desc = Gets triggered while the player%n%is in a specific biome.
+
+cinematica.condition.block.conditionmeta.block = Block Type
+cinematica.condition.block.conditionmeta.block.current = §7Current Block Type: {}
+cinematica.condition.block.stepblock = Player Steps On Block
+cinematica.condition.block.stepblock.desc = Gets triggered when the player%n%steps on a specific block type.
+cinematica.condition.block.standblock = Player Stands On Block
+cinematica.condition.block.standblock.desc = Gets triggered while the player%n%stands on a specific block type.
+
+cinematica.condition.tablist.becomestab = Becomes Tab List Header/Footer Content
+cinematica.condition.tablist.becomestab.desc = Gets triggered when the tab list%n%footer/header gets set to%n%a specific content.
+cinematica.condition.tablist.istab = Is Tab List Header/Footer Content
+cinematica.condition.tablist.istab.desc = Gets triggered while the tab list%n%footer/header has a specific%n%content.
+cinematica.condition.tablist.conditionmeta.content = Footer/Header Content
+cinematica.condition.tablist.conditionmeta.content.checktype.equals = Content Check Type: §6Equals
+cinematica.condition.tablist.conditionmeta.content.checktype.starts-with = Content Check Type: §6Starts-With
+cinematica.condition.tablist.conditionmeta.content.checktype.ends-with = Content Check Type: §6Ends-With
+cinematica.condition.tablist.conditionmeta.content.checktype.contains = Content Check Type: §6Contains
+cinematica.condition.tablist.conditionmeta.line.header = Check For Line: §6Header
+cinematica.condition.tablist.conditionmeta.line.footer = Check For Line: §6Footer
+
+cinematica.condition.chat.receivechat = Chat Message Received
+cinematica.condition.chat.receivechat.desc = Gets triggered when the client%n%receives a specific chat message.
+cinematica.condition.chat.conditionmeta.content = Message Content [Blank = Any Content]
+cinematica.condition.chat.conditionmeta.content.checktype.equals = Content Check Type: §6Equals
+cinematica.condition.chat.conditionmeta.content.checktype.starts-with = Content Check Type: §6Starts-With
+cinematica.condition.chat.conditionmeta.content.checktype.ends-with = Content Check Type: §6Ends-With
+cinematica.condition.chat.conditionmeta.content.checktype.contains = Content Check Type: §6Contains
+
+cinematica.command.cinematic.error = §cThere was an error while trying to trigger the cinematic.
+cinematica.command.cinematic.invalid = §cCinematic not found! Wrong identifier?
