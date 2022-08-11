@@ -1,0 +1,236 @@
+package de.keksuccino.cinematica.engine.condition.conditions.area;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import de.keksuccino.cinematica.gui.ScrollableScreen;
+import de.keksuccino.cinematica.ui.UIBase;
+import de.keksuccino.konkrete.gui.content.AdvancedButton;
+import de.keksuccino.konkrete.gui.content.AdvancedTextField;
+import de.keksuccino.konkrete.gui.content.scrollarea.ScrollAreaEntry;
+import de.keksuccino.konkrete.gui.screens.popup.PopupHandler;
+import de.keksuccino.konkrete.input.CharacterFilter;
+import de.keksuccino.konkrete.input.MouseInput;
+import de.keksuccino.konkrete.localization.Locals;
+import de.keksuccino.konkrete.math.MathUtils;
+import de.keksuccino.konkrete.properties.PropertiesSection;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+public class AreaConditionScreen extends ScrollableScreen {
+
+    protected Consumer<PropertiesSection> callback;
+
+    protected AdvancedTextField fromXTextField;
+    protected AdvancedTextField fromYTextField;
+    protected AdvancedTextField fromZTextField;
+    protected AdvancedTextField toXTextField;
+    protected AdvancedTextField toYTextField;
+    protected AdvancedTextField toZTextField;
+
+    protected AdvancedButton cancelButton;
+    protected AdvancedButton doneButton;
+
+    public AreaConditionScreen(Screen parent, @Nullable PropertiesSection conditionMeta, Consumer<PropertiesSection> callback) {
+
+        super(parent, Locals.localize("cinematica.condition.configure"));
+        this.callback = callback;
+
+        Font font = Minecraft.getInstance().font;
+
+        fromXTextField = new AdvancedTextField(font, 0, 0, 50, 20, true, CharacterFilter.getIntegerCharacterFiler());
+        fromXTextField.setMaxLength(100000);
+        fromYTextField = new AdvancedTextField(font, 0, 0, 50, 20, true, CharacterFilter.getIntegerCharacterFiler());
+        fromYTextField.setMaxLength(100000);
+        fromZTextField = new AdvancedTextField(font, 0, 0, 50, 20, true, CharacterFilter.getIntegerCharacterFiler());
+        fromZTextField.setMaxLength(100000);
+        toXTextField = new AdvancedTextField(font, 0, 0, 50, 20, true, CharacterFilter.getIntegerCharacterFiler());
+        toXTextField.setMaxLength(100000);
+        toYTextField = new AdvancedTextField(font, 0, 0, 50, 20, true, CharacterFilter.getIntegerCharacterFiler());
+        toYTextField.setMaxLength(100000);
+        toZTextField = new AdvancedTextField(font, 0, 0, 50, 20, true, CharacterFilter.getIntegerCharacterFiler());
+        toZTextField.setMaxLength(100000);
+
+        if (conditionMeta != null) {
+            String fromString = conditionMeta.getEntryValue("from_coordinates");
+            String toString = conditionMeta.getEntryValue("to_coordinates");
+            if ((fromString != null) && (toString != null) && fromString.contains(",") && toString.contains(",")) {
+                String[] from = fromString.split("[,]");
+                String[] to = toString.split("[,]");
+                if ((from.length == 3) && (to.length == 3)) {
+                    if (MathUtils.isInteger(from[0]) && MathUtils.isInteger(from[1]) && MathUtils.isInteger(from[2]) && MathUtils.isInteger(to[0]) && MathUtils.isInteger(to[1]) && MathUtils.isInteger(to[2])) {
+                        fromXTextField.setValue(from[0]);
+                        fromYTextField.setValue(from[1]);
+                        fromZTextField.setValue(from[2]);
+                        toXTextField.setValue(to[0]);
+                        toYTextField.setValue(to[1]);
+                        toZTextField.setValue(to[2]);
+                    }
+                }
+            }
+        }
+        if ((fromXTextField.getValue() == null) || fromXTextField.getValue().equals("")) {
+            fromXTextField.setValue("0");
+            fromYTextField.setValue("0");
+            fromZTextField.setValue("0");
+            toXTextField.setValue("0");
+            toYTextField.setValue("0");
+            toZTextField.setValue("0");
+        }
+
+    }
+
+    @Override
+    public boolean isOverlayButtonHovered() {
+        if (this.doneButton != null) {
+            if (this.doneButton.isHoveredOrFocused()) {
+                return true;
+            }
+        }
+        if (this.cancelButton != null) {
+            if (this.cancelButton.isHoveredOrFocused()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected void init() {
+
+        Font font = Minecraft.getInstance().font;
+
+        super.init();
+
+        //Clear entry list on init
+        List<ScrollAreaEntry> oldEntries = new ArrayList<>();
+        oldEntries.addAll(this.scrollArea.getEntries());
+        for (ScrollAreaEntry e : oldEntries) {
+            this.scrollArea.removeEntry(e);
+        }
+
+        // FROM COORDINATES -------------------
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.area.conditionmeta.from"), true));
+        ScrollAreaEntryBase fromEntry = new ScrollAreaEntryBase(this.scrollArea, (render) -> {
+
+            int xCenter = render.entry.x + (render.entry.getWidth() / 2);
+
+            this.fromYTextField.setX(xCenter - (this.fromYTextField.getWidth() / 2) + 5);
+            this.fromYTextField.setY(render.entry.y + render.entry.getHeight() - this.fromYTextField.getHeight() - 2);
+            this.fromYTextField.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getFrameTime());
+            drawCenteredString(render.matrix, font, "§lY:", this.fromYTextField.x - 7, this.fromYTextField.y + 7, -1);
+
+            this.fromXTextField.setX(this.fromYTextField.x - 5 - 10 - this.fromXTextField.getWidth());
+            this.fromXTextField.setY(render.entry.y + render.entry.getHeight() - this.fromXTextField.getHeight() - 2);
+            this.fromXTextField.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getFrameTime());
+            drawCenteredString(render.matrix, font, "§lX:", this.fromXTextField.x - 7, this.fromXTextField.y + 7, -1);
+
+            this.fromZTextField.setX(this.fromYTextField.x + this.fromYTextField.getWidth() + 5 + 10);
+            this.fromZTextField.setY(render.entry.y + render.entry.getHeight() - this.fromZTextField.getHeight() - 2);
+            this.fromZTextField.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getFrameTime());
+            drawCenteredString(render.matrix, font, "§lZ:", this.fromZTextField.x - 7, this.fromZTextField.y + 7, -1);
+
+        });
+        fromEntry.setHeight(24);
+        this.scrollArea.addEntry(fromEntry);
+        //-------------------------------------
+
+        // TO COORDINATES ---------------------
+        this.scrollArea.addEntry(new TextEntry(this.scrollArea, Locals.localize("cinematica.condition.area.conditionmeta.to"), true));
+        ScrollAreaEntryBase toEntry = new ScrollAreaEntryBase(this.scrollArea, (render) -> {
+
+            int xCenter = render.entry.x + (render.entry.getWidth() / 2);
+
+            this.toYTextField.setX(xCenter - (this.toYTextField.getWidth() / 2) + 5);
+            this.toYTextField.setY(render.entry.y + render.entry.getHeight() - this.toYTextField.getHeight() - 2);
+            this.toYTextField.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getFrameTime());
+            drawCenteredString(render.matrix, font, "§lY:", this.toYTextField.x - 7, this.toYTextField.y + 7, -1);
+
+            this.toXTextField.setX(this.toYTextField.x - 5 - 10 - this.toXTextField.getWidth());
+            this.toXTextField.setY(render.entry.y + render.entry.getHeight() - this.toXTextField.getHeight() - 2);
+            this.toXTextField.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getFrameTime());
+            drawCenteredString(render.matrix, font, "§lX:", this.toXTextField.x - 7, this.toXTextField.y + 7, -1);
+
+            this.toZTextField.setX(this.toYTextField.x + this.toYTextField.getWidth() + 5 + 10);
+            this.toZTextField.setY(render.entry.y + render.entry.getHeight() - this.toZTextField.getHeight() - 2);
+            this.toZTextField.render(render.matrix, MouseInput.getMouseX(), MouseInput.getMouseY(), Minecraft.getInstance().getFrameTime());
+            drawCenteredString(render.matrix, font, "§lZ:", this.toZTextField.x - 7, this.toZTextField.y + 7, -1);
+
+        });
+        toEntry.setHeight(24);
+        this.scrollArea.addEntry(toEntry);
+        //-------------------------------------
+
+        this.cancelButton = new AdvancedButton(0, 0, 95, 20, Locals.localize("cinematica.ui.cancel"), true, (press) -> {
+            this.onCancel();
+            Minecraft.getInstance().setScreen(this.parent);
+        });
+        UIBase.colorizeButton(this.cancelButton);
+
+        this.doneButton = new AdvancedButton(0, 0, 95, 20, Locals.localize("popup.done"), true, (press) -> {
+            this.onDone();
+            Minecraft.getInstance().setScreen(this.parent);
+        });
+        UIBase.colorizeButton(this.doneButton);
+
+    }
+
+    @Override
+    public void render(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+
+        int xCenter = this.width / 2;
+
+        super.render(matrix, mouseX, mouseY, partialTicks);
+
+        //Cancel Button
+        this.cancelButton.setX(xCenter - this.cancelButton.getWidth() - 5);
+        this.cancelButton.setY(this.height - 35);
+        this.cancelButton.render(matrix, mouseX, mouseY, partialTicks);
+
+        //Done Button
+        this.doneButton.setX(xCenter + 5);
+        this.doneButton.setY(this.height - 35);
+        this.doneButton.render(matrix, mouseX, mouseY, partialTicks);
+
+    }
+
+    @Override
+    public void onClose() {
+        if (!PopupHandler.isPopupActive()) {
+            this.onCancel();
+            super.onClose();
+        }
+    }
+
+    protected void onDone() {
+        if (this.callback != null) {
+            String fromXString = this.fromXTextField.getValue().replace(" ", "");
+            String fromYString = this.fromYTextField.getValue().replace(" ", "");
+            String fromZString = this.fromZTextField.getValue().replace(" ", "");
+            String toXString = this.toXTextField.getValue().replace(" ", "");
+            String toYString = this.toYTextField.getValue().replace(" ", "");
+            String toZString = this.toZTextField.getValue().replace(" ", "");
+            if (!MathUtils.isInteger(fromXString) || !MathUtils.isInteger(fromYString) || !MathUtils.isInteger(fromZString) || !MathUtils.isInteger(toXString) || !MathUtils.isInteger(toYString) || !MathUtils.isInteger(toZString)) {
+                this.callback.accept(null);
+            } else {
+                String fromString = fromXString + "," + fromYString + "," + fromZString;
+                String toString = toXString + "," + toYString + "," + toZString;
+                PropertiesSection sec = new PropertiesSection("condition-meta");
+                sec.addEntry("from_coordinates", fromString);
+                sec.addEntry("to_coordinates", toString);
+                this.callback.accept(sec);
+            }
+        }
+    }
+
+    protected void onCancel() {
+        if (this.callback != null) {
+            this.callback.accept(null);
+        }
+    }
+
+}

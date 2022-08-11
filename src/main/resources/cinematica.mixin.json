@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "de.keksuccino.cinematica.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "client.MixinSoundHandler",
+    "client.MixinClientWorld",
+    "client.MixinPlayerInventory",
+    "client.MixinContainer",
+    "client.MixinPlayerEntity",
+    "client.MixinItemStack",
+    "client.MixinChatListener",
+    "client.MixinClientPlayerEntity"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "cinematica.mixin-refmap.json",
+  "plugin": "de.keksuccino.cinematica.mixin.CinematicaMixinPlugin",
+  "minVersion": "0.8"
+}

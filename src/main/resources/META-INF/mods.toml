@@ -1,0 +1,68 @@
+# The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
+modLoader="javafml" #mandatory
+# A version range to match for said mod loader - for regular FML @Mod it will be the forge version
+loaderVersion="[42,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+# The mod license
+license="DSMSL (DON'T SNATCH MA STUFF LICENSE)"
+# A list of mods - how many allowed here is determined by the individual mod loader
+[[mods]] #mandatory
+# The modid of the mod
+modId="cinematica" #mandatory
+# The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
+version="1.0.0" #mandatory
+ # A display name for the mod
+displayName="Cinematica" #mandatory
+# A text field displayed in the mod UI
+authors="Keksuccino" #optional
+# The description text for the mod (multi line!) (#mandatory)
+description='''~ nice cinematic bro ~
+
+COPYRIGHT:
+
+> Cinematica © Copyright 2022 Keksuccino.
+  Cinematica is licensed under DSMSL (DON'T SNATCH MA STUFF LICENSE).
+  See Cinematica's GitHub repository for more information about this license.
+
+> FancyVideo API © Copyright Nick1st.
+  FancyVideo API is licensed under GPLv3.
+
+----------
+
+Big Thanks to Nick1st for his INCREDIBLE video API for Minecraft!
+This mod wouldn't be possible without his hard work!
+'''
+
+[[dependencies.cinematica]]
+modId="konkrete"
+mandatory=true
+ordering="NONE"
+versionRange="[1.5.0,)"
+side="BOTH"
+
+[[dependencies.cinematica]]
+modId="fancyvideo_api"
+mandatory=true
+versionRange="[2.2.0.3,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.cinematica]]
+modId="auudio"
+mandatory=true
+ordering="AFTER"
+versionRange="[1.0.3,)"
+side="BOTH"
+
+[[dependencies.cinematica]]
+modId="forge"
+mandatory=true
+versionRange="[42,)"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.cinematica]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.19.1,)"
+ordering="NONE"
+side="CLIENT"
