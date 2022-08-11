@@ -1,24 +1,14 @@
 ---
-name: Bug Report
-about: Found a bug? Please tell me, so I can fix it!
+name: Mod Incompatibility
+about: Some mod is conflicting with FancyMenu? Tell me about it!
 title: ''
-labels: bug
+labels: mod incompatibility
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and detailed description of what the bug is.
-
-**To Reproduce**
-Steps to reproduce the behavior (e.g.):
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
-
-**Expected behavior**
-A clear and detailed description of what you expected to happen.
+**Describe the issue**
+What exactly is telling you that the mod is incompatible?
 
 **Game Log**
 Please always include your `.minecraft/logs/latest.log` file **right after the issue happened**.
